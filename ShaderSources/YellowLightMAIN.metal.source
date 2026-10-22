@@ -1,0 +1,300 @@
+// Yellow-only review overlay. Compile with the immutable accepted Blue source.
+// Production Yellow colour stops; Yellow-only readout/contact corrections.
+float3 yellowReviewDarkPalette(float sharedLightField,float progress) {
+    // The accepted MAIN pose already settles before p=1. Production's old
+    // endpoint hue/exposure compensation must not fire over this frozen pose.
+    float3 blueDarkReference=float3(0.10,0.55,1.0)*sharedLightField;
+    float warmth = clamp(sharedLightField / (0.20 + 0.58 + 0.54), 0.0, 1.0);
+    float3 warmColor = mix(yellowDeepColor.rgb, yellowHotColor.rgb, warmth);
+    float3 luminanceWeights = float3(0.2126, 0.7152, 0.0722);
+    float referenceLuminance = dot(pow(clamp(blueDarkReference, 0.0, 1.0),
+        float3(2.2)), luminanceWeights);
+    float warmLuminance = dot(pow(warmColor, float3(2.2)), luminanceWeights);
+    // Lift only the low-density colour toe. The existing bright maxima and
+    // colour ratios remain pinned; no field, Gaussian or spatial blur changes.
+    float toe=1.0-clamp(sharedLightField/(0.20+0.58+0.54),0.0,1.0);
+    float late=segmentEase(progress,0.78,0.86);
+    float lowDensity=1.0-segmentEase(sharedLightField,0.20,0.50);
+    float colourFeather=1.0+0.35*toe*toe*toe;
+    if(progress>0.78 && sharedLightField<0.50) colourFeather+=0.40*late*lowDensity*toe*toe*toe;
+    float paletteExposure=1.12*pow(colourFeather,2.2);
+    #ifdef QA_CONFIG_PALETTE
+    // Comparison B only: production's density-to-colour curve; same MAIN field.
+    return yellowDarkDensityPalette(sharedLightField);
+#else
+    float3 mapped=warmColor * pow(referenceLuminance * paletteExposure /
+        max(warmLuminance, 0.00001), 1.0 / 2.2);
+    // Same bounded cap as Blue's saturated channel; only the late R shoulder.
+    if(progress>0.78) mapped.r=mix(mapped.r,qaNativeBlueCap(mapped.r),late);
+    return mapped;
+#endif
+}
+float3 yellowReviewTransmission() {
+    float3 yellowLightOrange=mix(yellowMidColor.rgb,yellowHotColor.rgb,0.25);
+    return float3(yellowLightOrange.r,mix(yellowMidColor.g,yellowHotColor.g,0.75),
+        pow(yellowLightAccent.b,2.5));
+}
+// Colour partition of the EXISTING idleWaveDensity profiles. Geometry is
+// copied verbatim only to recover primary / (primary+secondary+halo); W and I
+// still come from the immutable physical field, including its exact clamps.
+float yellowReviewPrimaryShare(float2 position,float2 size,float idleTime) {
+    float2 p=position/max(size,float2(1.0))*float2(375.0,812.0);
+    float cycle=smootherLiquid(fract(idleTime/3.0));
+    float waveY=mix(-110.0,925.0,cycle);
+    float width=mix(72.0,420.0,cycle);
+    float thickness=mix(19.0,42.0,cycle);
+    float dx=p.x-187.5;
+    float arcY=waveY+(dx*dx)/max(width*1.72,1.0);
+    float distanceToArc=p.y-arcY;
+    float primary=exp(-pow(distanceToArc/thickness,2.0))*exp(-pow(dx/width,2.0));
+    float secondary=exp(-pow((distanceToArc+72.0)/(thickness*1.35),2.0))*
+        exp(-pow(dx/(width*1.18),2.0))*0.32;
+    float halo=exp(-pow((p.y-waveY)/180.0,2.0))*
+        exp(-pow(dx/max(width*1.18,1.0),2.0))*0.12;
+    return primary/max(primary+secondary+halo,0.000001);
+}
+// Light-only colour metadata from the exact existing primary/secondary/halo.
+// Keep the scalar function and all Dark calls unchanged for pixel identity.
+float3 yellowReviewWaveShares(float2 position,float2 size,float idleTime) {
+    float2 p=position/max(size,float2(1.0))*float2(375.0,812.0);
+    float cycle=smootherLiquid(fract(idleTime/3.0));
+    float waveY=mix(-110.0,925.0,cycle);
+    float width=mix(72.0,420.0,cycle);
+    float thickness=mix(19.0,42.0,cycle);
+    float dx=p.x-187.5;
+    float arcY=waveY+(dx*dx)/max(width*1.72,1.0);
+    float distanceToArc=p.y-arcY;
+    float primary=exp(-pow(distanceToArc/thickness,2.0))*exp(-pow(dx/width,2.0));
+    float secondary=exp(-pow((distanceToArc+72.0)/(thickness*1.35),2.0))*
+        exp(-pow(dx/(width*1.18),2.0))*0.32;
+    float halo=exp(-pow((p.y-waveY)/180.0,2.0))*
+        exp(-pow(dx/max(width*1.18,1.0),2.0))*0.12;
+    return float3(primary,secondary,halo)/max(primary+secondary+halo,0.000001);
+}
+float3 yellowReviewLightSource(float3 shares,float W) {
+    float3 primary=float3(yellowLightAccent.r,yellowLightAccent.g,0.0);
+    // Only the existing primary colour response: a bright Yellow crest,
+    // warmer gold mid-density shoulders. W and its spatial shape are exact.
+    float primaryEnergy=clamp(W*shares.x/0.84,0.0,1.0);
+    primary.g=mix(yellowMidColor.g,1.0,primaryEnergy);
+    float3 secondary=yellowLightAccent;
+    float3 halo=mix(yellowHotColor.rgb,float3(1.0),0.82);
+    // The secondary formerly shared the almost-white .82 cream with halo;
+    // it lost chroma against the Light background. Preserve its own gold.
+    return primary*shares.x+secondary*shares.y+halo*shares.z;
+}
+float3 yellowReviewLightPeak(float3 shares) {
+    // At full coverage I=W, the free-wave source cancels. The secondary
+    // needs its own existing warm light maximum here as well; otherwise it
+    // loses the B relief again inside MAIN despite a correct free pigment.
+    float3 warmLight=mix(yellowHotColor.rgb,float3(1.0),0.82);
+    // Reduce only the secondary's cream dilution, retaining the same
+    // smooth secondary field and fully covered I=W response.
+    float3 secondaryPeak=yellowLightAccent;
+    return float3(1.0,1.0,0.0)*shares.x+secondaryPeak*shares.y+warmLight*shares.z;
+}
+
+float3 yellowReviewWaveSource(float primaryShare,bool light) {
+    // Configured Yellow stops: a saturated gold primary with the existing
+    // warm low-energy surround. No new support, wave, Gaussian or glow layer.
+    float3 primary=light ? float3(yellowLightAccent.r,yellowLightAccent.g,0.0)
+        : yellowLightAccent;
+    float3 surround=light ? mix(yellowHotColor.rgb,float3(1.0),0.82)
+        : float3(qaHistoricalYellowDarkWave(1.0).rgb);
+    return mix(surround,primary,primaryShare);
+}
+float3 yellowReviewDarkContact(float3 base,IdleContact contact,float primaryShare,float counterProtection) {
+    float3 source=yellowReviewWaveSource(primaryShare,false);
+    // Yellow darkened by the existing counter backdrop reads olive. Warm
+    // only that pre-existing shaded contact region; the unshaded peak stays Yellow.
+    float3 contactColor=mix(float3(1.0,1.0,0.0),yellowLightAccent,
+        clamp(counterProtection,0.0,1.0));
+    float3 reactedMain=base+contactColor*contact.frontReaction;
+    float3 light=idleContactLight(source,contactColor,contact);
+    // Match Blue's additive union and ONLY its final RGB clamp. The old
+    // component-wise orange bound clipped G to .70/.55 and erased the core.
+    float3 composite=clamp(reactedMain+light,0.0,1.0);
+    // Saturation can erase the pre-clamp warm tint (R=G=1). Reuse the
+    // existing counter shadow and I response to adapt only that hue after
+    // clipping; no geometry, independent light, new contour or G-channel cut.
+    float ratio=composite.g/max(composite.r,0.000001);
+    float shadedContact=segmentEase(sqrt(clamp(counterProtection,0.0,1.0)),0.06,0.36)*
+        segmentEase(contact.intersection,0.0,0.12);
+    float3 shadedGold=mix(yellowHotColor.rgb,yellowLightAccent,0.5);
+    float3 warm=composite;
+    // Monotone shoulder, like Blue's saturation cap: avoid a hue-selector
+    // inversion that could leave a thin green rim between two warm regions.
+    warm.g=composite.r*shadedGold.g*qaNativeBlueCap(ratio/shadedGold.g);
+    warm.b=mix(composite.b,max(composite.b,composite.r*shadedGold.b),
+        segmentEase(ratio,yellowMidColor.g,1.0));
+    return mix(composite,warm,shadedContact);
+}
+
+[[ stitchable ]]
+half4 liquidYellowReviewBackground(
+    float2 position,
+    half4 color,
+    float2 size,
+    float progress,
+    float tapPulse,
+    float2 tapPoint,
+    float2 previousTouchPoint,
+    float swipePulse,
+    float swipeStrength,
+    float time,
+    float progressSpeed,
+    float fillGain,
+    float waveStrength,
+    float waveSpread,
+    float topBloom,
+    float whiteCore,
+    float blueDepth,
+    float dragWave,
+    float shockStrength,
+    float shockInteraction,
+    float shockTrail,
+    float waveCount,
+    float themeStrength,
+    float gradientColorIndex,
+    float idleActivity,
+    float idleTime,
+    device const float *interactionSegments,
+    int interactionFloatCount
+) {
+    if(abs(round(gradientColorIndex)-3.0)>0.5) {
+        return liquidSpecBackground(position,color,size,progress,tapPulse,tapPoint,previousTouchPoint,swipePulse,swipeStrength,time,progressSpeed,fillGain,waveStrength,waveSpread,topBloom,whiteCore,blueDepth,dragWave,shockStrength,shockInteraction,shockTrail,waveCount,themeStrength,gradientColorIndex,idleActivity,idleTime,interactionSegments,interactionFloatCount);
+    }
+    float2 safeSize=max(size,float2(1.0)),uv=position/safeSize;
+    float4 physical=yellowReferenceContactFields(position,color,size,progress,tapPulse,tapPoint,previousTouchPoint,swipePulse,swipeStrength,time,progressSpeed,fillGain,waveStrength,waveSpread,topBloom,whiteCore,blueDepth,dragWave,shockStrength,shockInteraction,shockTrail,waveCount,1.0,0.0,idleActivity,idleTime,interactionSegments,interactionFloatCount);
+    float physicalMain=physical.x;
+    float W=float(half(physical.y));
+    IdleContact contact=sharedIdleContact(physicalMain,W);
+    float primaryShare=yellowReviewPrimaryShare(position,size,idleTime);
+    float3 transmission=yellowReviewTransmission();
+    bool dark=themeStrength>0.5;
+    // Query, do not rewrite, the exact accepted Blue MAIN display fields.
+    float M=qaMainAtPose(uv,progress,time,dark);
+    float3 mainBase=dark ? clamp(yellowReviewDarkPalette(M,progress)+physical.w,0.0,1.0)
+        : correctedLightPigment(M,3.0,transmission);
+    // Reuse Blue's original diffuse counter-protection pocket, with the same
+    // field and 0.32 weight. Keep the production percentage/UI untouched.
+    if(!dark) mainBase=mix(mainBase,float3(1.0),clamp(physical.z,0.0,1.0)*0.32);
+    float3 result=mainBase;
+    float counterProtection=physical.z;
+    float darkTheme=step(0.5,themeStrength);
+    float isYellowPreset=1.0;
+    float3 white=float3(1.0),targetBlue=float3(0.10,0.55,1.0);
+    float3 referenceCyan = float3(0.380, 0.910, 1.000);
+    float3 yellowLightOrange=mix(yellowMidColor.rgb,yellowHotColor.rgb,0.25);
+    float3 blueDarkReference=clamp(float3(.10,.55,1.0)*physicalMain,0.0,1.0);
+    if (interactionFloatCount > 0) {
+        float trail = interactionLightField(uv, safeSize.x / safeSize.y, interactionSegments, interactionFloatCount);
+        float readability = 1.0 - 0.88 * counterProtection;
+        // Exposure depends on local interaction accumulation, so a first pass
+        // cannot start white merely because it crosses a bright progress band.
+        float heat = trail;
+        float brighter = 1.0 - exp(-max(heat - 0.35, 0.0) * 0.95);
+        float excessHeat = max(heat - 1.45, 0.0);
+        float exposure = 1.0 - exp(-excessHeat * excessHeat / 3.0);
+        float3 trailColor;
+        if (isYellowPreset > 0.5) {
+            // Channel-wise exponential exposure used to push R and G towards
+            // equality, leaving olive on black. Keep warm hue while light grows.
+            float3 warm = darkTheme > 0.5
+                ? mix(yellowDeepColor.rgb, min(yellowHotColor.rgb * 1.18, 1.0), brighter)
+                : mix(yellowHotColor.rgb, yellowLightAccent, 0.48 + brighter * 0.52);
+            float cream = smoothstep(0.70, 3.0, heat) * 0.75;
+            if (darkTheme < 0.5) {
+                // A broad orange interval separates yellow pigment from light,
+                // making the trail readable even over a saturated yellow base.
+                float orange = exp(-pow((heat - 0.85) / 0.90, 2.0)) *
+                    (1.0 - exp(-heat * 2.0)) * 0.75;
+                warm = mix(yellowLightAccent, yellowLightOrange, orange);
+                cream = smoothstep(1.55, 3.50, heat) * 0.75;
+                float accumulatedHeat = max(heat - 2.0, 0.0);
+                exposure = 1.0 - exp(-accumulatedHeat * accumulatedHeat / 2.8);
+            }
+            warm = mix(warm, mix(yellowHotColor.rgb, white, 0.82), cream);
+            trailColor = mix(warm, mix(yellowHotColor.rgb, white, 0.94), exposure);
+        } else {
+            // Reuse the cyan produced by the existing additive idle overlap.
+            float3 overlapCyan = clamp(targetBlue + float3(0.14, 0.48, 1.0), 0.0, 1.0);
+            float3 lightBlue = mix(targetBlue, mix(referenceCyan, overlapCyan, darkTheme), brighter);
+            trailColor = mix(lightBlue, float3(0.91, 0.98, 1.0), exposure);
+        }
+        // Protect text through coverage, not heat: the mask must not turn a
+        // hot white/cyan/cream trail into a different, muddy color at its edge.
+        float opacity = (0.78 + 0.22 * exposure) * (1.0 - exp(-trail * 0.95)) * readability;
+        if (darkTheme > 0.5) {
+            float3 backdrop = result;
+            result = 1.0 - (1.0 - result) * (1.0 - trailColor * opacity);
+            if (isYellowPreset > 0.5) {
+                // Same trail field, alpha and screen blending as Blue Dark;
+                // only reduce color energy if the warm overlap is brighter.
+                float3 blueTrail = mix(mix(float3(0.10, 0.55, 1.0),
+                    float3(0.24, 1.0, 1.0), brighter), float3(0.91, 0.98, 1.0), exposure);
+                float3 blueOverlap = 1.0 - (1.0 - blueDarkReference) * (1.0 - blueTrail * opacity);
+                // Balance only added trail light: a history buffer must never
+                // darken the untouched backdrop, even when its samples faded.
+                result = backdrop + balanceYellowDarkLight(max(result - backdrop, 0.0),
+                    max(blueOverlap - blueDarkReference, 0.0));
+            }
+        } else {
+            // Keep the old Blue Light screen-pass character, driven by local
+            // overlap rather than separate offset strokes. First passes stay colored.
+            float pigmentOpacity = opacity * (0.76 + 0.24 * exposure);
+            result = mix(result, trailColor, pigmentOpacity);
+            float3 screenLight = isYellowPreset > 0.5
+                ? mix(yellowLightAccent, white, 0.80)
+                : float3(0.80, 0.9059, 1.0); // Original Blue Light screen color.
+            result = 1.0 - (1.0 - result) * (1.0 - screenLight * exposure * opacity * 0.42);
+        }
+    }
+
+    float3 trailDelta=result-mainBase;
+    if(dark) {
+        // Same core/secondary/halo W and contact partition as accepted Dark.
+        if(W>0.0) result=yellowReviewDarkContact(result,contact,primaryShare,counterProtection);
+        return half4(half3(clamp(result,0.0,1.0)),1.0);
+    }
+    // Blue SUBSTRATE FIX algebra, colour-adapted using production Yellow only.
+    float3 LightBase=correctedLightPigment(physicalMain,3.0,transmission);
+    float3 shares=yellowReviewWaveShares(position,size,idleTime);
+    float3 waveSource=yellowReviewLightSource(shares,W);
+    // Same W/I/a response. Primary stays bright Yellow, existing secondary
+    // and halo retain their warm colour progression instead of merging.
+    float3 lightContactColor=yellowReviewLightPeak(shares);
+    float3 appearance=LightBase*(1.0-contact.idle)
+        +waveSource*(contact.idle-contact.intersection)
+        +lightContactColor*contact.intersection;
+    float a=1.0-exp(-4.0*contact.intersection);
+    appearance=mix(clamp(appearance,0.0,1.0),lightContactColor,a);
+    if(contact.intersection>0.0) {
+        // Keep the accepted Light substrate colour reference; Dark late-MAIN
+        // feathering must not propagate into this protected contact term.
+        float3 DarkBase=clamp(yellowReviewDarkPalette(physicalMain,0.0)+physical.w,0.0,1.0);
+        // Yellow Light is an R=1 pigment. Importing DarkBase.r creates an
+        // achromatic R trough (olive/brown), not useful yellow depth.
+        DarkBase.r=LightBase.r;
+        float3 source=yellowReviewWaveSource(primaryShare,false);
+        // Preserve the current G energy/profile. Restore the existing soft
+        // B progression of secondary/halo lost in the Dark reference tint.
+        source.r=LightBase.r;
+        // Free-wave G used to consume the same headroom as the I-driven
+        // Yellow maximum. Use the existing Hot stop only in the primary
+        // reference source; I/peak energy stays intact and secondary is free.
+        source.g=mix(source.g,yellowHotColor.g,shares.x);
+        source.b=waveSource.b;
+        float3 DarkContact=clamp(DarkBase+lightContactColor*contact.frontReaction+
+            idleContactLight(source,lightContactColor,contact),0.0,1.0);
+        float3 beforeDark=appearance;
+        float3 pigment=correctedLightPigment(1.0,3.0,transmission);
+        float peripheral=(1.0-contact.coverage)*(1.0-contact.coverage);
+        float3 substrateDelta=a*peripheral*max(min(beforeDark,pigment)-DarkBase,0.0);
+        appearance=mix(appearance,DarkContact,a);
+        appearance+=substrateDelta;
+    }
+    appearance+=(mainBase-LightBase)*(1.0-contact.idle)*(1.0-a);
+    appearance+=trailDelta;
+    return half4(half3(clamp(appearance,0.0,1.0)),1.0);
+}

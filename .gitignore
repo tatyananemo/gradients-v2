@@ -1,0 +1,61 @@
+# macOS and editor-local files
+.DS_Store
+._*
+*.swp
+*.swo
+*~
+.idea/
+.vscode/
+
+# Xcode user data; keep shared schemes and the project itself
+xcuserdata/
+*.xcuserstate
+*.xcscmblueprint
+*.xccheckout
+
+# Build products and caches
+/DerivedData/
+/build/
+/Build/
+/Distribution/
+*.app/
+*.ipa
+*.xcarchive/
+*.dSYM/
+*.dSYM.zip
+*.metallib
+*.air
+*.dia
+*.hmap
+*.log
+*.tmp
+
+# Swift Package Manager and dependency build products
+/.build/
+/.swiftpm/
+/Packages/
+/Pods/
+/Carthage/Build/
+
+# Local signing material and credentials
+.env
+.env.*
+!.env.example
+*.p12
+*.p8
+*.mobileprovision
+*.provisionprofile
+*.keychain
+*.keychain-db
+
+# Local QA, Simulator inventories, recordings and reports
+/BuildSupport/
+/QA/
+/yellow-*-qa-*/
+/yellow-gradient-storyboards/
+/simulator-qa-app-data-*/
+/Screenshots/
+/Recordings/
+*.mov
+*.mp4
+*.xcresult/
