@@ -11,6 +11,11 @@
 		1A0000020000000000000001 /* GradientInstallView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A0000020000000000000011 /* GradientInstallView.swift */; };
 		1A0000030000000000000001 /* LiquidSpecBackground.metal in Sources */ = {isa = PBXBuildFile; fileRef = 1A0000030000000000000011 /* LiquidSpecBackground.metal */; };
 		1A0000040000000000000001 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1A0000040000000000000011 /* Assets.xcassets */; };
+		1B0000100000000000000001 /* GradientTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B0000100000000000000011 /* GradientTheme.swift */; };
+		1B0000110000000000000001 /* GradientInteractionState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B0000110000000000000011 /* GradientInteractionState.swift */; };
+		1B0000120000000000000001 /* GradientSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B0000120000000000000011 /* GradientSettings.swift */; };
+		1B0000130000000000000001 /* GradientOverlays.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B0000130000000000000011 /* GradientOverlays.swift */; };
+		1B0000140000000000000001 /* GradientCaption.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B0000140000000000000011 /* GradientCaption.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -19,6 +24,11 @@
 		1A0000030000000000000011 /* LiquidSpecBackground.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = LiquidSpecBackground.metal; sourceTree = DERIVED_FILE_DIR; };
 		1A0000040000000000000011 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		1A0000050000000000000011 /* GradientsV2.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GradientsV2.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		1B0000100000000000000011 /* GradientTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sources/GradientTheme.swift; sourceTree = "<group>"; };
+		1B0000110000000000000011 /* GradientInteractionState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sources/GradientInteractionState.swift; sourceTree = "<group>"; };
+		1B0000120000000000000011 /* GradientSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sources/GradientSettings.swift; sourceTree = "<group>"; };
+		1B0000130000000000000011 /* GradientOverlays.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sources/GradientOverlays.swift; sourceTree = "<group>"; };
+		1B0000140000000000000011 /* GradientCaption.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sources/GradientCaption.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -37,6 +47,11 @@
 			children = (
 				1A0000010000000000000011 /* _22App.swift */,
 				1A0000020000000000000011 /* GradientInstallView.swift */,
+				1B0000140000000000000011 /* GradientCaption.swift */,
+				1B0000130000000000000011 /* GradientOverlays.swift */,
+				1B0000120000000000000011 /* GradientSettings.swift */,
+				1B0000110000000000000011 /* GradientInteractionState.swift */,
+				1B0000100000000000000011 /* GradientTheme.swift */,
 				1A0000030000000000000011 /* LiquidSpecBackground.metal */,
 				1A0000040000000000000011 /* Assets.xcassets */,
 				1A0000020000000000000031 /* Products */,
@@ -141,6 +156,11 @@
 			files = (
 				1A0000010000000000000001 /* _22App.swift in Sources */,
 				1A0000020000000000000001 /* GradientInstallView.swift in Sources */,
+				1B0000140000000000000001 /* GradientCaption.swift in Sources */,
+				1B0000130000000000000001 /* GradientOverlays.swift in Sources */,
+				1B0000120000000000000001 /* GradientSettings.swift in Sources */,
+				1B0000110000000000000001 /* GradientInteractionState.swift in Sources */,
+				1B0000100000000000000001 /* GradientTheme.swift in Sources */,
 				1A0000030000000000000001 /* LiquidSpecBackground.metal in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
