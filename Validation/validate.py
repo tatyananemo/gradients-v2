@@ -1,0 +1,145 @@
+#!/usr/bin/env python3
+"""Offline baseline/replay checks. Does not install or launch an iOS app."""
+import argparse
+import hashlib
+import html
+import json
+from pathlib import Path
+import re
+import subprocess
+
+ROOT = Path(__file__).resolve().parents[1]
+BASE = "542b89b54b9299b48d4121de7f6ee182f3e3f340"
+
+
+def sha(data):
+    return hashlib.sha256(data).hexdigest()
+
+
+def block(source, marker):
+    start = source.index(marker)
+    opening = source.index("{", start)
+    depth, end = 1, opening + 1
+    while depth:
+        depth += (source[end] == "{") - (source[end] == "}")
+        end += 1
+    return source[start:end]
+
+
+def behavior_source(source):
+    template = (ROOT / "Validation/behavior_driver.swift.txt").read_text()
+    declarations = [block(source, marker) for marker in [
+        "private struct ProgressIncrement", "private final class TouchRuntime",
+        "private struct InteractionTrailSegment", "private struct GradientTrailSample"]]
+    constants = [re.search(r"^    private let " + name + r"[^\n]+", source, re.M).group()
+                 for name in ["progressAnimationDuration", "progressStep", "maximumProgressRate"]]
+    methods = [block(source, "private func " + name + "(") for name in [
+        "reset", "interpolatedProgress", "advanceProgress", "recordInteractionTrail",
+        "interactionTrailArguments"]]
+    # The offline host is a reference type. Explicit capture permits the original
+    # reset closure's implicit property accesses without changing its operations.
+    assert methods[0].count("let resetProgress = {") == 1
+    methods[0] = methods[0].replace("let resetProgress = {", "let resetProgress = { [self] in")
+    for token, marker in [("CHANGED", ".onChanged { value in"), ("ENDED", ".onEnded { value in")]:
+        handler = block(source, marker)
+        handler = handler[handler.index("{ value in") + len("{ value in"):-1]
+        clock = "let gestureNow = Date().timeIntervalSinceReferenceDate"
+        assert handler.count(clock) == 1
+        # Only the test's clock is injected. The callback algorithm is unchanged.
+        template = template.replace("@@" + token + "@@", handler.replace(clock, "let gestureNow = gestureTime"))
+    return (template.replace("@@DECLARATIONS@@", "\n".join(declarations))
+            .replace("@@CONSTANTS@@", "\n".join(constants))
+            .replace("@@METHODS@@", "\n".join(methods)))
+
+
+def render_cases():
+    result = []
+    for theme, dark, yellow in [("blue-dark", 1, 0), ("blue-light", 0, 0),
+                                ("yellow-dark", 1, 3), ("yellow-light", 0, 3)]:
+        def add(label, p, idle, t, history=()):
+            u = [390, 844, p, 0, .72, .62, .32, .68, 0, 0, p * 10 + t,
+                 .15, 1, 1, 1, 1, 1, 1, 0, .62, 1, .74, 2, dark, yellow, idle, t, len(history)]
+            result.append({"name": f"{theme}-{label}", "uniforms": u, "history": list(history)})
+        for p in [.3, .6, .8]:
+            percent = round(p * 100)
+            add(f"p{percent}-main", p, 0, 0)
+            for t in [1.2, 1.65, 2.1]:
+                add(f"p{percent}-contact-t{t}", p, 1, t)
+        add("p0-idle", 0, 1, 1.65)
+        add("p100-idle", 1, 1, 1.65)
+        for label, age, fade in [("swipe", .05, 1), ("release", .65, .5), ("released", 1.3, 0)]:
+            add(label, .6, 0, .8, [.15, .75, .72, .62, age, .9 * fade,
+                                  .72, .62, .4, .35, age, 1.2 * fade])
+        history = []
+        for i in range(40):
+            history.extend([.1, .15 + i % 7 * .1, .9, .2 + i % 7 * .1, i * .02, .7])
+        add("maximum-history", .8, 0, .8, history)
+    return result
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--metal", type=Path, default=ROOT / "LiquidSpecBackground.metal")
+    parser.add_argument("--record", action="store_true", help="record the approved base, never a changed candidate")
+    args = parser.parse_args()
+    out = args.output.resolve()
+    out.mkdir(parents=True, exist_ok=False)
+    reference_path = ROOT / "Validation/reference.json"
+    tracked = subprocess.check_output(["git", "ls-tree", "-r", "--name-only", BASE], cwd=ROOT, text=True).splitlines()
+    original_files = {name: subprocess.check_output(["git", "show", f"{BASE}:{name}"], cwd=ROOT) for name in tracked}
+    source = (ROOT / "GradientInstallView.swift").read_text()
+    # Initial two stages permit no application Swift/UI or original module changes.
+    protected = [name for name in tracked if name.endswith(".swift") or name.startswith("ShaderSources/")]
+    for name in protected:
+        assert (ROOT / name).read_bytes() == original_files[name], f"Protected source changed: {name}"
+    assert args.metal.read_bytes() == original_files["LiquidSpecBackground.metal"], "Metal differs from approved V2"
+    if args.record:
+        assert not reference_path.exists(), "Refusing to replace an existing baseline"
+    else:
+        reference = json.loads(reference_path.read_text())
+
+    behavior = out / "behavior.swift"
+    behavior.write_text(behavior_source(source))
+    subprocess.run(["xcrun", "swiftc", "-O", str(behavior), "-o", str(out / "behavior")], check=True)
+    subprocess.run([str(out / "behavior"), str(out / "behavior.json")], check=True)
+    cases = render_cases()
+    (out / "cases.json").write_text(json.dumps(cases, indent=2) + "\n")
+    subprocess.run(["xcrun", "swiftc", "-O", str(ROOT / "Validation/render_reference.swift"),
+                    "-o", str(out / "render")], check=True)
+    subprocess.run([str(out / "render"), str(args.metal.resolve()), str(out / "cases.json"),
+                    str(out / "frames")], check=True)
+    data_files = sorted((out / "frames").glob("*"))
+    hashes = {p.name: sha(p.read_bytes()) for p in data_files if p.suffix in {".rgba16f", ".probe", ".distortion"}}
+    snapshot = {"base_commit": BASE, "tracked_physical_lines": {
+        "swift": sum(len(v.splitlines()) for k, v in original_files.items() if k.endswith(".swift")),
+        "metal_modules": sum(len(v.splitlines()) for k, v in original_files.items() if k.endswith(".source")),
+        "duplicated_composition": len(original_files["LiquidSpecBackground.metal"].splitlines())},
+        "source_sha256": {k: sha(v) for k, v in original_files.items()},
+        "behavior_sha256": sha((out / "behavior.json").read_bytes()),
+        "render_sha256": hashes, "case_count": len(cases),
+        "cases_sha256": sha((out / "cases.json").read_bytes()),
+        "gpu": json.loads((out / "frames/gpu.json").read_text())}
+    if args.record:
+        reference_path.write_text(json.dumps(snapshot, indent=2, sort_keys=True) + "\n")
+    else:
+        assert snapshot["behavior_sha256"] == reference["behavior_sha256"], "Behavior replay differs"
+        assert snapshot["cases_sha256"] == reference["cases_sha256"], "Validation inputs differ"
+        assert hashes == reference["render_sha256"], "GPU pixels, probe results or distortion differ"
+    result = {"passed": True, "base_commit": BASE, "frames": len(cases),
+              "raw_gpu_outputs_compared": len(hashes), "behavior_checkpoints": len(json.loads((out / "behavior.json").read_text())),
+              "app_swift_and_original_modules_unchanged": True,
+              "metal_byte_identical": True, "recorded_reference": args.record,
+              "scope": "Offscreen GPU + original input handlers. Not a Simulator UI screenshot/replay test."}
+    (out / "result.json").write_text(json.dumps(result, indent=2) + "\n")
+    cards = "\n".join(f'<figure><img src="frames/{html.escape(c["name"])}.png"><figcaption>{html.escape(c["name"])}</figcaption></figure>' for c in cases)
+    (out / "index.html").write_text('<!doctype html><meta charset="utf-8"><title>V2 Metal baseline</title>'
+        '<style>body{background:#202020;color:white;font:14px system-ui}main{display:grid;grid-template-columns:repeat(6,1fr);gap:12px}'
+        'figure{margin:0}img{width:100%;display:block}figcaption{overflow-wrap:anywhere}</style>'
+        '<h1>Gradients V2 — actual offscreen Metal frames</h1><p>390 × 844; fixed inputs; no UI compositing. '
+        'All application Swift/UI sources remain byte-identical to 542b89b.</p><main>' + cards + '</main>')
+    print(json.dumps(result, indent=2))
+
+
+if __name__ == "__main__":
+    main()
