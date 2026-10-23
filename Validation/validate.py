@@ -71,6 +71,31 @@ def check_render_arguments(source, approved):
     assert 'Text("Устанавливаем защищенное соединение. Водите пальцем в разных частях экрана")' in source
 
 
+def check_preserved_ui(source, approved):
+    # These active overlays are outside the offscreen Metal renderer.
+    for marker in ["enum GradientAppTheme", "enum GradientColorPreset",
+                   "struct V2CaptionBackdrop", "class V2CaptionProbe",
+                   "struct V2CounterExclusion", "struct V2CaptionFrameKey",
+                   "struct V2MaskUniformsKey", "struct OptionalDistortionModifier"]:
+        assert block(source, marker) == block(approved, marker), marker
+    current_mask = block(source, "struct PercentCenterMask")
+    approved_mask = block(approved, "struct PercentCenterMask")
+    assert block(current_mask, "if isDarkTheme") == block(approved_mask, "if isDarkTheme")
+    current_ui = block(source, "                    VStack {")
+    previous_ui = block(approved, "                    VStack {")
+    # The removed offset was permanently zero: its start time was never triggered.
+    previous_ui = previous_ui.replace("\n                            .offset(x: bottomTextShake.width, y: bottomTextShake.height)", "")
+    current_ui = current_ui.replace("\n                            .offset(x: bottomTextShake.width, y: bottomTextShake.height)", "")
+    assert current_ui == previous_ui, "Main screen layout or styling changed"
+    for text in [source, approved]:
+        start = text.index("let v2Uniforms:")
+        uniforms = text[start:text.index("                ZStack {", start)]
+        if text is source:
+            current_uniforms = uniforms
+        else:
+            assert current_uniforms == uniforms, "Caption probe uniforms changed"
+
+
 def behavior_source(source):
     template = (ROOT / "Validation/behavior_driver.swift.txt").read_text()
     markers = ["struct ProgressIncrement", "final class TouchRuntime", "struct InteractionTrailSegment"]
@@ -149,6 +174,7 @@ def main():
     approved = original_files["GradientInstallView.swift"].decode()
     parameters = fixed_parameters(source, approved)
     check_render_arguments(source, approved)
+    check_preserved_ui(source, approved)
     # Swift changes are checked by actual parameters, render arguments and original behavior replay.
     protected = [name for name in tracked if name == "_22App.swift" or name.startswith("ShaderSources/")]
     for name in protected:

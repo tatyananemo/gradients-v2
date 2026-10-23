@@ -41,3 +41,23 @@ remain exact comparisons, not an image tolerance or a new candidate baseline.
   dismiss sheet, continuous swipe (60 → 61%), caption preserved.
 - Intentional UI difference: settings sheet only; height reduced from 620 to 300.
 - No shader or runtime algorithm changes; no measured performance claim.
+
+## Stage 2a — proven dead Swift only
+
+- App Swift: 1,531 → 1,029 physical lines (502 removed; 707 since start).
+- Canonical Metal: 13,485 unchanged; generated compile file: 13,503 unchanged.
+- Removed GradientSwipeTrail and TrailContinuationWave: zero call sites.
+- Removed DotPattern: sole call had constant zero opacity (waterSurfaceEnabled=true).
+- Removed waterCausticOverlay branch: waterSurfaceVisible=false, plus only its coordinate calculations.
+- Removed idleWaveOverlay branch: it excluded both cases of the two-case color enum.
+  MAIN's active Metal idle/CONTACT remains unchanged.
+- Removed PercentCenterMask's Light branch: sole call is guarded by isDarkTheme.
+  Its active Dark body is compared verbatim against the approved source.
+- Removed legacy trail samples: written by gesture code but read only by unused Canvas views.
+  The live interactionTrail, its limits, timestamps and packing formula remain unchanged.
+- Removed textShakeOffset: start time was only initialized/reset to -10; the offset was always zero.
+- Reused the same v2History array for shader and caption probe; no second per-frame packing.
+- Debug/Release succeeded; 72 frames, 216 GPU outputs, 33 behavior checkpoints exact.
+- Main UI block, caption/probe, distortion modifier and mask uniforms are source-checked.
+- Interactive isolated Simulator: four themes, settings, swipes (30 → 31 → 33%),
+  release/idle visible and reset to 0%; no new visible difference observed.

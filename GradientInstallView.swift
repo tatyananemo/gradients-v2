@@ -92,9 +92,7 @@ struct GradientInstallView: View {
     @State private var waterTouchIsActive = false
     @State private var idleWaveStartTime = Date().timeIntervalSinceReferenceDate
     @State private var waterDragEnergy: CGFloat = 0.0
-    @State private var gradientTrailSamples: [GradientTrailSample] = []
     @State private var interactionTrail: [InteractionTrailSegment] = []
-    @State private var bottomTextShakeStart: TimeInterval = -10
 
     @State private var showSettings = false
     @AppStorage("gradientsV2.theme") private var appTheme: GradientAppTheme = .light
@@ -144,14 +142,7 @@ struct GradientInstallView: View {
             let idleWaveElapsed = idleWaveActivity == 0 ? 0 : max(0, now - idleWaveStartTime)
             let renderedProgress = interpolatedProgress(at: now)
             let counterProgress = progress
-            let bottomTextShakeAge = max(0, now - bottomTextShakeStart)
-            let bottomTextShakePulse = CGFloat(min(1.0, max(0.0, 1.0 - bottomTextShakeAge * 2.25)))
-            let bottomTextShake = textShakeOffset(pulse: bottomTextShakePulse)
-            let waterSurfaceEnabled = true
-            let waterSurfacePulse = waterSurfaceEnabled ? waterTouchPulse : CGFloat(0)
-            let waterSurfaceDrag = waterSurfaceEnabled ? waterDragEnergy * waterTouchPulse : CGFloat(0)
-            let trailDistortionStrength = waterSurfaceEnabled ? min(max(waterDragEnergy * 1.45, 0), 1) * waterTouchPulse : CGFloat(0)
-            let waterSurfaceVisible = false
+            let trailDistortionStrength = min(max(waterDragEnergy * 1.45, 0), 1) * waterTouchPulse
             let isDarkTheme = appTheme == .dark
             let percentTextColor = isDarkTheme
                 ? Color(red: 0.92, green: 0.95, blue: 1.0)
@@ -173,13 +164,8 @@ struct GradientInstallView: View {
                     x: screenBounds.midX - globalFrame.minX,
                     y: screenBounds.midY - globalFrame.minY
                 )
-                let waterLayerInset = geo.size.width * 0.30
-                let waterLayerWidth = max(geo.size.width + waterLayerInset * 2, 1)
-                let waterLayerSize = CGSize(width: waterLayerWidth, height: geo.size.height)
                 let waterPoint = waterTouchPoint ?? CGPoint(x: geo.size.width / 2, y: geo.size.height / 2)
                 let previousWaterPoint = waterTouchPreviousPoint ?? waterTouchPoint ?? waterPoint
-                let waterPointInLayer = CGPoint(x: waterPoint.x + waterLayerInset, y: waterPoint.y)
-                let previousWaterPointInLayer = CGPoint(x: previousWaterPoint.x + waterLayerInset, y: previousWaterPoint.y)
                 let centerMaskFlow = 0.62 + renderedProgress * 0.30
                 let centerMaskBreath = 1 + CGFloat(sin(elapsed * 1.18 + Double(renderedProgress * 5.0))) * 0.025
                 let v2Key = appTheme.rawValue + ":" + gradientColor.rawValue
@@ -231,7 +217,7 @@ struct GradientInstallView: View {
                                         .float(gradientColor.shaderIndex),
                                         .float(idleWaveActivity),
                                         .float(idleWaveElapsed),
-                                        .floatArray(interactionTrailArguments(at: now, origin: globalFrame.origin, size: gradientLayerSize))
+                                        .floatArray(v2History)
                                     )
                                 )
                                 .optionalDistortion(
@@ -253,54 +239,12 @@ struct GradientInstallView: View {
                                 )
                                 .frame(width: gradientLayerSize.width, height: gradientLayerSize.height)
 
-                            DotPattern()
-                                .opacity(waterSurfaceEnabled ? 0 : (renderedProgress > 0.55 ? 0.10 : 0.15))
-                                .frame(width: gradientLayerSize.width, height: gradientLayerSize.height)
-                                .allowsHitTesting(false)
                     }
                         .frame(width: gradientLayerSize.width, height: gradientLayerSize.height)
                         .clipped()
                         .position(x: gradientLayerCenter.x, y: gradientLayerCenter.y)
                         .ignoresSafeArea(.container, edges: .bottom)
                         .allowsHitTesting(false)
-
-                    if waterSurfaceVisible {
-                        Rectangle()
-                            .fill(.white.opacity(0.001))
-                            .colorEffect(
-                                ShaderLibrary.waterCausticOverlay(
-                                    .float2(waterLayerSize),
-                                    .float2(
-                                        waterPointInLayer.x / waterLayerWidth,
-                                        waterPointInLayer.y / safeHeight
-                                    ),
-                                    .float2(
-                                        previousWaterPointInLayer.x / waterLayerWidth,
-                                        previousWaterPointInLayer.y / safeHeight
-                                    ),
-                                    .float(waterSurfacePulse),
-                                    .float(elapsed),
-                                    .float(waterSurfaceDrag),
-                                    .float(waterIntensity),
-                                    .float(waterScale),
-                                    .float(waterSpeed)
-                                )
-                            )
-                            .frame(width: waterLayerWidth, height: geo.size.height)
-                            .position(x: geo.size.width / 2, y: geo.size.height / 2)
-                            .blendMode(.screen)
-                            .allowsHitTesting(false)
-                    }
-
-                    // Blue and Yellow composite idle/contact in the gradient pass.
-                    if isDarkTheme && gradientColor != .yellow && gradientColor != .blue {
-                        idleWaveLayer(
-                            size: geo.size,
-                            activity: idleWaveActivity,
-                            elapsed: idleWaveElapsed,
-                            blendMode: .plusLighter
-                        )
-                    }
 
                     V2CaptionBackdrop(dark:isDarkTheme,yellow:gradientColor == .yellow,
                         activation:captionProbe.key == v2Key ? captionProbe.activation:0)
@@ -388,7 +332,6 @@ struct GradientInstallView: View {
                                 Color.clear.preference(key:V2CaptionFrameKey.self,value:proxy.frame(in:.global))
                             }}
                             .padding(.bottom, 82)
-                            .offset(x: bottomTextShake.width, y: bottomTextShake.height)
                     }
                     .frame(width: geo.size.width, height: geo.size.height)
                     .zIndex(10)
@@ -404,15 +347,13 @@ struct GradientInstallView: View {
                     DragGesture(minimumDistance: 0)
                         .onChanged { value in
                             let gestureNow = Date().timeIntervalSinceReferenceDate
-                            if waterSurfaceEnabled && (!waterTouchIsActive || waterTouchPoint == nil) {
+                            if !waterTouchIsActive || waterTouchPoint == nil {
                                 waterTouchPoint = value.location
                                 waterTouchPreviousPoint = value.location
                                 touchRuntime.smoothedWaterPoint = value.location
                                 waterTouchLastMove = gestureNow
                                 waterTouchIsActive = true
                                 waterDragEnergy = 0
-                                gradientTrailSamples.removeAll(keepingCapacity: true)
-                                gradientTrailSamples.append(GradientTrailSample(point: value.location, time: gestureNow))
                                 touchRuntime.lastWaterUpdateTime = gestureNow
                             }
 
@@ -441,13 +382,7 @@ struct GradientInstallView: View {
                                 waterTouchLastMove = gestureNow
                                 waterTouchIsActive = true
                                 waterDragEnergy = min(max(waterDragEnergy * 0.88 + targetWaterEnergy * 0.12, 0.0), 0.80)
-                                if waterSurfaceEnabled && waterDistance > 1.4 {
-                                    gradientTrailSamples.append(GradientTrailSample(point: value.location, time: gestureNow))
-                                    gradientTrailSamples.removeAll { gestureNow - $0.time > 1.65 }
-                                    if gradientTrailSamples.count > 54 {
-                                        gradientTrailSamples.removeFirst(gradientTrailSamples.count - 54)
-                                    }
-                                }
+
                                 touchRuntime.lastWaterUpdateTime = gestureNow
 
                             }
@@ -539,32 +474,6 @@ struct GradientInstallView: View {
         }
     }
 
-    private func idleWaveLayer(
-        size: CGSize,
-        activity: CGFloat,
-        elapsed: TimeInterval,
-        blendMode: BlendMode,
-        opacity: Double = 1
-    ) -> some View {
-        Rectangle()
-            .fill(.white.opacity(0.001))
-            .colorEffect(
-                ShaderLibrary.idleWaveOverlay(
-                    .float2(size),
-                    .float(activity),
-                    .float(elapsed),
-                    .float(waveStrength),
-                    .float(appTheme.shaderValue),
-                    .float(gradientColor.shaderIndex)
-                )
-            )
-            .frame(width: size.width, height: size.height)
-            .clipped()
-            .blendMode(blendMode)
-            .opacity(opacity)
-            .allowsHitTesting(false)
-    }
-
     private func reset(now: TimeInterval, animated: Bool = true) {
         let resetProgress = {
             progress = 0
@@ -586,9 +495,7 @@ struct GradientInstallView: View {
         waterTouchIsActive = false
         idleWaveStartTime = now
         waterDragEnergy = 0
-        gradientTrailSamples.removeAll(keepingCapacity: true)
         interactionTrail.removeAll(keepingCapacity: true)
-        bottomTextShakeStart = -10
         touchRuntime.resetAll()
     }
 
@@ -664,19 +571,6 @@ struct GradientInstallView: View {
                 Float(age), Float(min(segment.distance / (width * 0.125), 1.8)) * Float(releaseFade)
             ]
         }
-    }
-
-    private func textShakeOffset(pulse: CGFloat) -> CGSize {
-        guard pulse > 0.025 else {
-            return .zero
-        }
-
-        let age = 1 - pulse
-        let fade = pulse * pulse * (1 - min(max((age - 0.78) / 0.22, 0), 1))
-        let x = (sin(Double(age) * 52 + 0.7) + sin(Double(age) * 91) * 0.42) * Double(fade) * 4.2
-        let y = (cos(Double(age) * 64 + 0.3) - sin(Double(age) * 39) * 0.32) * Double(fade) * 2.6
-
-        return CGSize(width: CGFloat(x), height: CGFloat(y))
     }
 
     private static func previewProgressFromLaunchArguments() -> CGFloat? {
@@ -762,11 +656,6 @@ private struct InteractionTrailSegment {
     var releaseTime: TimeInterval? = nil
 }
 
-private struct GradientTrailSample {
-    let point: CGPoint
-    let time: TimeInterval
-}
-
 private struct PercentCenterMask: View {
     let isDarkTheme: Bool
     let gradientColor: GradientColorPreset
@@ -840,87 +729,7 @@ private struct PercentCenterMask: View {
             .scaleEffect(centerMaskBreath)
             .offset(y: -18)
             .allowsHitTesting(false)
-        } else {
-            ZStack {
-                // Matches the original shader's central white glass lens:
-                // a breathing circular core with a very soft, organic edge.
-                Ellipse()
-                    .fill(
-                        RadialGradient(
-                            colors: [
-                                .white.opacity(0.82 + centerMaskFlow * 0.16),
-                                .white.opacity(0.54 + centerMaskFlow * 0.18),
-                                .clear
-                            ],
-                            center: .center,
-                            startRadius: 12,
-                            endRadius: 158
-                        )
-                    )
-                    .frame(
-                        width: 198 + counterProgress * 270,
-                        height: 198 + counterProgress * 270
-                    )
-                    .scaleEffect(
-                        centerMaskBreath * (1 + CGFloat(sin(elapsed * 0.50)) * 0.018)
-                    )
-                    .blur(radius: 58 + counterProgress * 64)
-                    .blendMode(.screen)
-
-                Ellipse()
-                    .stroke(.white.opacity(0.16 + centerMaskFlow * 0.14), lineWidth: 12)
-                    .frame(
-                        width: 198 + counterProgress * 270,
-                        height: 198 + counterProgress * 270
-                    )
-                    .scaleEffect(centerMaskBreath)
-                    .blur(radius: 24)
-                    .blendMode(.plusLighter)
-
-                if gradientColor == .blue || gradientColor == .yellow {
-                    Ellipse()
-                        .fill(.white.opacity(0.30 + lightMaskShine * 0.32))
-                        .frame(
-                            width: 322 + counterProgress * 172,
-                            height: 146 + counterProgress * 70
-                        )
-                        .blur(radius: 94)
-                        .scaleEffect(centerMaskBreath)
-                        .blendMode(.screen)
-
-                    Capsule(style: .continuous)
-                        .fill(
-                            LinearGradient(
-                                colors: [
-                                    .clear,
-                                    .white.opacity(0.36 + lightMaskShine * 0.34),
-                                    .clear
-                                ],
-                                startPoint: .leading,
-                                endPoint: .trailing
-                            )
-                        )
-                        .frame(
-                            width: 132 + counterProgress * 58,
-                            height: 18
-                        )
-                        .blur(radius: 22)
-                        .rotationEffect(.degrees(-6))
-                        .offset(y: -18)
-                        .blendMode(.plusLighter)
-                }
-            }
-            .allowsHitTesting(false)
         }
-    }
-
-    private var lightMaskShine: CGFloat {
-        guard gradientColor == .blue || gradientColor == .yellow else {
-            return 0
-        }
-
-        return smoothStep(0.14, 0.58, renderedProgress) *
-            (1 - smoothStep(0.88, 1.0, renderedProgress))
     }
 
     private var darkBlobDriftX: CGFloat {
@@ -955,294 +764,6 @@ private struct PercentCenterMask: View {
         0.82 + CGFloat(sin(elapsed * 0.24 + 2.7)) * 0.040
     }
 
-    private func smoothStep(_ start: CGFloat, _ end: CGFloat, _ value: CGFloat) -> CGFloat {
-        let t = min(max((value - start) / max(end - start, 0.0001), 0), 1)
-        return t * t * (3 - 2 * t)
-    }
-}
-
-private struct GradientSwipeTrail: View {
-    let samples: [GradientTrailSample]
-    let now: TimeInterval
-    let lifetime: TimeInterval
-    let isDarkTheme: Bool
-    let gradientColor: GradientColorPreset
-    let blueLightTrailColor: Color
-
-    var body: some View {
-        Canvas { context, _ in
-            let visible = samples.filter { now - $0.time <= lifetime }
-            guard visible.count > 2 else {
-                return
-            }
-
-            for index in 1..<visible.count {
-                let previous = visible[index - 1]
-                let current = visible[index]
-                let age = max(0, now - current.time)
-                let rawLife = max(0, min(1, 1 - age / lifetime))
-                let life = rawLife * rawLife * (3 - 2 * rawLife)
-                let newestFade = index == visible.count - 1 ? 0.72 : 1.0
-                let opacity = life * newestFade * 0.90
-
-                guard opacity > 0.01 else {
-                    continue
-                }
-
-                var path = Path()
-                path.move(to: previous.point)
-                path.addLine(to: current.point)
-
-                let segmentX = current.point.x - previous.point.x
-                let segmentY = current.point.y - previous.point.y
-                let segmentLength = max(hypot(segmentX, segmentY), 0.001)
-
-                guard segmentLength < 180 else {
-                    continue
-                }
-
-                let normalX = -segmentY / segmentLength
-                let normalY = segmentX / segmentLength
-
-                let progress = CGFloat(index) / CGFloat(max(visible.count - 1, 1))
-                let ageShrink = 0.28 + life * 0.72
-                let width = max(CGFloat(8), (CGFloat(82) - progress * CGFloat(22)) * ageShrink)
-                let chromaOffset = max(CGFloat(2.8), width * 0.075)
-                let outerChromaOffset = chromaOffset + max(CGFloat(5), width * 0.085)
-                let lightTrailColor = gradientColor == .blue
-                    ? blueLightTrailColor
-                    : Color(red: 1.0, green: 0.8667, blue: 0.1765)
-                let darkTrailColor = Color(red: 0.0196, green: 0.2275, blue: 0.7490)
-                let yellowDarkTrailColor = Color(red: 1.0, green: 0.8667, blue: 0.1765)
-                let activeDarkTrailColor = gradientColor == .yellow
-                    ? yellowDarkTrailColor
-                    : darkTrailColor
-                let edgeAColor = isDarkTheme
-                    ? activeDarkTrailColor
-                    : lightTrailColor
-                let edgeBColor = isDarkTheme
-                    ? activeDarkTrailColor
-                    : lightTrailColor
-                let coreColor = isDarkTheme
-                    ? activeDarkTrailColor
-                    : lightTrailColor
-                let glowColor = isDarkTheme
-                    ? activeDarkTrailColor
-                    : lightTrailColor
-                let lineColor = isDarkTheme
-                    ? activeDarkTrailColor
-                    : lightTrailColor
-                let edgeAOpacity = isDarkTheme ? 0.28 : 0.16
-                let edgeBOpacity = isDarkTheme ? 0.18 : 0.105
-                let coreOpacity = isDarkTheme ? 0.42 : 0.46
-                let glowOpacity = isDarkTheme ? 0.30 : 0.18
-                let lineOpacity = isDarkTheme ? 0.22 : 0.12
-                let edgeGlowOpacity = isDarkTheme ? 0.24 : 0.20
-
-                var cyanEdgePath = Path()
-                cyanEdgePath.move(
-                    to: CGPoint(
-                        x: previous.point.x + normalX * chromaOffset,
-                        y: previous.point.y + normalY * chromaOffset
-                    )
-                )
-                cyanEdgePath.addLine(
-                    to: CGPoint(
-                        x: current.point.x + normalX * chromaOffset,
-                        y: current.point.y + normalY * chromaOffset
-                    )
-                )
-
-                var magentaEdgePath = Path()
-                magentaEdgePath.move(
-                    to: CGPoint(
-                        x: previous.point.x - normalX * chromaOffset,
-                        y: previous.point.y - normalY * chromaOffset
-                    )
-                )
-                magentaEdgePath.addLine(
-                    to: CGPoint(
-                        x: current.point.x - normalX * chromaOffset,
-                        y: current.point.y - normalY * chromaOffset
-                    )
-                )
-
-                var outerCyanEdgePath = Path()
-                outerCyanEdgePath.move(
-                    to: CGPoint(
-                        x: previous.point.x + normalX * outerChromaOffset,
-                        y: previous.point.y + normalY * outerChromaOffset
-                    )
-                )
-                outerCyanEdgePath.addLine(
-                    to: CGPoint(
-                        x: current.point.x + normalX * outerChromaOffset,
-                        y: current.point.y + normalY * outerChromaOffset
-                    )
-                )
-
-                var outerMagentaEdgePath = Path()
-                outerMagentaEdgePath.move(
-                    to: CGPoint(
-                        x: previous.point.x - normalX * outerChromaOffset,
-                        y: previous.point.y - normalY * outerChromaOffset
-                    )
-                )
-                outerMagentaEdgePath.addLine(
-                    to: CGPoint(
-                        x: current.point.x - normalX * outerChromaOffset,
-                        y: current.point.y - normalY * outerChromaOffset
-                    )
-                )
-
-                context.drawLayer { layer in
-                    layer.addFilter(.blur(radius: isDarkTheme ? 42 : 38))
-                    layer.stroke(
-                        outerCyanEdgePath,
-                        with: .color(edgeAColor.opacity(opacity * edgeGlowOpacity)),
-                        style: StrokeStyle(lineWidth: width * 1.24, lineCap: .round, lineJoin: .round)
-                    )
-                }
-
-                context.drawLayer { layer in
-                    layer.addFilter(.blur(radius: isDarkTheme ? 40 : 36))
-                    layer.stroke(
-                        outerMagentaEdgePath,
-                        with: .color(edgeBColor.opacity(opacity * edgeGlowOpacity * 0.82)),
-                        style: StrokeStyle(lineWidth: width * 1.16, lineCap: .round, lineJoin: .round)
-                    )
-                }
-
-                context.drawLayer { layer in
-                    layer.addFilter(.blur(radius: 24))
-                    layer.stroke(
-                        cyanEdgePath,
-                        with: .color(edgeAColor.opacity(opacity * edgeAOpacity)),
-                        style: StrokeStyle(lineWidth: width * 0.96, lineCap: .round, lineJoin: .round)
-                    )
-                }
-
-                context.drawLayer { layer in
-                    layer.addFilter(.blur(radius: 26))
-                    layer.stroke(
-                        magentaEdgePath,
-                        with: .color(edgeBColor.opacity(opacity * edgeBOpacity)),
-                        style: StrokeStyle(lineWidth: width * 0.92, lineCap: .round, lineJoin: .round)
-                    )
-                }
-
-                context.drawLayer { layer in
-                    layer.addFilter(.blur(radius: 26))
-                    layer.stroke(
-                        path,
-                        with: .color(coreColor.opacity(opacity * coreOpacity)),
-                        style: StrokeStyle(lineWidth: width, lineCap: .round, lineJoin: .round)
-                    )
-                }
-
-                context.drawLayer { layer in
-                    layer.addFilter(.blur(radius: 18))
-                    layer.stroke(
-                        path,
-                        with: .color(glowColor.opacity(opacity * glowOpacity)),
-                        style: StrokeStyle(lineWidth: width * 0.78, lineCap: .round, lineJoin: .round)
-                    )
-                }
-
-                context.drawLayer { layer in
-                    layer.addFilter(.blur(radius: 9))
-                    layer.stroke(
-                        path,
-                        with: .color(lineColor.opacity(opacity * lineOpacity)),
-                        style: StrokeStyle(lineWidth: width * 0.40, lineCap: .round, lineJoin: .round)
-                    )
-                }
-            }
-        }
-    }
-}
-
-private struct TrailContinuationWave: View {
-    let isTouchActive: Bool
-    let samples: [GradientTrailSample]
-    let now: TimeInterval
-    let lifetime: TimeInterval
-    let isDarkTheme: Bool
-    let gradientColor: GradientColorPreset
-    let blueLightTrailColor: Color
-
-    var body: some View {
-        Canvas { context, _ in
-            guard !isTouchActive, samples.count >= 2,
-                  let last = samples.last,
-                  let previous = samples.dropLast().last else {
-                return
-            }
-
-            let elapsed = max(0, now - last.time)
-            guard elapsed > 0.025, elapsed < lifetime else {
-                return
-            }
-
-            let dx = last.point.x - previous.point.x
-            let dy = last.point.y - previous.point.y
-            let length = hypot(dx, dy)
-            guard length > 1 else {
-                return
-            }
-
-            let direction = CGPoint(x: dx / length, y: dy / length)
-            let normal = CGPoint(x: -direction.y, y: direction.x)
-            let life = 1 - elapsed / lifetime
-            let easedLife = life * life * (3 - 2 * life)
-            let travel = CGFloat(elapsed) * 230
-            let color: Color = isDarkTheme
-                ? (gradientColor == .yellow
-                    ? Color(red: 1.0, green: 0.8667, blue: 0.1765)
-                    : Color(red: 0.0196, green: 0.2275, blue: 0.7490))
-                : (gradientColor == .blue
-                    ? blueLightTrailColor
-                    : Color(red: 1.0, green: 0.8667, blue: 0.1765))
-
-            for waveIndex in 0..<3 {
-                let delay = CGFloat(waveIndex) * 34
-                let forward = max(0, travel - delay) + 22
-                let center = CGPoint(
-                    x: last.point.x + direction.x * forward,
-                    y: last.point.y + direction.y * forward
-                )
-                let width = 30 + CGFloat(waveIndex) * 17 + CGFloat(elapsed) * 24
-                let bend = 10 + CGFloat(waveIndex) * 4
-                let opacity = easedLife * (0.20 - CGFloat(waveIndex) * 0.035)
-                guard opacity > 0.005 else { continue }
-
-                var front = Path()
-                front.move(to: CGPoint(
-                    x: center.x - normal.x * width,
-                    y: center.y - normal.y * width
-                ))
-                front.addQuadCurve(
-                    to: CGPoint(
-                        x: center.x + normal.x * width,
-                        y: center.y + normal.y * width
-                    ),
-                    control: CGPoint(
-                        x: center.x - direction.x * bend,
-                        y: center.y - direction.y * bend
-                    )
-                )
-
-                context.drawLayer { layer in
-                    layer.addFilter(.blur(radius: 17 + CGFloat(waveIndex) * 5))
-                    layer.stroke(
-                        front,
-                        with: .color(color.opacity(opacity)),
-                        style: StrokeStyle(lineWidth: 18 + CGFloat(waveIndex) * 6, lineCap: .round)
-                    )
-                }
-            }
-        }
-    }
 }
 
 struct SettingsSheet: View {
@@ -1353,29 +874,6 @@ private extension View {
                 maxSampleOffset: maxSampleOffset
             )
         )
-    }
-}
-
-struct DotPattern: View {
-    var body: some View {
-        Canvas { context, size in
-            let spacing: CGFloat = 3
-            let dotSize: CGFloat = 1
-
-            var path = Path()
-            var y: CGFloat = 0
-
-            while y < size.height {
-                var x: CGFloat = 0
-                while x < size.width {
-                    path.addEllipse(in: CGRect(x: x, y: y, width: dotSize, height: dotSize))
-                    x += spacing
-                }
-                y += spacing
-            }
-
-            context.fill(path, with: .color(.black))
-        }
     }
 }
 
