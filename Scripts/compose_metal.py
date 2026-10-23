@@ -1,0 +1,52 @@
+#!/usr/bin/env python3
+"""Compose the approved V2 library; do not rewrite shader formulas."""
+import argparse
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+YELLOW_MODULES = ("YellowDarkMAIN", "YellowLightMAIN", "YellowDarkContact", "YellowLightContact")
+MODULES = ("ApprovedBlue", "ContactFields", *YELLOW_MODULES, "V2EntryPoints")
+
+
+def read_module(root, name):
+    return (root / "ShaderSources" / (name + ".metal.source")).read_bytes().decode("utf-8")
+
+
+def compose(root=ROOT):
+    blue = read_module(root, "ApprovedBlue")
+    entry = "[[ stitchable ]]\nhalf4 liquidSpecBackground("
+    if blue.count(entry) != 1:
+        raise ValueError("Expected one ApprovedBlue entry annotation")
+    # This internal entry is called by the dispatcher, not directly by SwiftUI.
+    # Preserve the other seven stitchable entries and every formula verbatim.
+    result = blue.replace(entry, "half4 liquidSpecBackground(")
+    result += "\n" + read_module(root, "ContactFields") + "\n\n"
+    for name in YELLOW_MODULES:
+        source = read_module(root, name)
+        if source.count("[[ stitchable ]]") != 1:
+            raise ValueError("Expected one entry annotation in " + name)
+        # Keep the original namespace boundaries and annotation-line whitespace.
+        result += "namespace " + name + " {\n"
+        result += source.replace("[[ stitchable ]]", "") + "\n}\n\n"
+    result += read_module(root, "V2EntryPoints")
+    return result.encode("utf-8")
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--check", action="store_true", help="verify an existing output without writing")
+    args = parser.parse_args()
+    expected = compose()
+    current = args.output.read_bytes() if args.output.exists() else None
+    if args.check:
+        if current != expected:
+            parser.exit(1, "Metal composition is missing or stale\n")
+    elif current != expected:
+        args.output.parent.mkdir(parents=True, exist_ok=True)
+        args.output.write_bytes(expected)
+    print("Metal composition verified" if args.check else "Metal composition ready")
+
+
+if __name__ == "__main__":
+    main()

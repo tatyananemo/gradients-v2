@@ -2,6 +2,14 @@
 
 Рабочее iOS-приложение на SwiftUI + Metal, отдельное от оригинального production.
 
+Эта рабочая копия находится в ветке `refactor/v2-metal-composition`, основанной
+строго на утверждённой V2 `542b89b`. Выполнены только фиксация эталона и
+воспроизводимая композиция Metal. Swift-код приложения и шесть исходных модулей
+не изменены. Очистка UI и миграция на UIKit ещё не начаты.
+
+Bundle ID сохранён. На этом этапе приложение собирается без установки, чтобы
+сохранить установленную утверждённую V2. Production и V3 не затрагиваются.
+
 ## Запуск в Xcode
 
 1. Откройте `GradientsV2.xcodeproj`.
@@ -36,9 +44,21 @@ Bundle ID: `com.local.gradients.v2`. Он отличается от оригин
 
 - `_22App.swift` — точка входа.
 - `GradientInstallView.swift` — текущий интерфейс, настройки и взаимодействия.
-- `LiquidSpecBackground.metal` — компилируемая библиотека шейдеров всех четырёх тем.
-- `ShaderSources/` — исходные модули шейдеров; их текущая композиция находится в `LiquidSpecBackground.metal`. Файлы `.source` отдельно в target не добавляются.
+- `ShaderSources/` — единственные редактируемые исходники шейдеров. Шесть утверждённых модулей сохранены; `V2EntryPoints.metal.source` содержит дословно вынесенные dispatcher и entry points.
+- `Scripts/compose_metal.py` — детерминированно составляет общий `LiquidSpecBackground.metal`. Xcode запускает его перед компиляцией; результат находится только в `DERIVED_FILE_DIR`, без сохранённой копии в Git.
+- `ShaderSources/CompositionInputs.xcfilelist` — зависимости build phase: изменение любого модуля запускает композицию заново. Песочница build-скриптов остаётся включённой.
+- `Validation/` — эталонные хеши, offline GPU-проверка и replay исходных обработчиков свайпов. Эти файлы не входят в target приложения.
 - `Assets.xcassets/` — ресурсы приложения.
 - `GradientsV2.xcodeproj/` — проект и общая схема запуска.
 
 Репозиторий содержит исходники. Старые QA, отчёты, видео, скриншоты, готовые `.app`, DerivedData, данные Simulator и персональные настройки Xcode исключены через `.gitignore`.
+
+Для composer нужен Python 3, доступный в используемой установке Xcode по
+`/usr/bin/python3`; сторонние Python-пакеты не требуются. Проверка композиции:
+
+```sh
+python3 -B Validation/test_composition.py -v
+python3 Validation/validate.py --output /tmp/v2-composition-validation
+```
+
+Полные условия и границы проверки описаны в `Validation/README.md`.

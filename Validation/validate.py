@@ -7,6 +7,7 @@ import json
 from pathlib import Path
 import re
 import subprocess
+import sys
 
 ROOT = Path(__file__).resolve().parents[1]
 BASE = "542b89b54b9299b48d4121de7f6ee182f3e3f340"
@@ -80,11 +81,16 @@ def render_cases():
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", type=Path, required=True)
-    parser.add_argument("--metal", type=Path, default=ROOT / "LiquidSpecBackground.metal")
+    parser.add_argument("--metal", type=Path, help="actual Xcode-generated Metal file; otherwise compose locally")
     parser.add_argument("--record", action="store_true", help="record the approved base, never a changed candidate")
     args = parser.parse_args()
     out = args.output.resolve()
     out.mkdir(parents=True, exist_ok=False)
+    metal = args.metal or ROOT / "LiquidSpecBackground.metal"
+    if args.metal is None and not metal.exists():
+        metal = out / "LiquidSpecBackground.metal"
+        subprocess.run([sys.executable, "-I", "-B", str(ROOT / "Scripts/compose_metal.py"),
+                        "--output", str(metal)], check=True)
     reference_path = ROOT / "Validation/reference.json"
     tracked = subprocess.check_output(["git", "ls-tree", "-r", "--name-only", BASE], cwd=ROOT, text=True).splitlines()
     original_files = {name: subprocess.check_output(["git", "show", f"{BASE}:{name}"], cwd=ROOT) for name in tracked}
@@ -93,7 +99,7 @@ def main():
     protected = [name for name in tracked if name.endswith(".swift") or name.startswith("ShaderSources/")]
     for name in protected:
         assert (ROOT / name).read_bytes() == original_files[name], f"Protected source changed: {name}"
-    assert args.metal.read_bytes() == original_files["LiquidSpecBackground.metal"], "Metal differs from approved V2"
+    assert metal.read_bytes() == original_files["LiquidSpecBackground.metal"], "Metal differs from approved V2"
     if args.record:
         assert not reference_path.exists(), "Refusing to replace an existing baseline"
     else:
@@ -107,7 +113,7 @@ def main():
     (out / "cases.json").write_text(json.dumps(cases, indent=2) + "\n")
     subprocess.run(["xcrun", "swiftc", "-O", str(ROOT / "Validation/render_reference.swift"),
                     "-o", str(out / "render")], check=True)
-    subprocess.run([str(out / "render"), str(args.metal.resolve()), str(out / "cases.json"),
+    subprocess.run([str(out / "render"), str(metal.resolve()), str(out / "cases.json"),
                     str(out / "frames")], check=True)
     data_files = sorted((out / "frames").glob("*"))
     hashes = {p.name: sha(p.read_bytes()) for p in data_files if p.suffix in {".rgba16f", ".probe", ".distortion"}}

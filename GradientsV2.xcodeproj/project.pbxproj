@@ -16,7 +16,7 @@
 /* Begin PBXFileReference section */
 		1A0000010000000000000011 /* _22App.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = _22App.swift; sourceTree = "<group>"; };
 		1A0000020000000000000011 /* GradientInstallView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GradientInstallView.swift; sourceTree = "<group>"; };
-		1A0000030000000000000011 /* LiquidSpecBackground.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = LiquidSpecBackground.metal; sourceTree = "<group>"; };
+		1A0000030000000000000011 /* LiquidSpecBackground.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = LiquidSpecBackground.metal; sourceTree = DERIVED_FILE_DIR; };
 		1A0000040000000000000011 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		1A0000050000000000000011 /* GradientsV2.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GradientsV2.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -58,6 +58,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 1A0000010000000000000061 /* Build configuration list for PBXNativeTarget "222" */;
 			buildPhases = (
+				1A0000030000000000000051 /* Compose Metal */,
 				1A0000010000000000000051 /* Sources */,
 				1A0000010000000000000021 /* Frameworks */,
 				1A0000020000000000000051 /* Resources */,
@@ -114,6 +115,24 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		1A0000030000000000000051 /* Compose Metal */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = ();
+			inputFileListPaths = (
+				"$(SRCROOT)/ShaderSources/CompositionInputs.xcfilelist",
+			);
+			name = "Compose Metal";
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/LiquidSpecBackground.metal",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "/usr/bin/python3 -I -B \"$SRCROOT/Scripts/compose_metal.py\" --output \"$SCRIPT_OUTPUT_FILE_0\"\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		1A0000010000000000000051 /* Sources */ = {

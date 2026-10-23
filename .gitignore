@@ -59,3 +59,6 @@ xcuserdata/
 *.mov
 *.mp4
 *.xcresult/
+
+# Composed by Xcode in DERIVED_FILE_DIR; edit ShaderSources instead.
+/LiquidSpecBackground.metal
