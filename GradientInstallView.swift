@@ -8,25 +8,6 @@ struct ContentView: View {
     }
 }
 
-struct GradientPreset: Identifiable, Hashable {
-    let id = UUID()
-    let name: String
-    let progressSpeed: CGFloat
-    let fillGain: CGFloat
-    let waveStrength: CGFloat
-    let waveSpread: CGFloat
-    let topBloom: CGFloat
-    let whiteCore: CGFloat
-    let blueDepth: CGFloat
-    let shockStrength: CGFloat
-    let shockInteraction: CGFloat
-    let shockTrail: CGFloat
-    let waveCount: Int
-    let waterIntensity: CGFloat
-    let waterScale: CGFloat
-    let waterSpeed: CGFloat
-}
-
 enum GradientAppTheme: String, CaseIterable, Identifiable {
     case light
     case dark
@@ -90,64 +71,6 @@ enum GradientColorPreset: String, CaseIterable, Identifiable {
     }
 }
 
-enum GradientPresetLibrary {
-    static let defaultPreset = GradientPreset(
-        name: "Default",
-        progressSpeed: 0.150,
-        fillGain: 1.00,
-        waveStrength: 1.0,
-        waveSpread: 1.0,
-        topBloom: 1.0,
-        whiteCore: 1.0,
-        blueDepth: 1.0,
-        shockStrength: 0.62,
-        shockInteraction: 1.0,
-        shockTrail: 0.74,
-        waveCount: 2,
-        waterIntensity: 0.94,
-        waterScale: 0.84,
-        waterSpeed: 0.72
-    )
-
-    static let airyPreset = GradientPreset(
-        name: "Airy",
-        progressSpeed: 0.120,
-        fillGain: 0.95,
-        waveStrength: 0.82,
-        waveSpread: 1.18,
-        topBloom: 0.92,
-        whiteCore: 1.14,
-        blueDepth: 0.92,
-        shockStrength: 0.54,
-        shockInteraction: 0.82,
-        shockTrail: 0.82,
-        waveCount: 1,
-        waterIntensity: 0.78,
-        waterScale: 0.76,
-        waterSpeed: 0.58
-    )
-
-    static let deepPreset = GradientPreset(
-        name: "Deep",
-        progressSpeed: 0.180,
-        fillGain: 1.05,
-        waveStrength: 1.12,
-        waveSpread: 0.94,
-        topBloom: 1.08,
-        whiteCore: 0.92,
-        blueDepth: 1.10,
-        shockStrength: 0.72,
-        shockInteraction: 1.24,
-        shockTrail: 0.70,
-        waveCount: 3,
-        waterIntensity: 1.04,
-        waterScale: 0.92,
-        waterSpeed: 0.82
-    )
-
-    static let all: [GradientPreset] = [defaultPreset, airyPreset, deepPreset]
-}
-
 struct GradientInstallView: View {
     private let launchPreviewProgress: CGFloat?
     private let launchPreviewTheme: GradientAppTheme?
@@ -174,24 +97,23 @@ struct GradientInstallView: View {
     @State private var bottomTextShakeStart: TimeInterval = -10
 
     @State private var showSettings = false
-    @State private var preset = GradientPresetLibrary.defaultPreset
     @AppStorage("gradientsV2.theme") private var appTheme: GradientAppTheme = .light
     @State private var gradientColor: GradientColorPreset = .blue
 
-    @State private var progressSpeed: CGFloat = GradientPresetLibrary.defaultPreset.progressSpeed
-    @State private var fillGain: CGFloat = GradientPresetLibrary.defaultPreset.fillGain
-    @State private var waveStrength: CGFloat = GradientPresetLibrary.defaultPreset.waveStrength
-    @State private var waveSpread: CGFloat = GradientPresetLibrary.defaultPreset.waveSpread
-    @State private var topBloom: CGFloat = GradientPresetLibrary.defaultPreset.topBloom
-    @State private var whiteCore: CGFloat = GradientPresetLibrary.defaultPreset.whiteCore
-    @State private var blueDepth: CGFloat = GradientPresetLibrary.defaultPreset.blueDepth
-    @State private var shockStrength: CGFloat = GradientPresetLibrary.defaultPreset.shockStrength
-    @State private var shockInteraction: CGFloat = GradientPresetLibrary.defaultPreset.shockInteraction
-    @State private var shockTrail: CGFloat = GradientPresetLibrary.defaultPreset.shockTrail
-    @State private var waveCount: Int = GradientPresetLibrary.defaultPreset.waveCount
-    @State private var waterIntensity: CGFloat = GradientPresetLibrary.defaultPreset.waterIntensity
-    @State private var waterScale: CGFloat = GradientPresetLibrary.defaultPreset.waterScale
-    @State private var waterSpeed: CGFloat = GradientPresetLibrary.defaultPreset.waterSpeed
+    private let progressSpeed: CGFloat = 0.150
+    private let fillGain: CGFloat = 1.00
+    private let waveStrength: CGFloat = 1.0
+    private let waveSpread: CGFloat = 1.0
+    private let topBloom: CGFloat = 1.0
+    private let whiteCore: CGFloat = 1.0
+    private let blueDepth: CGFloat = 1.0
+    private let shockStrength: CGFloat = 0.62
+    private let shockInteraction: CGFloat = 1.0
+    private let shockTrail: CGFloat = 0.74
+    private let waveCount: Int = 2
+    private let waterIntensity: CGFloat = 0.94
+    private let waterScale: CGFloat = 0.84
+    private let waterSpeed: CGFloat = 0.72
 
     init() {
         let previewProgress = Self.previewProgressFromLaunchArguments()
@@ -609,26 +531,8 @@ struct GradientInstallView: View {
             idleWaveStartTime = Date().timeIntervalSinceReferenceDate + 0.42
         }
         .sheet(isPresented: $showSettings) {
-            SettingsSheet(
-                preset: $preset,
-                progressSpeed: $progressSpeed,
-                fillGain: $fillGain,
-                waveStrength: $waveStrength,
-                waveSpread: $waveSpread,
-                topBloom: $topBloom,
-                whiteCore: $whiteCore,
-                blueDepth: $blueDepth,
-                shockStrength: $shockStrength,
-                shockInteraction: $shockInteraction,
-                shockTrail: $shockTrail,
-                waveCount: $waveCount,
-                waterIntensity: $waterIntensity,
-                waterScale: $waterScale,
-                waterSpeed: $waterSpeed,
-                appTheme: $appTheme,
-                gradientColor: $gradientColor
-            )
-            .presentationDetents([.height(620)])
+            SettingsSheet(appTheme: $appTheme, gradientColor: $gradientColor)
+            .presentationDetents([.height(300)])
             .presentationDragIndicator(.hidden)
             .presentationBackground(appTheme == .dark ? Color(red: 0.04, green: 0.05, blue: 0.08) : Color.white)
             .preferredColorScheme(appTheme == .dark ? .dark : .light)
@@ -1342,164 +1246,55 @@ private struct TrailContinuationWave: View {
 }
 
 struct SettingsSheet: View {
-    @Binding var preset: GradientPreset
-    @Binding var progressSpeed: CGFloat
-    @Binding var fillGain: CGFloat
-    @Binding var waveStrength: CGFloat
-    @Binding var waveSpread: CGFloat
-    @Binding var topBloom: CGFloat
-    @Binding var whiteCore: CGFloat
-    @Binding var blueDepth: CGFloat
-    @Binding var shockStrength: CGFloat
-    @Binding var shockInteraction: CGFloat
-    @Binding var shockTrail: CGFloat
-    @Binding var waveCount: Int
-    @Binding var waterIntensity: CGFloat
-    @Binding var waterScale: CGFloat
-    @Binding var waterSpeed: CGFloat
     @Binding var appTheme: GradientAppTheme
     @Binding var gradientColor: GradientColorPreset
 
-    private let presets = GradientPresetLibrary.all
-
     var body: some View {
         VStack(alignment: .leading, spacing: 18) {
-            HStack {
-                Text("Настройки")
-                    .font(.system(size: 24, weight: .bold, design: .rounded))
-                Spacer()
-                Text(preset.name)
-                    .font(.system(size: 13, weight: .semibold))
-                    .padding(.horizontal, 10)
-                    .padding(.vertical, 6)
-                    .background(.white.opacity(0.22), in: Capsule())
+            Text("Настройки")
+                .font(.system(size: 24, weight: .bold, design: .rounded))
+
+            VStack(alignment: .leading, spacing: 8) {
+                Text("Тема")
+                    .font(.system(size: 13, weight: .medium))
+                V2ThemePicker(selection: $appTheme)
+                    .frame(height: 32)
             }
 
-            ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: 10) {
-                    ForEach(presets) { item in
+            VStack(alignment: .leading, spacing: 8) {
+                Text("Цвет градиента")
+                    .font(.system(size: 13, weight: .medium))
+
+                HStack(spacing: 9) {
+                    ForEach(GradientColorPreset.allCases) { colorPreset in
                         Button {
-                            applyPreset(item)
+                            gradientColor = colorPreset
                         } label: {
-                            Text(item.name)
-                                .font(.system(size: 14, weight: .semibold))
-                                .foregroundStyle(.primary)
-                                .padding(.horizontal, 14)
-                                .padding(.vertical, 10)
-                                .background(
-                                    Capsule()
-                                        .fill(item == preset ? .white.opacity(0.78) : .white.opacity(0.18))
-                                )
+                            VStack(spacing: 5) {
+                                Circle()
+                                    .fill(colorPreset.swatch)
+                                    .frame(width: 28, height: 28)
+                                    .overlay(
+                                        Circle()
+                                            .stroke(.white.opacity(gradientColor == colorPreset ? 0.95 : 0.28), lineWidth: gradientColor == colorPreset ? 3 : 1)
+                                    )
+                                    .shadow(color: colorPreset.swatch.opacity(0.30), radius: 8, x: 0, y: 3)
+
+                                Text(colorPreset.title)
+                                    .font(.system(size: 10, weight: .semibold))
+                                    .foregroundStyle(.secondary)
+                            }
+                            .frame(maxWidth: .infinity)
                         }
                         .buttonStyle(.plain)
                     }
                 }
-                .padding(.vertical, 2)
             }
 
-            ScrollView(.vertical, showsIndicators: false) {
-                VStack(spacing: 14) {
-                    VStack(alignment: .leading, spacing: 8) {
-                        Text("Тема")
-                            .font(.system(size: 13, weight: .medium))
-
-                        V2ThemePicker(selection: $appTheme)
-                            .frame(height: 32)
-                    }
-
-                    VStack(alignment: .leading, spacing: 8) {
-                        Text("Цвет градиента")
-                            .font(.system(size: 13, weight: .medium))
-
-                        HStack(spacing: 9) {
-                            ForEach(GradientColorPreset.allCases) { colorPreset in
-                                Button {
-                                    gradientColor = colorPreset
-                                } label: {
-                                    VStack(spacing: 5) {
-                                        Circle()
-                                            .fill(colorPreset.swatch)
-                                            .frame(width: 28, height: 28)
-                                            .overlay(
-                                                Circle()
-                                                    .stroke(.white.opacity(gradientColor == colorPreset ? 0.95 : 0.28), lineWidth: gradientColor == colorPreset ? 3 : 1)
-                                            )
-                                            .shadow(color: colorPreset.swatch.opacity(0.30), radius: 8, x: 0, y: 3)
-
-                                        Text(colorPreset.title)
-                                            .font(.system(size: 10, weight: .semibold))
-                                            .foregroundStyle(.secondary)
-                                    }
-                                    .frame(maxWidth: .infinity)
-                                }
-                                .buttonStyle(.plain)
-                            }
-                        }
-                    }
-
-                    VStack(alignment: .leading, spacing: 8) {
-                        Text("Количество волн")
-                            .font(.system(size: 13, weight: .medium))
-
-                        Stepper(value: $waveCount, in: 0...10) {
-                            Text("\(waveCount)")
-                                .font(.system(size: 15, weight: .semibold, design: .monospaced))
-                        }
-                    }
-
-                    settingSlider(title: "Заполнение за 1/4 экрана", value: $progressSpeed, range: 0...10)
-                    settingSlider(title: "Множитель заполнения", value: $fillGain, range: 0...10)
-                    settingSlider(title: "Жест волны", value: $waveStrength, range: 0...10)
-                    settingSlider(title: "Разлёт волн", value: $waveSpread, range: 0...10)
-                    settingSlider(title: "Амплитуда волн", value: $shockStrength, range: 0...10)
-                    settingSlider(title: "Частота волн", value: $shockInteraction, range: 0...10)
-                    settingSlider(title: "Длина волн", value: $shockTrail, range: 0...10)
-                    settingSlider(title: "Вода", value: $waterIntensity, range: 0...10)
-                    settingSlider(title: "Масштаб воды", value: $waterScale, range: 0...10)
-                    settingSlider(title: "Скорость воды", value: $waterSpeed, range: 0...10)
-                    settingSlider(title: "Верхний bloom", value: $topBloom, range: 0...10)
-                    settingSlider(title: "Белое ядро", value: $whiteCore, range: 0...10)
-                    settingSlider(title: "Глубина синего", value: $blueDepth, range: 0...10)
-                }
-                .padding(.bottom, 4)
-            }
         }
         .padding(.top, 34)
         .padding(.horizontal, 22)
         .padding(.bottom, 22)
-    }
-
-    private func settingSlider(title: String, value: Binding<CGFloat>, range: ClosedRange<CGFloat>) -> some View {
-        VStack(alignment: .leading, spacing: 6) {
-            HStack {
-                Text(title)
-                    .font(.system(size: 13, weight: .medium))
-                Spacer()
-                Text(String(format: "%.2f", Double(value.wrappedValue)))
-                    .font(.system(size: 13, weight: .semibold, design: .monospaced))
-                    .foregroundStyle(.secondary)
-            }
-
-            Slider(value: value, in: range)
-        }
-    }
-
-    private func applyPreset(_ item: GradientPreset) {
-        preset = item
-        progressSpeed = item.progressSpeed
-        fillGain = item.fillGain
-        waveStrength = item.waveStrength
-        waveSpread = item.waveSpread
-        topBloom = item.topBloom
-        whiteCore = item.whiteCore
-        blueDepth = item.blueDepth
-        shockStrength = item.shockStrength
-        shockInteraction = item.shockInteraction
-        shockTrail = item.shockTrail
-        waveCount = item.waveCount
-        waterIntensity = item.waterIntensity
-        waterScale = item.waterScale
-        waterSpeed = item.waterSpeed
     }
 }
 

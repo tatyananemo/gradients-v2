@@ -27,11 +27,58 @@ def block(source, marker):
     return source[start:end]
 
 
+def app_source():
+    files = sorted(ROOT.glob("*.swift")) + sorted((ROOT / "Sources").glob("*.swift"))
+    return "\n".join(p.read_text() for p in files)
+
+
+def fixed_parameters(source, approved):
+    default = block(approved, "enum GradientPresetLibrary")
+    default = default.split("static let airyPreset", 1)[0]
+    values = {name: (int(value) if name == "waveCount" else float(value))
+              for name, value in re.findall(r"^\s+(\w+): ([0-9.]+),?\s*$", default, re.M)}
+    assert len(values) == 14
+    if "@State private var preset" in source:
+        for name in values:
+            assert "= GradientPresetLibrary.defaultPreset." + name in source
+        return values
+    actual = {}
+    for name in values:
+        found = re.findall(r"private let " + name + r": (?:CGFloat|Int) = ([0-9.]+)", source)
+        assert len(found) == 1, name
+        actual[name] = int(found[0]) if name == "waveCount" else float(found[0])
+    assert actual == values, "Frozen shader parameters differ from approved defaults"
+    return actual
+
+
+def call(source, name):
+    start = source.index(name + "(")
+    opening = source.index("(", start)
+    depth, end = 1, opening + 1
+    while depth:
+        depth += (source[end] == "(") - (source[end] == ")")
+        end += 1
+    return source[start:end]
+
+
+def check_render_arguments(source, approved):
+    previous = call(approved, "ShaderLibrary.gradientsV2Background")
+    previous = previous.replace("interactionTrailArguments(at: now, origin: globalFrame.origin, size: gradientLayerSize)", "v2History")
+    current = call(source, "ShaderLibrary.gradientsV2Background")
+    current = current.replace("interactionTrailArguments(at: now, origin: globalFrame.origin, size: gradientLayerSize)", "v2History")
+    assert current == previous, "Swift-to-Metal background arguments changed"
+    assert call(source, "ShaderLibrary.gradientTrailDistortion") == call(approved, "ShaderLibrary.gradientTrailDistortion")
+    assert 'Text("Устанавливаем защищенное соединение. Водите пальцем в разных частях экрана")' in source
+
+
 def behavior_source(source):
     template = (ROOT / "Validation/behavior_driver.swift.txt").read_text()
-    declarations = [block(source, marker) for marker in [
-        "private struct ProgressIncrement", "private final class TouchRuntime",
-        "private struct InteractionTrailSegment", "private struct GradientTrailSample"]]
+    markers = ["struct ProgressIncrement", "final class TouchRuntime", "struct InteractionTrailSegment"]
+    if "struct GradientTrailSample" in source:
+        markers.append("struct GradientTrailSample")
+    else:
+        template = template.replace("    var gradientTrailSamples: [GradientTrailSample] = []\n", "")
+    declarations = [block(source, ("private " if "private " + m in source else "") + m) for m in markers]
     constants = [re.search(r"^    private let " + name + r"[^\n]+", source, re.M).group()
                  for name in ["progressAnimationDuration", "progressStep", "maximumProgressRate"]]
     methods = [block(source, "private func " + name + "(") for name in [
@@ -53,13 +100,17 @@ def behavior_source(source):
             .replace("@@METHODS@@", "\n".join(methods)))
 
 
-def render_cases():
+def render_cases(parameters):
+    parameters = {k: int(v) if float(v).is_integer() else v for k, v in parameters.items()}
     result = []
     for theme, dark, yellow in [("blue-dark", 1, 0), ("blue-light", 0, 0),
                                 ("yellow-dark", 1, 3), ("yellow-light", 0, 3)]:
         def add(label, p, idle, t, history=()):
             u = [390, 844, p, 0, .72, .62, .32, .68, 0, 0, p * 10 + t,
-                 .15, 1, 1, 1, 1, 1, 1, 0, .62, 1, .74, 2, dark, yellow, idle, t, len(history)]
+                 parameters["progressSpeed"], parameters["fillGain"], parameters["waveStrength"],
+                 parameters["waveSpread"], parameters["topBloom"], parameters["whiteCore"],
+                 parameters["blueDepth"], 0, parameters["shockStrength"], parameters["shockInteraction"],
+                 parameters["shockTrail"], parameters["waveCount"], dark, yellow, idle, t, len(history)]
             result.append({"name": f"{theme}-{label}", "uniforms": u, "history": list(history)})
         for p in [.3, .6, .8]:
             percent = round(p * 100)
@@ -94,9 +145,12 @@ def main():
     reference_path = ROOT / "Validation/reference.json"
     tracked = subprocess.check_output(["git", "ls-tree", "-r", "--name-only", BASE], cwd=ROOT, text=True).splitlines()
     original_files = {name: subprocess.check_output(["git", "show", f"{BASE}:{name}"], cwd=ROOT) for name in tracked}
-    source = (ROOT / "GradientInstallView.swift").read_text()
-    # Initial two stages permit no application Swift/UI or original module changes.
-    protected = [name for name in tracked if name.endswith(".swift") or name.startswith("ShaderSources/")]
+    source = app_source()
+    approved = original_files["GradientInstallView.swift"].decode()
+    parameters = fixed_parameters(source, approved)
+    check_render_arguments(source, approved)
+    # Swift changes are checked by actual parameters, render arguments and original behavior replay.
+    protected = [name for name in tracked if name == "_22App.swift" or name.startswith("ShaderSources/")]
     for name in protected:
         assert (ROOT / name).read_bytes() == original_files[name], f"Protected source changed: {name}"
     assert metal.read_bytes() == original_files["LiquidSpecBackground.metal"], "Metal differs from approved V2"
@@ -109,7 +163,7 @@ def main():
     behavior.write_text(behavior_source(source))
     subprocess.run(["xcrun", "swiftc", "-O", str(behavior), "-o", str(out / "behavior")], check=True)
     subprocess.run([str(out / "behavior"), str(out / "behavior.json")], check=True)
-    cases = render_cases()
+    cases = render_cases(parameters)
     (out / "cases.json").write_text(json.dumps(cases, indent=2) + "\n")
     subprocess.run(["xcrun", "swiftc", "-O", str(ROOT / "Validation/render_reference.swift"),
                     "-o", str(out / "render")], check=True)
@@ -134,7 +188,7 @@ def main():
         assert hashes == reference["render_sha256"], "GPU pixels, probe results or distortion differ"
     result = {"passed": True, "base_commit": BASE, "frames": len(cases),
               "raw_gpu_outputs_compared": len(hashes), "behavior_checkpoints": len(json.loads((out / "behavior.json").read_text())),
-              "app_swift_and_original_modules_unchanged": True,
+              "original_metal_modules_unchanged": True, "shader_parameters_and_arguments_identical": True,
               "metal_byte_identical": True, "recorded_reference": args.record,
               "scope": "Offscreen GPU + original input handlers. Not a Simulator UI screenshot/replay test."}
     (out / "result.json").write_text(json.dumps(result, indent=2) + "\n")
@@ -143,7 +197,7 @@ def main():
         '<style>body{background:#202020;color:white;font:14px system-ui}main{display:grid;grid-template-columns:repeat(6,1fr);gap:12px}'
         'figure{margin:0}img{width:100%;display:block}figcaption{overflow-wrap:anywhere}</style>'
         '<h1>Gradients V2 — actual offscreen Metal frames</h1><p>390 × 844; fixed inputs; no UI compositing. '
-        'All application Swift/UI sources remain byte-identical to 542b89b.</p><main>' + cards + '</main>')
+        'Metal, shader parameters and interaction replay match 542b89b; settings UI may be simplified.</p><main>' + cards + '</main>')
     print(json.dumps(result, indent=2))
 
 

@@ -15,12 +15,13 @@ preferences, change UI, or introduce an alternate interaction implementation.
   closure's explicit reference capture are adapted for this test host.
 - Replay covers touch, long/repeated swipes, hold, release/fade boundaries,
   30/60/80/100% progress, the segment cap and reset.
-- The application Swift files and all six original shader modules must remain
-  byte-identical to the approved commit throughout these first two stages.
+- All original shader modules and the application entry point remain byte-identical.
+- Swift refactoring is checked against the original shader argument expressions,
+  all 14 fixed Default parameters and the original behavior replay hashes.
 
 These are offscreen shader images, **not Simulator UI screenshots**. SwiftUI
 layout/material/numeric-text transitions and actual OS event delivery are not
-exercised by the offline host. Their source is protected byte-for-byte. This is
+exercised by the offline host; inspect those in the isolated Simulator. This is
 not a performance benchmark, and Simulator builds do not establish iPhone FPS.
 
 ## Run
