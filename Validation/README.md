@@ -15,7 +15,9 @@ preferences, change UI, or introduce an alternate interaction implementation.
   closure's explicit reference capture are adapted for this test host.
 - Replay covers touch, long/repeated swipes, hold, release/fade boundaries,
   30/60/80/100% progress, the segment cap and reset.
-- All original shader modules and the application entry point remain byte-identical.
+- During Metal dead-code cleanup, Swift is byte-identical to accepted checkpoint 39b50ed.
+- Metal changes are restricted to documented deletions by metal_deletions.py;
+  the original GPU and behavior reference.json is never rerecorded.
 - Swift refactoring is checked against the original shader argument expressions,
   all 14 fixed Default parameters and the original behavior replay hashes.
 
@@ -44,7 +46,7 @@ The output directory must be new. It holds binaries, raw frames, probe results,
 PNGs, a viewing index and `result.json`; these artifacts are not committed.
 `reference.json` records the original source and output hashes. Baseline recording
 uses `--record`, refuses an existing reference, and requires protected application
-sources and the Metal composition to match the approved commit exactly.
+sources to satisfy the current phase guards. Do not use --record for candidates.
 
 Each later behavior-changing validation capability requires its own reviewed
 baseline extension. A passing source/hash check must not be described as a full

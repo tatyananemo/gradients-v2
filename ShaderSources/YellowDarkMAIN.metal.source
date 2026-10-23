@@ -1,34 +1,5 @@
 // Yellow-only review overlay. Compile with the immutable accepted Blue source.
 // Production Yellow colour stops; Yellow-only readout/contact corrections.
-float3 yellowReviewSubstratePalette(float sharedLightField,float progress) {
-    // The accepted MAIN pose already settles before p=1. Production's old
-    // endpoint hue/exposure compensation must not fire over this frozen pose.
-    float3 blueDarkReference=float3(0.10,0.55,1.0)*sharedLightField;
-    float warmth = clamp(sharedLightField / (0.20 + 0.58 + 0.54), 0.0, 1.0);
-    float3 warmColor = mix(yellowDeepColor.rgb, yellowHotColor.rgb, warmth);
-    float3 luminanceWeights = float3(0.2126, 0.7152, 0.0722);
-    float referenceLuminance = dot(pow(clamp(blueDarkReference, 0.0, 1.0),
-        float3(2.2)), luminanceWeights);
-    float warmLuminance = dot(pow(warmColor, float3(2.2)), luminanceWeights);
-    // Lift only the low-density colour toe. The existing bright maxima and
-    // colour ratios remain pinned; no field, Gaussian or spatial blur changes.
-    float toe=1.0-clamp(sharedLightField/(0.20+0.58+0.54),0.0,1.0);
-    float late=segmentEase(progress,0.78,0.86);
-    float lowDensity=1.0-segmentEase(sharedLightField,0.20,0.50);
-    float colourFeather=1.0+0.35*toe*toe*toe;
-    if(progress>0.78 && sharedLightField<0.50) colourFeather+=0.40*late*lowDensity*toe*toe*toe;
-    float paletteExposure=1.12*pow(colourFeather,2.2);
-    #if 0
-    // Comparison B only: production's density-to-colour curve; same MAIN field.
-    return yellowDarkDensityPalette(sharedLightField);
-#else
-    float3 mapped=warmColor * pow(referenceLuminance * paletteExposure /
-        max(warmLuminance, 0.00001), 1.0 / 2.2);
-    // Same bounded cap as Blue's saturated channel; only the late R shoulder.
-    if(progress>0.78) mapped.r=mix(mapped.r,qaNativeBlueCap(mapped.r),late);
-    return mapped;
-#endif
-}
 // Authorized Yellow-only removal of the restored outer residual.
 // Exact accepted pose/clock/profiles. Only the restored outer term respects
 // its EXISTING completion mask, as it already does in the Light readout.

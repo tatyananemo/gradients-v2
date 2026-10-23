@@ -8,6 +8,7 @@ from pathlib import Path
 import re
 import subprocess
 import sys
+from metal_deletions import verify as verify_metal_deletions
 
 ROOT = Path(__file__).resolve().parents[1]
 BASE = "542b89b54b9299b48d4121de7f6ee182f3e3f340"
@@ -175,11 +176,14 @@ def main():
     parameters = fixed_parameters(source, approved)
     check_render_arguments(source, approved)
     check_preserved_ui(source, approved)
-    # Swift changes are checked by actual parameters, render arguments and original behavior replay.
-    protected = [name for name in tracked if name == "_22App.swift" or name.startswith("ShaderSources/")]
-    for name in protected:
-        assert (ROOT / name).read_bytes() == original_files[name], f"Protected source changed: {name}"
-    assert metal.read_bytes() == original_files["LiquidSpecBackground.metal"], "Metal differs from approved V2"
+    # The user-authorized Metal stage permits only documented deletions.
+    # Keep Swift frozen at the accepted refactor checkpoint and all output hashes original.
+    verify_metal_deletions()
+    import importlib.util
+    spec = importlib.util.spec_from_file_location("composer", ROOT / "Scripts/compose_metal.py")
+    composer = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(composer)
+    assert metal.read_bytes() == composer.compose(), "Metal does not match current canonical modules"
     if args.record:
         assert not reference_path.exists(), "Refusing to replace an existing baseline"
     else:
@@ -214,8 +218,9 @@ def main():
         assert hashes == reference["render_sha256"], "GPU pixels, probe results or distortion differ"
     result = {"passed": True, "base_commit": BASE, "frames": len(cases),
               "raw_gpu_outputs_compared": len(hashes), "behavior_checkpoints": len(json.loads((out / "behavior.json").read_text())),
-              "original_metal_modules_unchanged": True, "shader_parameters_and_arguments_identical": True,
-              "metal_byte_identical": True, "recorded_reference": args.record,
+              "metal_deletions_only": True, "swift_unchanged_since": "39b50ed",
+              "shader_parameters_and_arguments_identical": True,
+              "gpu_byte_identical": True, "recorded_reference": args.record,
               "scope": "Offscreen GPU + original input handlers. Not a Simulator UI screenshot/replay test."}
     (out / "result.json").write_text(json.dumps(result, indent=2) + "\n")
     cards = "\n".join(f'<figure><img src="frames/{html.escape(c["name"])}.png"><figcaption>{html.escape(c["name"])}</figcaption></figure>' for c in cases)
@@ -223,7 +228,7 @@ def main():
         '<style>body{background:#202020;color:white;font:14px system-ui}main{display:grid;grid-template-columns:repeat(6,1fr);gap:12px}'
         'figure{margin:0}img{width:100%;display:block}figcaption{overflow-wrap:anywhere}</style>'
         '<h1>Gradients V2 — actual offscreen Metal frames</h1><p>390 × 844; fixed inputs; no UI compositing. '
-        'Metal, shader parameters and interaction replay match 542b89b; settings UI may be simplified.</p><main>' + cards + '</main>')
+        'GPU outputs, shader parameters and interaction replay match 542b89b; Swift is frozen at 39b50ed.</p><main>' + cards + '</main>')
     print(json.dumps(result, indent=2))
 
 

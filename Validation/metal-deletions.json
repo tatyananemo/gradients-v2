@@ -1,0 +1,194 @@
+{
+  "base_commit": "39b50ed",
+  "scope": "Deletion-only Metal stage; current Swift and dispatcher frozen.",
+  "files": {
+    "ShaderSources/YellowDarkMAIN.metal.source": [
+      {
+        "start_line": 3,
+        "end_line": 31,
+        "reason": "No path from the four app entry points: YellowDarkMAIN::yellowReviewSubstratePalette"
+      }
+    ],
+    "ShaderSources/YellowDarkContact.metal.source": [
+      {
+        "start_line": 3,
+        "end_line": 31,
+        "reason": "No path from the four app entry points: YellowDarkContact::yellowReviewSubstratePalette"
+      },
+      {
+        "start_line": 160,
+        "end_line": 168,
+        "reason": "No path from the four app entry points: YellowDarkContact::yellowReviewDarkContact"
+      }
+    ],
+    "ShaderSources/YellowLightContact.metal.source": [
+      {
+        "start_line": 96,
+        "end_line": 98,
+        "reason": "No path from the four app entry points: YellowLightContact::yellowReviewDarkPalette"
+      }
+    ],
+    "ShaderSources/ApprovedBlue.metal.source": [
+      {
+        "start_line": 52,
+        "end_line": 55,
+        "reason": "No path from the four app entry points: yellowHeatColor"
+      },
+      {
+        "start_line": 156,
+        "end_line": 166,
+        "reason": "No path from the four app entry points: rectSDF"
+      },
+      {
+        "start_line": 217,
+        "end_line": 236,
+        "reason": "No path from the four app entry points: whiteTrapField"
+      },
+      {
+        "start_line": 238,
+        "end_line": 240,
+        "reason": "No path from the four app entry points: whiteRectField"
+      },
+      {
+        "start_line": 302,
+        "end_line": 302,
+        "reason": "Prototype of removed historical helper: lightIdleWaveDensity"
+      },
+      {
+        "start_line": 305,
+        "end_line": 305,
+        "reason": "Prototype of an unreachable function: acceptedYellowDarkWave"
+      },
+      {
+        "start_line": 307,
+        "end_line": 307,
+        "reason": "Prototype of removed historical helper: qaHistoricalYellowDarkContact"
+      },
+      {
+        "start_line": 308,
+        "end_line": 308,
+        "reason": "Prototype of an unreachable function: restoredYellowDarkContact"
+      },
+      {
+        "start_line": 316,
+        "end_line": 316,
+        "reason": "Prototype of removed historical helper: correctedLightIdle"
+      },
+      {
+        "start_line": 320,
+        "end_line": 336,
+        "reason": "No path from the four app entry points: lightContactRidgeDensity"
+      },
+      {
+        "start_line": 338,
+        "end_line": 348,
+        "reason": "No path from the four app entry points: lightFrontContactReaction"
+      },
+      {
+        "start_line": 351,
+        "end_line": 2488,
+        "reason": "Historical fallback cannot be reached by the four approved themes"
+      },
+      {
+        "start_line": 2679,
+        "end_line": 2681,
+        "reason": "Unreachable fallback: accepted Blue caller forces theme=1/color=0"
+      },
+      {
+        "start_line": 4942,
+        "end_line": 4945,
+        "reason": "No path from the four app entry points: qaAcceptedShapeSample"
+      },
+      {
+        "start_line": 4947,
+        "end_line": 4958,
+        "reason": "No path from the four app entry points: qaAcceptedMainShapeColumnPeak"
+      },
+      {
+        "start_line": 5044,
+        "end_line": 5046,
+        "reason": "Unreachable fallback: Blue Light returns first; remaining Blue is Dark 1/0; Yellow dispatcher bypasses this route"
+      },
+      {
+        "start_line": 7262,
+        "end_line": 7275,
+        "reason": "Only called by removed historical fallback/overlay: lightIdleWaveDensity"
+      },
+      {
+        "start_line": 7299,
+        "end_line": 7304,
+        "reason": "No path from the four app entry points: acceptedYellowDarkWave"
+      },
+      {
+        "start_line": 7306,
+        "end_line": 7312,
+        "reason": "No path from the four app entry points: idleWaveField"
+      },
+      {
+        "start_line": 7314,
+        "end_line": 7321,
+        "reason": "No path from the four app entry points: idleWaveOverlay"
+      },
+      {
+        "start_line": 7360,
+        "end_line": 7391,
+        "reason": "Only called by removed historical fallback/overlay: correctedLightIdle"
+      },
+      {
+        "start_line": 7393,
+        "end_line": 7395,
+        "reason": "Only called by removed historical fallback/overlay: restoredYellowDarkTint"
+      },
+      {
+        "start_line": 7397,
+        "end_line": 7411,
+        "reason": "No path from the four app entry points: restoredYellowDarkContact"
+      },
+      {
+        "start_line": 7436,
+        "end_line": 7479,
+        "reason": "No path from the four app entry points: idleWaveDistortion"
+      },
+      {
+        "start_line": 7481,
+        "end_line": 7484,
+        "reason": "Type is used only by the removed waterSurfaceField/overlays"
+      },
+      {
+        "start_line": 7486,
+        "end_line": 7499,
+        "reason": "No path from the four app entry points: waterCausticThread"
+      },
+      {
+        "start_line": 7501,
+        "end_line": 7541,
+        "reason": "No path from the four app entry points: waterSurfaceField"
+      },
+      {
+        "start_line": 7543,
+        "end_line": 7721,
+        "reason": "No path from the four app entry points: waterCausticOverlay"
+      },
+      {
+        "start_line": 7756,
+        "end_line": 7839,
+        "reason": "No path from the four app entry points: waterSurfaceDistortion"
+      },
+      {
+        "start_line": 7841,
+        "end_line": 7876,
+        "reason": "No path from the four app entry points: shockwaveScreenDistortion"
+      },
+      {
+        "start_line": 7878,
+        "end_line": 7945,
+        "reason": "No path from the four app entry points: shockwaveRippleOverlay"
+      },
+      {
+        "start_line": 7955,
+        "end_line": 7969,
+        "reason": "Only called by removed historical fallback/overlay: qaHistoricalYellowDarkContact"
+      }
+    ]
+  }
+}

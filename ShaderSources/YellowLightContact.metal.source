@@ -93,9 +93,6 @@ float3 amberReadout(float3 reference,bool contact) {
 float3 amberBlueMain(float M,float grain) {
     return clamp(float3(.10*M,.55*M,qaNativeBlueCap(M))+grain,0.0,1.0);
 }
-float3 yellowReviewDarkPalette(float M,float progress) {
-    return amberReadout(amberBlueMain(M,0.0),false);
-}
 float3 yellowReviewTransmission() {
     return float3(1.0,mix(yellowMidColor.g,yellowHotColor.g,0.75),pow(yellowLightAccent.b,2.5));
 }

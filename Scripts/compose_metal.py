@@ -18,7 +18,7 @@ def compose(root=ROOT):
     if blue.count(entry) != 1:
         raise ValueError("Expected one ApprovedBlue entry annotation")
     # This internal entry is called by the dispatcher, not directly by SwiftUI.
-    # Preserve the other seven stitchable entries and every formula verbatim.
+    # Preserve remaining public entry annotations and surviving formulas verbatim.
     result = blue.replace(entry, "half4 liquidSpecBackground(")
     result += "\n" + read_module(root, "ContactFields") + "\n\n"
     for name in YELLOW_MODULES:
