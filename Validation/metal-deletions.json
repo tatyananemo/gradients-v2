@@ -7,6 +7,35 @@
         "start_line": 3,
         "end_line": 31,
         "reason": "No path from the four app entry points: YellowDarkMAIN::yellowReviewSubstratePalette"
+      },
+      {
+        "start_line": 56,
+        "end_line": 63,
+        "reason": "Disabled preprocessor branch; QA_CONFIG_PALETTE is not defined by the production/refactor build"
+      }
+    ],
+    "ShaderSources/ContactFields.metal.source": [
+      {
+        "start_line": 1878,
+        "end_line": 1903,
+        "reason": "Palette/intensity locals solely fed the removed overwritten darkResult stores"
+      },
+      {
+        "start_line": 1905,
+        "end_line": 1924,
+        "reason": "Initial darkResult RGB stores are never read before unconditional darkResult = travellingDarkResult"
+      }
+    ],
+    "ShaderSources/YellowLightMAIN.metal.source": [
+      {
+        "start_line": 21,
+        "end_line": 24,
+        "reason": "Disabled preprocessor branch; QA_CONFIG_PALETTE is not defined by the production/refactor build"
+      },
+      {
+        "start_line": 30,
+        "end_line": 30,
+        "reason": "Disabled preprocessor branch; QA_CONFIG_PALETTE is not defined by the production/refactor build"
       }
     ],
     "ShaderSources/YellowDarkContact.metal.source": [
@@ -16,12 +45,27 @@
         "reason": "No path from the four app entry points: YellowDarkContact::yellowReviewSubstratePalette"
       },
       {
+        "start_line": 56,
+        "end_line": 63,
+        "reason": "Disabled preprocessor branch; QA_CONFIG_PALETTE is not defined by the production/refactor build"
+      },
+      {
         "start_line": 160,
         "end_line": 168,
         "reason": "No path from the four app entry points: YellowDarkContact::yellowReviewDarkContact"
       }
     ],
     "ShaderSources/YellowLightContact.metal.source": [
+      {
+        "start_line": 70,
+        "end_line": 73,
+        "reason": "Disabled preprocessor branch; QA_CONFIG_PALETTE is not defined by the production/refactor build"
+      },
+      {
+        "start_line": 75,
+        "end_line": 75,
+        "reason": "Disabled preprocessor branch; QA_CONFIG_PALETTE is not defined by the production/refactor build"
+      },
       {
         "start_line": 96,
         "end_line": 98,
@@ -95,6 +139,156 @@
         "reason": "Unreachable fallback: accepted Blue caller forces theme=1/color=0"
       },
       {
+        "start_line": 4305,
+        "end_line": 4305,
+        "reason": "Backward liveness: qaCurrentAcceptedDarkBlue: Unused local darkSourceLightResult"
+      },
+      {
+        "start_line": 4440,
+        "end_line": 4440,
+        "reason": "Backward liveness: qaCurrentAcceptedDarkBlue: Unused local liquidPresence"
+      },
+      {
+        "start_line": 4441,
+        "end_line": 4448,
+        "reason": "Backward liveness: qaCurrentAcceptedDarkBlue: Unused local glowPresence"
+      },
+      {
+        "start_line": 4449,
+        "end_line": 4449,
+        "reason": "Backward liveness: qaCurrentAcceptedDarkBlue: Unused local finishLift"
+      },
+      {
+        "start_line": 4450,
+        "end_line": 4450,
+        "reason": "Backward liveness: qaCurrentAcceptedDarkBlue: Unused local bottomWeightDark"
+      },
+      {
+        "start_line": 4451,
+        "end_line": 4451,
+        "reason": "Backward liveness: qaCurrentAcceptedDarkBlue: Unused local topWeightDark"
+      },
+      {
+        "start_line": 4452,
+        "end_line": 4455,
+        "reason": "Backward liveness: qaCurrentAcceptedDarkBlue: Unused local finishTopPush"
+      },
+      {
+        "start_line": 4456,
+        "end_line": 4458,
+        "reason": "Backward liveness: qaCurrentAcceptedDarkBlue: Unused local sideGlowDark"
+      },
+      {
+        "start_line": 4460,
+        "end_line": 4468,
+        "reason": "Backward liveness: qaCurrentAcceptedDarkBlue: Unused local darkLowerField"
+      },
+      {
+        "start_line": 4469,
+        "end_line": 4469,
+        "reason": "Backward liveness: qaCurrentAcceptedDarkBlue: Overwritten/unread store darkLowerField"
+      },
+      {
+        "start_line": 4471,
+        "end_line": 4483,
+        "reason": "Backward liveness: qaCurrentAcceptedDarkBlue: Unused local darkTopField"
+      },
+      {
+        "start_line": 4487,
+        "end_line": 4487,
+        "reason": "Backward liveness: qaCurrentAcceptedDarkBlue: Unused local darkColorReveal"
+      },
+      {
+        "start_line": 4488,
+        "end_line": 4488,
+        "reason": "Backward liveness: qaCurrentAcceptedDarkBlue: Overwritten/unread store darkLowerField"
+      },
+      {
+        "start_line": 4489,
+        "end_line": 4489,
+        "reason": "Backward liveness: qaCurrentAcceptedDarkBlue: Overwritten/unread store darkTopField"
+      },
+      {
+        "start_line": 4491,
+        "end_line": 4498,
+        "reason": "Backward liveness: qaCurrentAcceptedDarkBlue: Unused local cyanWashDark"
+      },
+      {
+        "start_line": 4523,
+        "end_line": 4526,
+        "reason": "Backward liveness: qaCurrentAcceptedDarkBlue: Unused local topBlackShelf"
+      },
+      {
+        "start_line": 4529,
+        "end_line": 4529,
+        "reason": "Backward liveness: qaCurrentAcceptedDarkBlue: Unused local darkNavy"
+      },
+      {
+        "start_line": 4530,
+        "end_line": 4534,
+        "reason": "Backward liveness: qaCurrentAcceptedDarkBlue: Unused local darkBlueGlow"
+      },
+      {
+        "start_line": 4535,
+        "end_line": 4539,
+        "reason": "Backward liveness: qaCurrentAcceptedDarkBlue: Unused local darkElectric"
+      },
+      {
+        "start_line": 4540,
+        "end_line": 4544,
+        "reason": "Backward liveness: qaCurrentAcceptedDarkBlue: Unused local darkCyan"
+      },
+      {
+        "start_line": 4545,
+        "end_line": 4549,
+        "reason": "Backward liveness: qaCurrentAcceptedDarkBlue: Unused local darkMintCyan"
+      },
+      {
+        "start_line": 4551,
+        "end_line": 4551,
+        "reason": "Backward liveness: qaCurrentAcceptedDarkBlue: Unused local lowerIntensity"
+      },
+      {
+        "start_line": 4552,
+        "end_line": 4552,
+        "reason": "Backward liveness: qaCurrentAcceptedDarkBlue: Unused local topIntensity"
+      },
+      {
+        "start_line": 4553,
+        "end_line": 4553,
+        "reason": "Backward liveness: qaCurrentAcceptedDarkBlue: Unused local edgeIntensity"
+      },
+      {
+        "start_line": 4556,
+        "end_line": 4563,
+        "reason": "Backward liveness: qaCurrentAcceptedDarkBlue: Overwritten/unread store darkResult"
+      },
+      {
+        "start_line": 4565,
+        "end_line": 4568,
+        "reason": "Backward liveness: qaCurrentAcceptedDarkBlue: Overwritten/unread store darkResult"
+      },
+      {
+        "start_line": 4569,
+        "end_line": 4569,
+        "reason": "Backward liveness: qaCurrentAcceptedDarkBlue: Unused local blueIdleAccent"
+      },
+      {
+        "start_line": 4570,
+        "end_line": 4571,
+        "reason": "Backward liveness: qaCurrentAcceptedDarkBlue: Overwritten/unread store darkResult"
+      },
+      {
+        "start_line": 4572,
+        "end_line": 4572,
+        "reason": "Backward liveness: qaCurrentAcceptedDarkBlue: Unused local yellowIdleAccent"
+      },
+      {
+        "start_line": 4573,
+        "end_line": 4574,
+        "reason": "Backward liveness: qaCurrentAcceptedDarkBlue: Overwritten/unread store darkResult"
+      },
+      {
         "start_line": 4942,
         "end_line": 4945,
         "reason": "No path from the four app entry points: qaAcceptedShapeSample"
@@ -108,6 +302,156 @@
         "start_line": 5044,
         "end_line": 5046,
         "reason": "Unreachable fallback: Blue Light returns first; remaining Blue is Dark 1/0; Yellow dispatcher bypasses this route"
+      },
+      {
+        "start_line": 6670,
+        "end_line": 6670,
+        "reason": "Backward liveness: liquidSpecBackground: Unused local darkSourceLightResult"
+      },
+      {
+        "start_line": 6805,
+        "end_line": 6805,
+        "reason": "Backward liveness: liquidSpecBackground: Unused local liquidPresence"
+      },
+      {
+        "start_line": 6806,
+        "end_line": 6813,
+        "reason": "Backward liveness: liquidSpecBackground: Unused local glowPresence"
+      },
+      {
+        "start_line": 6814,
+        "end_line": 6814,
+        "reason": "Backward liveness: liquidSpecBackground: Unused local finishLift"
+      },
+      {
+        "start_line": 6815,
+        "end_line": 6815,
+        "reason": "Backward liveness: liquidSpecBackground: Unused local bottomWeightDark"
+      },
+      {
+        "start_line": 6816,
+        "end_line": 6816,
+        "reason": "Backward liveness: liquidSpecBackground: Unused local topWeightDark"
+      },
+      {
+        "start_line": 6817,
+        "end_line": 6820,
+        "reason": "Backward liveness: liquidSpecBackground: Unused local finishTopPush"
+      },
+      {
+        "start_line": 6821,
+        "end_line": 6823,
+        "reason": "Backward liveness: liquidSpecBackground: Unused local sideGlowDark"
+      },
+      {
+        "start_line": 6825,
+        "end_line": 6833,
+        "reason": "Backward liveness: liquidSpecBackground: Unused local darkLowerField"
+      },
+      {
+        "start_line": 6834,
+        "end_line": 6834,
+        "reason": "Backward liveness: liquidSpecBackground: Overwritten/unread store darkLowerField"
+      },
+      {
+        "start_line": 6836,
+        "end_line": 6848,
+        "reason": "Backward liveness: liquidSpecBackground: Unused local darkTopField"
+      },
+      {
+        "start_line": 6852,
+        "end_line": 6852,
+        "reason": "Backward liveness: liquidSpecBackground: Unused local darkColorReveal"
+      },
+      {
+        "start_line": 6853,
+        "end_line": 6853,
+        "reason": "Backward liveness: liquidSpecBackground: Overwritten/unread store darkLowerField"
+      },
+      {
+        "start_line": 6854,
+        "end_line": 6854,
+        "reason": "Backward liveness: liquidSpecBackground: Overwritten/unread store darkTopField"
+      },
+      {
+        "start_line": 6856,
+        "end_line": 6863,
+        "reason": "Backward liveness: liquidSpecBackground: Unused local cyanWashDark"
+      },
+      {
+        "start_line": 6888,
+        "end_line": 6891,
+        "reason": "Backward liveness: liquidSpecBackground: Unused local topBlackShelf"
+      },
+      {
+        "start_line": 6894,
+        "end_line": 6894,
+        "reason": "Backward liveness: liquidSpecBackground: Unused local darkNavy"
+      },
+      {
+        "start_line": 6895,
+        "end_line": 6899,
+        "reason": "Backward liveness: liquidSpecBackground: Unused local darkBlueGlow"
+      },
+      {
+        "start_line": 6900,
+        "end_line": 6904,
+        "reason": "Backward liveness: liquidSpecBackground: Unused local darkElectric"
+      },
+      {
+        "start_line": 6905,
+        "end_line": 6909,
+        "reason": "Backward liveness: liquidSpecBackground: Unused local darkCyan"
+      },
+      {
+        "start_line": 6910,
+        "end_line": 6914,
+        "reason": "Backward liveness: liquidSpecBackground: Unused local darkMintCyan"
+      },
+      {
+        "start_line": 6916,
+        "end_line": 6916,
+        "reason": "Backward liveness: liquidSpecBackground: Unused local lowerIntensity"
+      },
+      {
+        "start_line": 6917,
+        "end_line": 6917,
+        "reason": "Backward liveness: liquidSpecBackground: Unused local topIntensity"
+      },
+      {
+        "start_line": 6918,
+        "end_line": 6918,
+        "reason": "Backward liveness: liquidSpecBackground: Unused local edgeIntensity"
+      },
+      {
+        "start_line": 6921,
+        "end_line": 6928,
+        "reason": "Backward liveness: liquidSpecBackground: Overwritten/unread store darkResult"
+      },
+      {
+        "start_line": 6930,
+        "end_line": 6933,
+        "reason": "Backward liveness: liquidSpecBackground: Overwritten/unread store darkResult"
+      },
+      {
+        "start_line": 6934,
+        "end_line": 6934,
+        "reason": "Backward liveness: liquidSpecBackground: Unused local blueIdleAccent"
+      },
+      {
+        "start_line": 6935,
+        "end_line": 6936,
+        "reason": "Backward liveness: liquidSpecBackground: Overwritten/unread store darkResult"
+      },
+      {
+        "start_line": 6937,
+        "end_line": 6937,
+        "reason": "Backward liveness: liquidSpecBackground: Unused local yellowIdleAccent"
+      },
+      {
+        "start_line": 6938,
+        "end_line": 6939,
+        "reason": "Backward liveness: liquidSpecBackground: Overwritten/unread store darkResult"
       },
       {
         "start_line": 7262,
@@ -188,6 +532,156 @@
         "start_line": 7955,
         "end_line": 7969,
         "reason": "Only called by removed historical fallback/overlay: qaHistoricalYellowDarkContact"
+      },
+      {
+        "start_line": 9623,
+        "end_line": 9623,
+        "reason": "Backward liveness: qaContactDarkReference: Unused local darkSourceLightResult"
+      },
+      {
+        "start_line": 9758,
+        "end_line": 9758,
+        "reason": "Backward liveness: qaContactDarkReference: Unused local liquidPresence"
+      },
+      {
+        "start_line": 9759,
+        "end_line": 9766,
+        "reason": "Backward liveness: qaContactDarkReference: Unused local glowPresence"
+      },
+      {
+        "start_line": 9767,
+        "end_line": 9767,
+        "reason": "Backward liveness: qaContactDarkReference: Unused local finishLift"
+      },
+      {
+        "start_line": 9768,
+        "end_line": 9768,
+        "reason": "Backward liveness: qaContactDarkReference: Unused local bottomWeightDark"
+      },
+      {
+        "start_line": 9769,
+        "end_line": 9769,
+        "reason": "Backward liveness: qaContactDarkReference: Unused local topWeightDark"
+      },
+      {
+        "start_line": 9770,
+        "end_line": 9773,
+        "reason": "Backward liveness: qaContactDarkReference: Unused local finishTopPush"
+      },
+      {
+        "start_line": 9774,
+        "end_line": 9776,
+        "reason": "Backward liveness: qaContactDarkReference: Unused local sideGlowDark"
+      },
+      {
+        "start_line": 9778,
+        "end_line": 9786,
+        "reason": "Backward liveness: qaContactDarkReference: Unused local darkLowerField"
+      },
+      {
+        "start_line": 9787,
+        "end_line": 9787,
+        "reason": "Backward liveness: qaContactDarkReference: Overwritten/unread store darkLowerField"
+      },
+      {
+        "start_line": 9789,
+        "end_line": 9801,
+        "reason": "Backward liveness: qaContactDarkReference: Unused local darkTopField"
+      },
+      {
+        "start_line": 9805,
+        "end_line": 9805,
+        "reason": "Backward liveness: qaContactDarkReference: Unused local darkColorReveal"
+      },
+      {
+        "start_line": 9806,
+        "end_line": 9806,
+        "reason": "Backward liveness: qaContactDarkReference: Overwritten/unread store darkLowerField"
+      },
+      {
+        "start_line": 9807,
+        "end_line": 9807,
+        "reason": "Backward liveness: qaContactDarkReference: Overwritten/unread store darkTopField"
+      },
+      {
+        "start_line": 9809,
+        "end_line": 9816,
+        "reason": "Backward liveness: qaContactDarkReference: Unused local cyanWashDark"
+      },
+      {
+        "start_line": 9841,
+        "end_line": 9844,
+        "reason": "Backward liveness: qaContactDarkReference: Unused local topBlackShelf"
+      },
+      {
+        "start_line": 9847,
+        "end_line": 9847,
+        "reason": "Backward liveness: qaContactDarkReference: Unused local darkNavy"
+      },
+      {
+        "start_line": 9848,
+        "end_line": 9852,
+        "reason": "Backward liveness: qaContactDarkReference: Unused local darkBlueGlow"
+      },
+      {
+        "start_line": 9853,
+        "end_line": 9857,
+        "reason": "Backward liveness: qaContactDarkReference: Unused local darkElectric"
+      },
+      {
+        "start_line": 9858,
+        "end_line": 9862,
+        "reason": "Backward liveness: qaContactDarkReference: Unused local darkCyan"
+      },
+      {
+        "start_line": 9863,
+        "end_line": 9867,
+        "reason": "Backward liveness: qaContactDarkReference: Unused local darkMintCyan"
+      },
+      {
+        "start_line": 9869,
+        "end_line": 9869,
+        "reason": "Backward liveness: qaContactDarkReference: Unused local lowerIntensity"
+      },
+      {
+        "start_line": 9870,
+        "end_line": 9870,
+        "reason": "Backward liveness: qaContactDarkReference: Unused local topIntensity"
+      },
+      {
+        "start_line": 9871,
+        "end_line": 9871,
+        "reason": "Backward liveness: qaContactDarkReference: Unused local edgeIntensity"
+      },
+      {
+        "start_line": 9874,
+        "end_line": 9881,
+        "reason": "Backward liveness: qaContactDarkReference: Overwritten/unread store darkResult"
+      },
+      {
+        "start_line": 9883,
+        "end_line": 9886,
+        "reason": "Backward liveness: qaContactDarkReference: Overwritten/unread store darkResult"
+      },
+      {
+        "start_line": 9887,
+        "end_line": 9887,
+        "reason": "Backward liveness: qaContactDarkReference: Unused local blueIdleAccent"
+      },
+      {
+        "start_line": 9888,
+        "end_line": 9889,
+        "reason": "Backward liveness: qaContactDarkReference: Overwritten/unread store darkResult"
+      },
+      {
+        "start_line": 9890,
+        "end_line": 9890,
+        "reason": "Backward liveness: qaContactDarkReference: Unused local yellowIdleAccent"
+      },
+      {
+        "start_line": 9891,
+        "end_line": 9892,
+        "reason": "Backward liveness: qaContactDarkReference: Overwritten/unread store darkResult"
       }
     ]
   }

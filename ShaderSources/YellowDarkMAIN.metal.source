@@ -24,14 +24,6 @@ float3 yellowReviewDarkPalette(float M,float progress) {
     float q=clamp(M/1.32,0.0,1.0);
     float3 current=mix(yellowDeepColor.rgb,yellowHotColor.rgb,q);
     float3 hue=current;
-#ifdef QA_CONFIG_PALETTE
-    // Configured chroma follows exposure: dark orange shadows, gold crest.
-    // The former density exponential reached Accent while still in shadow.
-    float exposurePosition=clamp(M/1.32,0.0,1.0);
-    float lower=segmentEase(exposurePosition,0.0,0.50);
-    float upper=segmentEase(exposurePosition,0.50,1.0);
-    hue=mix(mix(yellowDeepColor.rgb,yellowHotColor.rgb,lower),yellowLightAccent,upper);
-#endif
     float3 w=float3(0.2126,0.7152,0.0722);
     // Unclipped Blue reference avoids the B=1 derivative corner at M=1.
     // A common smooth peak cap preserves colour ratios and bright maxima.

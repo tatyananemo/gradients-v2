@@ -67,12 +67,7 @@ float amberTargetHue(float L,bool contact) {
     float deep=amberHue(yellowDeepColor.rgb),mid=amberHue(yellowMidColor.rgb),hot=amberHue(yellowHotColor.rgb);
     // T-Pay samples: shadow 49-52 degrees, orange body ~58, gold maxima ~80.
     // Existing Deep/Mid/Hot are 43.49 / 58.40 / 77.69 degrees in OKLCH.
-#ifdef QA_CONFIG_PALETTE
-    float h=mix(deep,mid,segmentEase(L,.15,.70));
-    return mix(h,hot,segmentEase(L,.70,.87));
-#else
     return mix(mid,hot,segmentEase(L,.70,.87));
-#endif
 }
 float3 amberTargetLab(float3 reference,bool contact) {
     float3 lab=amberLab(clamp(reference,0.0,1.0));

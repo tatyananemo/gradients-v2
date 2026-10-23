@@ -2090,7 +2090,6 @@ half4 qaCurrentAcceptedDarkBlue(
     float3 lightResult = clamp(result, 0.0, 1.0);
 
     float3 preThemeMotionResult = lightResult;
-    float3 darkSourceLightResult = lightResult;
 
     float motionColorRestore = clamp(
         tapTrail * 2.10 +
@@ -2225,65 +2224,12 @@ half4 qaCurrentAcceptedDarkBlue(
     lightResult = mix(lightResult, referenceBlueResult, isBluePreset);
     lightResult = mix(lightResult, referenceYellowResult, isYellowPreset);
 
-    float liquidPresence = clamp(distance(darkSourceLightResult, white) * 1.38, 0.0, 1.0);
-    float glowPresence = clamp(
-        liquidPresence +
-        rimAlpha * 0.32 +
-        revealEdgeGlow * 0.50 +
-        surfaceGlow * 0.22,
-        0.0,
-        1.0
-    );
-    float finishLift = segmentEase(progress, 0.76, 1.00);
-    float bottomWeightDark = smoothstep(0.32, 1.0, uv.y);
-    float topWeightDark = 1.0 - smoothstep(0.10, 0.46, uv.y);
-    float finishTopPush =
-        finishLift *
-        (1.0 - smoothstep(0.11, 0.48, uv.y)) *
-        (0.78 + 0.22 * exp(-pow((uv.y - 0.08) / 0.17, 2.0)));
-    float sideGlowDark =
-        exp(-pow(uv.x / 0.13, 2.0)) +
-        exp(-pow((1.0 - uv.x) / 0.13, 2.0));
 
-    float darkLowerField = clamp(
-        glowPresence * (0.56 + bottomWeightDark * 0.42) +
-        keyedLowerCore * 0.92 +
-        keyedCyanBand * 0.44 +
-        liquidAlpha * bottomWeightDark * 0.54 +
-        surfaceGlow * 0.22,
-        0.0,
-        1.0
-    );
-    darkLowerField *= mix(1.0, 0.015, finishLift);
 
-    float darkTopField = clamp(
-        topPhase * (topCap * 0.80 + topCore * 0.34 + topMistBand * 0.72) +
-        topReservoir * 0.72 +
-        topReservoirCore * 0.54 +
-        topReservoirGlow * 0.80 +
-        completionMist * 0.82 +
-        trailingGlow * 0.70 +
-        completionTopGlow * 0.80 +
-        finishLift * topWeightDark * 1.04 +
-        finishTopPush * 0.42,
-        0.0,
-        1.0
-    );
 
     // The dark palette always starts on a true black canvas. The selected color is
     // revealed only by the progressing field, never inherited from the light result.
-    float darkColorReveal = smoothstep(0.015, 0.24, progress);
-    darkLowerField *= darkColorReveal;
-    darkTopField *= darkColorReveal;
 
-    float cyanWashDark = clamp(
-        keyedCyanBand * 0.70 +
-        keyedLensHalo * 0.30 +
-        revealEdgeGlow * 0.72 +
-        rimAlpha * 0.24,
-        0.0,
-        1.0
-    ) * darkColorReveal;
 
     // One soft, asymmetric reduction of light behind the digits; no ring or
     // constant-radius plateau. Coordinates match the existing counter region.
@@ -2308,58 +2254,12 @@ half4 qaCurrentAcceptedDarkBlue(
         mix(0.18, 0.32, smoothstep(0.10, 0.72, progress));
     float centerReduction = clamp(centerVoid * 0.58 + centerVoidSoft * 0.18, 0.0, 0.70);
 
-    float topBlackShelf =
-        (1.0 - smoothstep(0.20, 0.52, uv.y)) *
-        (1.0 - smoothstep(0.0, 0.18, progress)) *
-        0.38;
 
     float3 darkBase = float3(0.0, 0.0, 0.0);
-    float3 darkNavy = float3(0.004, 0.010, 0.024);
-    float3 darkBlueGlow = mix(
-        float3(0.045, 0.230, 0.780),
-        float3(0.820, 0.405, 0.018),
-        isYellowPreset
-    );
-    float3 darkElectric = mix(
-        float3(0.100, 0.430, 1.000),
-        float3(1.000, 0.720, 0.030),
-        isYellowPreset
-    );
-    float3 darkCyan = mix(
-        float3(0.520, 0.960, 1.000),
-        float3(1.000, 0.925, 0.210),
-        isYellowPreset
-    );
-    float3 darkMintCyan = mix(
-        float3(0.650, 1.000, 0.900),
-        float3(1.000, 0.970, 0.560),
-        isYellowPreset
-    );
 
-    float lowerIntensity = smootherLiquid(darkLowerField);
-    float topIntensity = smootherLiquid(darkTopField);
-    float edgeIntensity = clamp(sideGlowDark * (darkLowerField * 0.30 + darkTopField * 0.34), 0.0, 1.0);
 
     float3 darkResult = darkBase;
-    darkResult = mix(darkResult, darkNavy, clamp(darkLowerField * 0.52 + darkTopField * 0.38, 0.0, 1.0));
-    darkResult += mix(darkBlueGlow, darkElectric, smoothstep(0.22, 0.92, lowerIntensity)) * lowerIntensity * 0.82;
-    darkResult += darkCyan * cyanWashDark * 0.24;
-    darkResult += darkMintCyan * keyedWhiteLens * 0.10 * darkColorReveal;
-    darkResult += mix(darkBlueGlow, darkElectric, 0.52) * topIntensity * 0.86;
-    darkResult += darkCyan * topMistBand * 0.22 * darkColorReveal;
-    darkResult += darkElectric * edgeIntensity * 0.42;
-    darkResult += mix(darkBlueGlow, darkElectric, 0.72) * finishTopPush * 0.34;
 
-    darkResult = mix(darkResult, darkBase, clamp(centerVoidSoft, 0.0, 0.34));
-    darkResult = mix(darkResult, darkBase, clamp(centerVoid, 0.0, 0.86));
-    darkResult = mix(darkResult, darkBase, finishLift * smoothstep(0.30, 0.72, uv.y) * 0.64);
-    darkResult = mix(darkResult, darkBase, topBlackShelf);
-    float blueIdleAccent = isBluePreset * idleWaveEnergy * (1.0 - motionColorRestore * 0.85);
-    darkResult += float3(0.000, 0.423529, 1.000) * blueIdleAccent * 0.74;
-    darkResult += float3(0.540, 0.900, 1.000) * blueIdleAccent * 0.24;
-    float yellowIdleAccent = isYellowPreset * idleWaveEnergy * (1.0 - motionColorRestore * 0.85);
-    darkResult += float3(1.000, 0.780, 0.075) * yellowIdleAccent * 0.62;
-    darkResult += float3(1.000, 0.956, 0.365) * yellowIdleAccent * 0.24;
 
     // Dark mode uses the same travelling band as the light reference. Only the
     // canvas changes to black; no accumulated color remains below the band.
@@ -4436,7 +4336,6 @@ half4 liquidSpecBackground(
     float3 lightResult = clamp(result, 0.0, 1.0);
 
     float3 preThemeMotionResult = lightResult;
-    float3 darkSourceLightResult = lightResult;
 
     float motionColorRestore = clamp(
         tapTrail * 2.10 +
@@ -4571,65 +4470,12 @@ half4 liquidSpecBackground(
     lightResult = mix(lightResult, referenceBlueResult, isBluePreset);
     lightResult = mix(lightResult, referenceYellowResult, isYellowPreset);
 
-    float liquidPresence = clamp(distance(darkSourceLightResult, white) * 1.38, 0.0, 1.0);
-    float glowPresence = clamp(
-        liquidPresence +
-        rimAlpha * 0.32 +
-        revealEdgeGlow * 0.50 +
-        surfaceGlow * 0.22,
-        0.0,
-        1.0
-    );
-    float finishLift = segmentEase(progress, 0.76, 1.00);
-    float bottomWeightDark = smoothstep(0.32, 1.0, uv.y);
-    float topWeightDark = 1.0 - smoothstep(0.10, 0.46, uv.y);
-    float finishTopPush =
-        finishLift *
-        (1.0 - smoothstep(0.11, 0.48, uv.y)) *
-        (0.78 + 0.22 * exp(-pow((uv.y - 0.08) / 0.17, 2.0)));
-    float sideGlowDark =
-        exp(-pow(uv.x / 0.13, 2.0)) +
-        exp(-pow((1.0 - uv.x) / 0.13, 2.0));
 
-    float darkLowerField = clamp(
-        glowPresence * (0.56 + bottomWeightDark * 0.42) +
-        keyedLowerCore * 0.92 +
-        keyedCyanBand * 0.44 +
-        liquidAlpha * bottomWeightDark * 0.54 +
-        surfaceGlow * 0.22,
-        0.0,
-        1.0
-    );
-    darkLowerField *= mix(1.0, 0.015, finishLift);
 
-    float darkTopField = clamp(
-        topPhase * (topCap * 0.80 + topCore * 0.34 + topMistBand * 0.72) +
-        topReservoir * 0.72 +
-        topReservoirCore * 0.54 +
-        topReservoirGlow * 0.80 +
-        completionMist * 0.82 +
-        trailingGlow * 0.70 +
-        completionTopGlow * 0.80 +
-        finishLift * topWeightDark * 1.04 +
-        finishTopPush * 0.42,
-        0.0,
-        1.0
-    );
 
     // The dark palette always starts on a true black canvas. The selected color is
     // revealed only by the progressing field, never inherited from the light result.
-    float darkColorReveal = smoothstep(0.015, 0.24, progress);
-    darkLowerField *= darkColorReveal;
-    darkTopField *= darkColorReveal;
 
-    float cyanWashDark = clamp(
-        keyedCyanBand * 0.70 +
-        keyedLensHalo * 0.30 +
-        revealEdgeGlow * 0.72 +
-        rimAlpha * 0.24,
-        0.0,
-        1.0
-    ) * darkColorReveal;
 
     // One soft, asymmetric reduction of light behind the digits; no ring or
     // constant-radius plateau. Coordinates match the existing counter region.
@@ -4654,58 +4500,12 @@ half4 liquidSpecBackground(
         mix(0.18, 0.32, smoothstep(0.10, 0.72, progress));
     float centerReduction = clamp(centerVoid * 0.58 + centerVoidSoft * 0.18, 0.0, 0.70);
 
-    float topBlackShelf =
-        (1.0 - smoothstep(0.20, 0.52, uv.y)) *
-        (1.0 - smoothstep(0.0, 0.18, progress)) *
-        0.38;
 
     float3 darkBase = float3(0.0, 0.0, 0.0);
-    float3 darkNavy = float3(0.004, 0.010, 0.024);
-    float3 darkBlueGlow = mix(
-        float3(0.045, 0.230, 0.780),
-        float3(0.820, 0.405, 0.018),
-        isYellowPreset
-    );
-    float3 darkElectric = mix(
-        float3(0.100, 0.430, 1.000),
-        float3(1.000, 0.720, 0.030),
-        isYellowPreset
-    );
-    float3 darkCyan = mix(
-        float3(0.520, 0.960, 1.000),
-        float3(1.000, 0.925, 0.210),
-        isYellowPreset
-    );
-    float3 darkMintCyan = mix(
-        float3(0.650, 1.000, 0.900),
-        float3(1.000, 0.970, 0.560),
-        isYellowPreset
-    );
 
-    float lowerIntensity = smootherLiquid(darkLowerField);
-    float topIntensity = smootherLiquid(darkTopField);
-    float edgeIntensity = clamp(sideGlowDark * (darkLowerField * 0.30 + darkTopField * 0.34), 0.0, 1.0);
 
     float3 darkResult = darkBase;
-    darkResult = mix(darkResult, darkNavy, clamp(darkLowerField * 0.52 + darkTopField * 0.38, 0.0, 1.0));
-    darkResult += mix(darkBlueGlow, darkElectric, smoothstep(0.22, 0.92, lowerIntensity)) * lowerIntensity * 0.82;
-    darkResult += darkCyan * cyanWashDark * 0.24;
-    darkResult += darkMintCyan * keyedWhiteLens * 0.10 * darkColorReveal;
-    darkResult += mix(darkBlueGlow, darkElectric, 0.52) * topIntensity * 0.86;
-    darkResult += darkCyan * topMistBand * 0.22 * darkColorReveal;
-    darkResult += darkElectric * edgeIntensity * 0.42;
-    darkResult += mix(darkBlueGlow, darkElectric, 0.72) * finishTopPush * 0.34;
 
-    darkResult = mix(darkResult, darkBase, clamp(centerVoidSoft, 0.0, 0.34));
-    darkResult = mix(darkResult, darkBase, clamp(centerVoid, 0.0, 0.86));
-    darkResult = mix(darkResult, darkBase, finishLift * smoothstep(0.30, 0.72, uv.y) * 0.64);
-    darkResult = mix(darkResult, darkBase, topBlackShelf);
-    float blueIdleAccent = isBluePreset * idleWaveEnergy * (1.0 - motionColorRestore * 0.85);
-    darkResult += float3(0.000, 0.423529, 1.000) * blueIdleAccent * 0.74;
-    darkResult += float3(0.540, 0.900, 1.000) * blueIdleAccent * 0.24;
-    float yellowIdleAccent = isYellowPreset * idleWaveEnergy * (1.0 - motionColorRestore * 0.85);
-    darkResult += float3(1.000, 0.780, 0.075) * yellowIdleAccent * 0.62;
-    darkResult += float3(1.000, 0.956, 0.365) * yellowIdleAccent * 0.24;
 
     // Dark mode uses the same travelling band as the light reference. Only the
     // canvas changes to black; no accumulated color remains below the band.
@@ -6819,7 +6619,6 @@ half4 qaContactDarkReference(
     float3 lightResult = clamp(result, 0.0, 1.0);
 
     float3 preThemeMotionResult = lightResult;
-    float3 darkSourceLightResult = lightResult;
 
     float motionColorRestore = clamp(
         tapTrail * 2.10 +
@@ -6954,65 +6753,12 @@ half4 qaContactDarkReference(
     lightResult = mix(lightResult, referenceBlueResult, isBluePreset);
     lightResult = mix(lightResult, referenceYellowResult, isYellowPreset);
 
-    float liquidPresence = clamp(distance(darkSourceLightResult, white) * 1.38, 0.0, 1.0);
-    float glowPresence = clamp(
-        liquidPresence +
-        rimAlpha * 0.32 +
-        revealEdgeGlow * 0.50 +
-        surfaceGlow * 0.22,
-        0.0,
-        1.0
-    );
-    float finishLift = segmentEase(progress, 0.76, 1.00);
-    float bottomWeightDark = smoothstep(0.32, 1.0, uv.y);
-    float topWeightDark = 1.0 - smoothstep(0.10, 0.46, uv.y);
-    float finishTopPush =
-        finishLift *
-        (1.0 - smoothstep(0.11, 0.48, uv.y)) *
-        (0.78 + 0.22 * exp(-pow((uv.y - 0.08) / 0.17, 2.0)));
-    float sideGlowDark =
-        exp(-pow(uv.x / 0.13, 2.0)) +
-        exp(-pow((1.0 - uv.x) / 0.13, 2.0));
 
-    float darkLowerField = clamp(
-        glowPresence * (0.56 + bottomWeightDark * 0.42) +
-        keyedLowerCore * 0.92 +
-        keyedCyanBand * 0.44 +
-        liquidAlpha * bottomWeightDark * 0.54 +
-        surfaceGlow * 0.22,
-        0.0,
-        1.0
-    );
-    darkLowerField *= mix(1.0, 0.015, finishLift);
 
-    float darkTopField = clamp(
-        topPhase * (topCap * 0.80 + topCore * 0.34 + topMistBand * 0.72) +
-        topReservoir * 0.72 +
-        topReservoirCore * 0.54 +
-        topReservoirGlow * 0.80 +
-        completionMist * 0.82 +
-        trailingGlow * 0.70 +
-        completionTopGlow * 0.80 +
-        finishLift * topWeightDark * 1.04 +
-        finishTopPush * 0.42,
-        0.0,
-        1.0
-    );
 
     // The dark palette always starts on a true black canvas. The selected color is
     // revealed only by the progressing field, never inherited from the light result.
-    float darkColorReveal = smoothstep(0.015, 0.24, progress);
-    darkLowerField *= darkColorReveal;
-    darkTopField *= darkColorReveal;
 
-    float cyanWashDark = clamp(
-        keyedCyanBand * 0.70 +
-        keyedLensHalo * 0.30 +
-        revealEdgeGlow * 0.72 +
-        rimAlpha * 0.24,
-        0.0,
-        1.0
-    ) * darkColorReveal;
 
     // One soft, asymmetric reduction of light behind the digits; no ring or
     // constant-radius plateau. Coordinates match the existing counter region.
@@ -7037,58 +6783,12 @@ half4 qaContactDarkReference(
         mix(0.18, 0.32, smoothstep(0.10, 0.72, progress));
     float centerReduction = clamp(centerVoid * 0.58 + centerVoidSoft * 0.18, 0.0, 0.70);
 
-    float topBlackShelf =
-        (1.0 - smoothstep(0.20, 0.52, uv.y)) *
-        (1.0 - smoothstep(0.0, 0.18, progress)) *
-        0.38;
 
     float3 darkBase = float3(0.0, 0.0, 0.0);
-    float3 darkNavy = float3(0.004, 0.010, 0.024);
-    float3 darkBlueGlow = mix(
-        float3(0.045, 0.230, 0.780),
-        float3(0.820, 0.405, 0.018),
-        isYellowPreset
-    );
-    float3 darkElectric = mix(
-        float3(0.100, 0.430, 1.000),
-        float3(1.000, 0.720, 0.030),
-        isYellowPreset
-    );
-    float3 darkCyan = mix(
-        float3(0.520, 0.960, 1.000),
-        float3(1.000, 0.925, 0.210),
-        isYellowPreset
-    );
-    float3 darkMintCyan = mix(
-        float3(0.650, 1.000, 0.900),
-        float3(1.000, 0.970, 0.560),
-        isYellowPreset
-    );
 
-    float lowerIntensity = smootherLiquid(darkLowerField);
-    float topIntensity = smootherLiquid(darkTopField);
-    float edgeIntensity = clamp(sideGlowDark * (darkLowerField * 0.30 + darkTopField * 0.34), 0.0, 1.0);
 
     float3 darkResult = darkBase;
-    darkResult = mix(darkResult, darkNavy, clamp(darkLowerField * 0.52 + darkTopField * 0.38, 0.0, 1.0));
-    darkResult += mix(darkBlueGlow, darkElectric, smoothstep(0.22, 0.92, lowerIntensity)) * lowerIntensity * 0.82;
-    darkResult += darkCyan * cyanWashDark * 0.24;
-    darkResult += darkMintCyan * keyedWhiteLens * 0.10 * darkColorReveal;
-    darkResult += mix(darkBlueGlow, darkElectric, 0.52) * topIntensity * 0.86;
-    darkResult += darkCyan * topMistBand * 0.22 * darkColorReveal;
-    darkResult += darkElectric * edgeIntensity * 0.42;
-    darkResult += mix(darkBlueGlow, darkElectric, 0.72) * finishTopPush * 0.34;
 
-    darkResult = mix(darkResult, darkBase, clamp(centerVoidSoft, 0.0, 0.34));
-    darkResult = mix(darkResult, darkBase, clamp(centerVoid, 0.0, 0.86));
-    darkResult = mix(darkResult, darkBase, finishLift * smoothstep(0.30, 0.72, uv.y) * 0.64);
-    darkResult = mix(darkResult, darkBase, topBlackShelf);
-    float blueIdleAccent = isBluePreset * idleWaveEnergy * (1.0 - motionColorRestore * 0.85);
-    darkResult += float3(0.000, 0.423529, 1.000) * blueIdleAccent * 0.74;
-    darkResult += float3(0.540, 0.900, 1.000) * blueIdleAccent * 0.24;
-    float yellowIdleAccent = isYellowPreset * idleWaveEnergy * (1.0 - motionColorRestore * 0.85);
-    darkResult += float3(1.000, 0.780, 0.075) * yellowIdleAccent * 0.62;
-    darkResult += float3(1.000, 0.956, 0.365) * yellowIdleAccent * 0.24;
 
     // Dark mode uses the same travelling band as the light reference. Only the
     // canvas changes to black; no accumulated color remains below the band.

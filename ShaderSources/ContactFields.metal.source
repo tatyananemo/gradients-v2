@@ -1875,53 +1875,7 @@ float4 yellowReferenceContactFields(
         0.38;
 
     float3 darkBase = float3(0.0, 0.0, 0.0);
-    float3 darkNavy = float3(0.004, 0.010, 0.024);
-    float3 darkBlueGlow = mix(
-        float3(0.045, 0.230, 0.780),
-        float3(0.820, 0.405, 0.018),
-        isYellowPreset
-    );
-    float3 darkElectric = mix(
-        float3(0.100, 0.430, 1.000),
-        float3(1.000, 0.720, 0.030),
-        isYellowPreset
-    );
-    float3 darkCyan = mix(
-        float3(0.520, 0.960, 1.000),
-        float3(1.000, 0.925, 0.210),
-        isYellowPreset
-    );
-    float3 darkMintCyan = mix(
-        float3(0.650, 1.000, 0.900),
-        float3(1.000, 0.970, 0.560),
-        isYellowPreset
-    );
-
-    float lowerIntensity = smootherLiquid(darkLowerField);
-    float topIntensity = smootherLiquid(darkTopField);
-    float edgeIntensity = clamp(sideGlowDark * (darkLowerField * 0.30 + darkTopField * 0.34), 0.0, 1.0);
-
     float3 darkResult = darkBase;
-    darkResult = mix(darkResult, darkNavy, clamp(darkLowerField * 0.52 + darkTopField * 0.38, 0.0, 1.0));
-    darkResult += mix(darkBlueGlow, darkElectric, smoothstep(0.22, 0.92, lowerIntensity)) * lowerIntensity * 0.82;
-    darkResult += darkCyan * cyanWashDark * 0.24;
-    darkResult += darkMintCyan * keyedWhiteLens * 0.10 * darkColorReveal;
-    darkResult += mix(darkBlueGlow, darkElectric, 0.52) * topIntensity * 0.86;
-    darkResult += darkCyan * topMistBand * 0.22 * darkColorReveal;
-    darkResult += darkElectric * edgeIntensity * 0.42;
-    darkResult += mix(darkBlueGlow, darkElectric, 0.72) * finishTopPush * 0.34;
-
-    darkResult = mix(darkResult, darkBase, clamp(centerVoidSoft, 0.0, 0.34));
-    darkResult = mix(darkResult, darkBase, clamp(centerVoid, 0.0, 0.86));
-    darkResult = mix(darkResult, darkBase, finishLift * smoothstep(0.30, 0.72, uv.y) * 0.64);
-    darkResult = mix(darkResult, darkBase, topBlackShelf);
-    float blueIdleAccent = isBluePreset * idleWaveEnergy * (1.0 - motionColorRestore * 0.85);
-    darkResult += float3(0.000, 0.423529, 1.000) * blueIdleAccent * 0.74;
-    darkResult += float3(0.540, 0.900, 1.000) * blueIdleAccent * 0.24;
-    float yellowIdleAccent = isYellowPreset * idleWaveEnergy * (1.0 - motionColorRestore * 0.85);
-    darkResult += float3(1.000, 0.780, 0.075) * yellowIdleAccent * 0.62;
-    darkResult += float3(1.000, 0.956, 0.365) * yellowIdleAccent * 0.24;
-
     // Dark mode uses the same travelling band as the light reference. Only the
     // canvas changes to black; no accumulated color remains below the band.
     float3 darkBandOuterColor = mix(targetBlue, cyan, 0.30);

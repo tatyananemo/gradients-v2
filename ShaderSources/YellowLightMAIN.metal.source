@@ -18,16 +18,11 @@ float3 yellowReviewDarkPalette(float sharedLightField,float progress) {
     float colourFeather=1.0+0.35*toe*toe*toe;
     if(progress>0.78 && sharedLightField<0.50) colourFeather+=0.40*late*lowDensity*toe*toe*toe;
     float paletteExposure=1.12*pow(colourFeather,2.2);
-    #ifdef QA_CONFIG_PALETTE
-    // Comparison B only: production's density-to-colour curve; same MAIN field.
-    return yellowDarkDensityPalette(sharedLightField);
-#else
     float3 mapped=warmColor * pow(referenceLuminance * paletteExposure /
         max(warmLuminance, 0.00001), 1.0 / 2.2);
     // Same bounded cap as Blue's saturated channel; only the late R shoulder.
     if(progress>0.78) mapped.r=mix(mapped.r,qaNativeBlueCap(mapped.r),late);
     return mapped;
-#endif
 }
 float3 yellowReviewTransmission() {
     float3 yellowLightOrange=mix(yellowMidColor.rgb,yellowHotColor.rgb,0.25);
