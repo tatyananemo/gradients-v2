@@ -15,9 +15,11 @@ preferences, change UI, or introduce an alternate interaction implementation.
   closure's explicit reference capture are adapted for this test host.
 - Replay covers touch, long/repeated swipes, hold, release/fade boundaries,
   30/60/80/100% progress, the segment cap and reset.
-- During Metal dead-code cleanup, Swift is byte-identical to accepted checkpoint 39b50ed.
-- Metal changes are restricted to documented deletions by metal_deletions.py;
-  the original GPU and behavior reference.json is never rerecorded.
+- Swift remains byte-identical to accepted checkpoint 39b50ed.
+- The current exact-sharing stage is guarded by metal_dedup.py against 12e1b51.
+  ContactFields, Blue and the dispatcher remain frozen. Historical deletion
+  evidence stays in metal-deletions.json; the original GPU/behavior reference.json
+  is never rerecorded. See metal-dedup.md for accepted/rejected candidates.
 - Swift refactoring is checked against the original shader argument expressions,
   all 14 fixed Default parameters and the original behavior replay hashes.
 
