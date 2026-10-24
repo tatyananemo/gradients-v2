@@ -198,6 +198,19 @@ final class ComponentTests:XCTestCase {
         XCTAssertTrue(controller.gpuErrors.isEmpty)
     }
 
+    @MainActor func testFractionalBoundsMatchMaskAndDrawableExtents() throws {
+        let controller=try GradientViewController(theme:.yellowDark,initialProgress:0.6)
+        controller.externallyDriven=true;controller.loadViewIfNeeded()
+        controller.view.bounds=CGRect(x:0,y:0,width:390.5,height:844.5)
+        controller.viewDidLayoutSubviews()
+        let frame=controller.session.frame(at:Date().timeIntervalSinceReferenceDate,size:controller.view.bounds.size,dark:true,yellow:true)
+        controller.present(frame)
+        for texture in controller.masks {
+            XCTAssertEqual(texture.width,Int(controller.viewMetal.drawableSize.width))
+            XCTAssertEqual(texture.height,Int(controller.viewMetal.drawableSize.height))
+        }
+    }
+
     func testPerformanceMetricsCountSustainedDeadlineDeficit() {
         let metrics=GradientPerformanceMetrics()
         for i in 0..<6 {

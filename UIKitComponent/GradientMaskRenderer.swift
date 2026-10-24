@@ -39,7 +39,7 @@ final class GradientMaskRenderer {
         let cs=CGColorSpace(name:CGColorSpace.sRGB)!
         func color(_ rgb:[CGFloat],_ alpha:CGFloat)->CGColor {CGColor(colorSpace:cs,components:rgb+[alpha])!}
         let black:[CGFloat]=[0,0,0]
-        let fullWidth=Int(size.width*scale),fullHeight=Int(size.height*scale)
+        let fullWidth=Int(ceil(size.width*scale)),fullHeight=Int(ceil(size.height*scale))
         // The clipped ellipse is identically transparent outside this slice.
         // Keep integer pixel origins and the original transform/CG rasterization.
         let rows=min(fullHeight,Int(ceil(180*scale)))
@@ -72,7 +72,7 @@ final class GradientMaskRenderer {
             .composited(over:CIImage(color:.clear).cropped(to:fullExtent))
         let radius:CGFloat=[38,30,42][index]
         let blurred=ci.applyingFilter("CIGaussianBlur",parameters:[kCIInputRadiusKey:radius*scale*breath]).cropped(to:fullExtent)
-        let desc=MTLTextureDescriptor.texture2DDescriptor(pixelFormat:.rgba16Float,width:Int(size.width*scale),height:Int(size.height*scale),mipmapped:false)
+        let desc=MTLTextureDescriptor.texture2DDescriptor(pixelFormat:.rgba16Float,width:fullWidth,height:fullHeight,mipmapped:false)
         desc.usage=[.shaderRead,.shaderWrite,.renderTarget];desc.storageMode = .private
         let texture:MTLTexture
         if let cached=output,cached.width==fullWidth,cached.height==fullHeight {texture=cached}
