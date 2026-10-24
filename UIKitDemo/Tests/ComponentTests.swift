@@ -1,5 +1,6 @@
 import XCTest
 import UIKit
+import Metal
 @testable import GradientsKit
 
 final class ComponentTests:XCTestCase {
@@ -56,4 +57,40 @@ final class ComponentTests:XCTestCase {
             XCTAssertTrue(session.frame(at:42,size:CGSize(width:390,height:844),dark:dark,yellow:yellow).history.isEmpty)
         }}
     }
+    @MainActor func testDarkMaskCachePolicyPreservesEveryPixelInSimulator() throws {
+        let device=try XCTUnwrap(MTLCreateSystemDefaultDevice()),queue=try XCTUnwrap(device.makeCommandQueue())
+        let before=GradientMaskRenderer(device:device,queue:queue,cacheIntermediates:true)
+        let after=GradientMaskRenderer(device:device,queue:queue)
+        let source="""
+        #include <metal_stdlib>
+        using namespace metal;
+        kernel void compare(texture2d<float,access::read> a [[texture(0)]],texture2d<float,access::read> b [[texture(1)]],device atomic_uint *changed [[buffer(0)]],uint2 id [[thread_position_in_grid]]) {
+         if(id.x>=a.get_width()||id.y>=a.get_height())return;
+         float4 x=a.read(id),y=b.read(id);
+         if(any(x!=y))atomic_fetch_add_explicit(changed,1,memory_order_relaxed);
+        }
+        """
+        let library=try device.makeLibrary(source:source,options:nil)
+        let pipeline=try device.makeComputePipelineState(function:try XCTUnwrap(library.makeFunction(name:"compare")))
+        for yellow in [false,true] {for progress in [0.3,0.6,0.8] {
+            try autoreleasepool {
+                let counter=CGRect(x:0,y:356,width:390,height:76.6666666666667),size=CGSize(width:390,height:844)
+                let a=before.render(progress:progress,elapsed:3.75,yellow:yellow,counter:counter,size:size,scale:3)
+                let b=after.render(progress:progress,elapsed:3.75,yellow:yellow,counter:counter,size:size,scale:3)
+                let result=try XCTUnwrap(device.makeBuffer(length:4,options:.storageModeShared))
+                result.contents().storeBytes(of:UInt32(0),as:UInt32.self)
+                let command=try XCTUnwrap(queue.makeCommandBuffer())
+                for i in 0..<3 {
+                    let encoder=try XCTUnwrap(command.makeComputeCommandEncoder())
+                    encoder.setComputePipelineState(pipeline);encoder.setTexture(a[i],index:0);encoder.setTexture(b[i],index:1);encoder.setBuffer(result,offset:0,index:0)
+                    encoder.dispatchThreads(MTLSize(width:1170,height:2532,depth:1),threadsPerThreadgroup:MTLSize(width:16,height:16,depth:1));encoder.endEncoding()
+                }
+                // Readback waits are confined to this offline regression test.
+                command.commit();command.waitUntilCompleted()
+                XCTAssertEqual(command.status,.completed)
+                XCTAssertEqual(result.contents().load(as:UInt32.self),0,"Different Dark mask pixels, yellow=\(yellow), progress=\(progress)")
+            }
+        }}
+    }
+
 }

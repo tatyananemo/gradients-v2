@@ -7,8 +7,8 @@ import Metal
 /// masks can prepare in parallel without sharing mutable CGContext/CI state.
 final class GradientMaskRenderer {
     private let workers:[Surface]
-    init(device:MTLDevice,queue:MTLCommandQueue) {
-        workers=(0..<3).map {_ in Surface(device:device,queue:queue)}
+    init(device:MTLDevice,queue:MTLCommandQueue,cacheIntermediates:Bool=false) {
+        workers=(0..<3).map {_ in Surface(device:device,queue:queue,cacheIntermediates:cacheIntermediates)}
     }
     func render(progress:CGFloat,elapsed:Double,yellow:Bool,counter:CGRect,size:CGSize,scale:CGFloat,metrics:GradientPerformanceMetrics?=nil,frame:Int=0)->[MTLTexture] {
         DispatchQueue.concurrentPerform(iterations:3) { index in
@@ -20,9 +20,12 @@ final class GradientMaskRenderer {
         let device:MTLDevice,queue:MTLCommandQueue,ci:CIContext
         var context:CGContext?
         var output:MTLTexture?
-        init(device:MTLDevice,queue:MTLCommandQueue) {
+        init(device:MTLDevice,queue:MTLCommandQueue,cacheIntermediates:Bool) {
             self.device=device;self.queue=queue
-            ci=CIContext(mtlDevice:device,options:[.workingColorSpace:NSNull(),.outputColorSpace:NSNull()])
+            // Every frame changes the source, transform and blur radius. Retaining
+            // rendered intermediates adds IOSurface cache/XPC work without reuse.
+            // The override exists only for exact before/after validation.
+            ci=CIContext(mtlDevice:device,options:[.workingColorSpace:NSNull(),.outputColorSpace:NSNull(),.cacheIntermediates:cacheIntermediates])
         }
     func render(_ index:Int,progress p:CGFloat,elapsed:Double,yellow:Bool,counter:CGRect,size:CGSize,scale:CGFloat,metrics:GradientPerformanceMetrics?,frame:Int)->MTLTexture {
         let start=ProcessInfo.processInfo.systemUptime
