@@ -9,7 +9,8 @@ struct GradientResetPresentation {
     let mask:CGFloat
     static let duration:TimeInterval=0.35
     func values(at time:TimeInterval)->(counter:CGFloat,mask:CGFloat,finished:Bool) {
-        let t=min(max((time-started)/Self.duration,0),1)
+        let finished=time>=started+Self.duration
+        let t=finished ? 1:min(max((time-started)/Self.duration,0),1)
         // CSS/Core Animation easeInOut: solve the time coordinate, then evaluate Y.
         var lo=0.0,hi=1.0
         for _ in 0..<32 {
@@ -19,6 +20,6 @@ struct GradientResetPresentation {
         }
         let s=(lo+hi)/2,ease=CGFloat(3*(1-s)*s*s+s*s*s)
         let remaining=t<=0 ? CGFloat(1):t>=1 ? 0:1-ease
-        return (counter*remaining,mask*remaining,t>=1)
+        return (counter*remaining,mask*remaining,finished)
     }
 }

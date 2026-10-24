@@ -31,7 +31,7 @@ if cached==nil {cached=renderer.render(progress:session.interpolatedProgress(at:
 return cached![index]
 }
 }''')
-main=r''' 
+main=r'''
 func bytes(_ texture:MTLTexture,_ gpu:GPU)->[UInt16] {
  let stride=((texture.width*8+255)/256)*256
  let buffer=gpu.device.makeBuffer(length:stride*texture.height,options:.storageModeShared)!

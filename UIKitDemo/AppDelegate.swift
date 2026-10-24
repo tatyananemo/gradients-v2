@@ -1,0 +1,134 @@
+import UIKit
+import GradientsKit
+
+@main final class AppDelegate:UIResponder,UIApplicationDelegate {
+    func application(_ application:UIApplication,configurationForConnecting session:UISceneSession,options:UIScene.ConnectionOptions)->UISceneConfiguration {
+        let configuration=UISceneConfiguration(name:"UIKit",sessionRole:session.role)
+        configuration.delegateClass=SceneDelegate.self
+        return configuration
+    }
+}
+
+final class SceneDelegate:UIResponder,UIWindowSceneDelegate {
+    var window:UIWindow?
+    func scene(_ scene:UIScene,willConnectTo session:UISceneSession,options:UIScene.ConnectionOptions) {
+        guard let scene=scene as? UIWindowScene else{return}
+        let window=UIWindow(windowScene:scene)
+        do {window.rootViewController=try DemoController(environment:ProcessInfo.processInfo.environment)}
+        catch {
+            let controller=UIViewController();controller.view.backgroundColor = .systemBackground
+            let label=UILabel(frame:window.bounds.insetBy(dx:24,dy:100));label.numberOfLines=0
+            label.text="Не удалось запустить Metal: \(error)";controller.view.addSubview(label);window.rootViewController=controller
+            NSLog("GradientsUIKit startup failed: %@",String(describing:error))
+        }
+        window.makeKeyAndVisible();self.window=window
+    }
+    func sceneWillResignActive(_ scene:UIScene) {(window?.rootViewController as? DemoController)?.gradient.pauseRendering()}
+    func sceneDidBecomeActive(_ scene:UIScene) {(window?.rootViewController as? DemoController)?.gradient.resumeRendering()}
+}
+
+final class DemoController:UIViewController,UIAdaptivePresentationControllerDelegate {
+    let gradient:GradientViewController
+    override var prefersStatusBarHidden:Bool {true}
+    override var prefersHomeIndicatorAutoHidden:Bool {true}
+    init(environment:[String:String]) throws {
+        let dark=environment["GRADIENTS_THEME"].map {$0=="dark"} ?? (UserDefaults.standard.string(forKey:"theme")=="dark")
+        let yellow=environment["GRADIENTS_COLOR"]=="yellow"
+        let progress=Double(environment["GRADIENTS_PROGRESS"] ?? "0") ?? 0
+        let session=GradientSession(at:Date().timeIntervalSinceReferenceDate,initialProgress:CGFloat(progress))
+        gradient=try GradientViewController(session:session,dark:dark,yellow:yellow)
+        super.init(nibName:nil,bundle:nil)
+        gradient.onSettings={ [weak self] in self?.showSettings() }
+        if environment["GRADIENTS_DIAGNOSTICS"]=="1" {
+            var last=0.0
+            let url=FileManager.default.urls(for:.documentDirectory,in:.userDomainMask)[0].appendingPathComponent("renderer-state.json")
+            gradient.onFrame={ [weak gradient] frame in
+                guard let gradient,frame.time-last>=0.25 else{return};last=frame.time
+                let data:[String:Any]=["engine":gradient.engineDescription,"progress":frame.progress,"rendered":frame.uniforms[2],
+                    "theme":frame.dark ? "dark":"light","color":frame.yellow ? "yellow":"blue",
+                    "historyCount":frame.history.count,"distortion":frame.distortion,"statistics":gradient.renderStatistics]
+                try? JSONSerialization.data(withJSONObject:data).write(to:url,options:.atomic)
+            }
+        }
+        NSLog("GradientsUIKit: %@",gradient.engineDescription)
+    }
+    required init?(coder:NSCoder){fatalError("Use init()")}
+    override func viewDidLoad() {
+        super.viewDidLoad();addChild(gradient);gradient.view.frame=view.bounds
+        gradient.view.autoresizingMask=[.flexibleWidth,.flexibleHeight];view.addSubview(gradient.view);gradient.didMove(toParent:self)
+    }
+    func showSettings() {
+        guard presentedViewController==nil else{return}
+        gradient.session.setSettingsVisible(true,at:Date().timeIntervalSinceReferenceDate)
+        let panel=SettingsController(gradient:gradient)
+        panel.onThemeChanged={dark in UserDefaults.standard.set(dark ? "dark":"light",forKey:"theme")}
+        panel.sheetPresentationController?.detents=[.custom(identifier:.init("v2")){_ in 300}]
+        panel.sheetPresentationController?.prefersGrabberVisible=false
+        panel.presentationController?.delegate=self
+        present(panel,animated:true)
+    }
+    func presentationControllerDidDismiss(_ presentationController:UIPresentationController) {
+        gradient.session.setSettingsVisible(false,at:Date().timeIntervalSinceReferenceDate)
+    }
+}
+
+final class SettingsController:UIViewController {
+    weak var gradient:GradientViewController?
+    var onThemeChanged:((Bool)->Void)?
+    var swatches:[UIButton]=[]
+    init(gradient:GradientViewController){self.gradient=gradient;super.init(nibName:nil,bundle:nil)}
+    required init?(coder:NSCoder){fatalError("Use init(gradient:)")}
+    override func viewDidLoad() {
+        super.viewDidLoad();updateTheme()
+        let content=UIStackView();content.axis = .vertical;content.alignment = .fill;content.spacing=18
+        content.translatesAutoresizingMaskIntoConstraints=false;view.addSubview(content)
+        NSLayoutConstraint.activate([content.topAnchor.constraint(equalTo:view.topAnchor,constant:34),
+            content.leadingAnchor.constraint(equalTo:view.leadingAnchor,constant:22),content.trailingAnchor.constraint(equalTo:view.trailingAnchor,constant:-22)])
+        let title=UILabel();title.text="Настройки"
+        title.font=UIFont(descriptor:UIFont.systemFont(ofSize:24,weight:.bold).fontDescriptor.withDesign(.rounded)!,size:24)
+        content.addArrangedSubview(title)
+        func section(_ title:String)->UIStackView {
+            let group=UIStackView();group.axis = .vertical;group.spacing=8
+            let label=UILabel();label.font = .systemFont(ofSize:13,weight:.medium);label.text=title
+            group.addArrangedSubview(label);content.addArrangedSubview(group);return group
+        }
+        let theme=UISegmentedControl(items:["Светлая","Тёмная"])
+        theme.accessibilityIdentifier="theme";theme.accessibilityLabel="Тема"
+        theme.selectedSegmentIndex=gradient?.dark == true ? 1:0
+        theme.heightAnchor.constraint(equalToConstant:32).isActive=true
+        theme.addAction(UIAction { [weak self] action in
+            guard let self,let value=action.sender as? UISegmentedControl else{return}
+            self.gradient?.dark=value.selectedSegmentIndex==1;self.onThemeChanged?(value.selectedSegmentIndex==1);self.updateTheme()
+        },for:.valueChanged);section("Тема").addArrangedSubview(theme)
+        let colors=UIStackView();colors.axis = .horizontal;colors.distribution = .fillEqually;colors.spacing=9
+        section("Цвет градиента").addArrangedSubview(colors)
+        for (index,name) in ["Синий","Жёлтый"].enumerated() {
+            let button=UIButton();button.heightAnchor.constraint(equalToConstant:45).isActive=true
+            button.accessibilityLabel=name;button.accessibilityIdentifier=index==0 ? "blue":"yellow"
+            let circle=UIView();circle.translatesAutoresizingMaskIntoConstraints=false;circle.isUserInteractionEnabled=false
+            circle.backgroundColor=index==0 ? UIColor(red:0.26,green:0.55,blue:0.98,alpha:1):UIColor(red:1,green:0.7,blue:0,alpha:1)
+            circle.layer.cornerRadius=14;circle.layer.shadowColor=circle.backgroundColor?.cgColor;circle.layer.shadowOpacity=0.3;circle.layer.shadowRadius=8;circle.layer.shadowOffset=CGSize(width:0,height:3)
+            let label=UILabel();label.translatesAutoresizingMaskIntoConstraints=false;label.font = .systemFont(ofSize:10,weight:.semibold)
+            label.textAlignment = .center;label.textColor = .secondaryLabel;label.text=name
+            button.addSubview(circle);button.addSubview(label)
+            NSLayoutConstraint.activate([circle.widthAnchor.constraint(equalToConstant:28),circle.heightAnchor.constraint(equalToConstant:28),
+                circle.topAnchor.constraint(equalTo:button.topAnchor),circle.centerXAnchor.constraint(equalTo:button.centerXAnchor),
+                label.topAnchor.constraint(equalTo:circle.bottomAnchor,constant:5),label.centerXAnchor.constraint(equalTo:button.centerXAnchor)])
+            button.addAction(UIAction { [weak self] _ in self?.gradient?.yellow=index==1;self?.updateSwatches() },for:.touchUpInside)
+            swatches.append(button);colors.addArrangedSubview(button)
+        }
+        updateSwatches()
+    }
+    func updateTheme() {
+        let dark=gradient?.dark == true
+        overrideUserInterfaceStyle=dark ? .dark:.light
+        view.backgroundColor=dark ? UIColor(red:0.04,green:0.05,blue:0.08,alpha:1):.white
+    }
+    func updateSwatches() {
+        for (i,button) in swatches.enumerated() {
+            let selected=gradient?.yellow == (i==1);button.accessibilityValue=selected ? "Выбрано":""
+            button.subviews.first?.layer.borderColor=UIColor.white.withAlphaComponent(selected ? 0.95:0.28).cgColor
+            button.subviews.first?.layer.borderWidth=selected ? 3:1
+        }
+    }
+}

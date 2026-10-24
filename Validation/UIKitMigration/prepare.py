@@ -96,7 +96,10 @@ project = project.replace('PRODUCT_NAME = GradientsV2;', 'PRODUCT_NAME = Migrati
 project = project.replace('GradientsV2.app', 'MigrationProbe.app').replace('"Gradients V2"','"V2 Migration Probe"')
 extras = ['MigrationReplay.swift']
 for path in sorted((ROOT/'UIKitComponent').rglob('*.swift')):
-    shutil.copyfile(path,BUILD/path.name);extras.append(path.name)
+    text=path.read_text()
+    if path.name == 'GradientGPU.swift':
+        text=text.replace('library=try device.makeDefaultLibrary(bundle:Bundle(for:GradientResourceMarker.self))', 'let source=try String(contentsOf:Bundle.main.url(forResource:"PrototypeShader",withExtension:"txt")!).replacingOccurrences(of:"[[ stitchable ]]",with:"")\n        let options=MTLCompileOptions();options.fastMathEnabled=true\n        library=try device.makeLibrary(source:source,options:options)')
+    (BUILD/path.name).write_text(text);extras.append(path.name)
 shutil.copyfile(HERE/'BehaviorDemo.swift',BUILD/'BehaviorDemo.swift');extras.append('BehaviorDemo.swift')
 if (HERE/'PrototypeRenderer.swift').exists():
     shutil.copyfile(HERE/'PrototypeRenderer.swift',BUILD/'PrototypeRenderer.swift')

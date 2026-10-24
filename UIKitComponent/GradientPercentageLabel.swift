@@ -7,6 +7,8 @@ final class GradientPercentageLabel:UILabel {
     private var transition:UIViewPropertyAnimator?
     private var columns:[UIView]=[]
     private var hidesBaseText=false
+    var isTransitioning:Bool {transition != nil}
+    var transitionDuration:TimeInterval? {transition?.duration}
     override var textColor:UIColor! { didSet {
         for column in columns {for case let label as UILabel in column.subviews {label.textColor=textColor}}
     }}
@@ -75,4 +77,3 @@ final class GradientPercentageLabel:UILabel {
     }
     override func drawText(in rect:CGRect) {if !hidesBaseText {super.drawText(in:rect)}}
 }
-

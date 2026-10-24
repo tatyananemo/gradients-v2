@@ -10,19 +10,11 @@ final class SessionCaptionProbe {
  private var uniformsBuffer:MTLBuffer?,historyBuffer:MTLBuffer?,resultBuffer:MTLBuffer?
  private var busy=false,needed=false,filteredRisk:Double=0,previousWave:Double=0
  private var lastTime:TimeInterval=0
- init(){
-  device=MTLCreateSystemDefaultDevice()
-  guard let device else{return}
-  do {
-   guard let library=device.makeDefaultLibrary(),let f=library.makeFunction(name:"v2CaptionProbe") else {
-    throw NSError(domain:"GradientsV2.Metal",code:1)
-   }
-   pipeline=try device.makeComputePipelineState(function:f);queue=device.makeCommandQueue()
-   uniformsBuffer=device.makeBuffer(length:32*4,options:.storageModeShared)
-   historyBuffer=device.makeBuffer(length:512*4,options:.storageModeShared)
-   resultBuffer=device.makeBuffer(length:360*16,options:.storageModeShared)
-   NSLog("Gradients V2: live caption probe ready")
-  }catch {NSLog("Gradients V2 caption probe: %@",String(describing:error))}
+ init(gpu:GradientGPU){
+  device=gpu.device;pipeline=gpu.caption;queue=gpu.device.makeCommandQueue()
+  uniformsBuffer=gpu.device.makeBuffer(length:32*4,options:.storageModeShared)
+  historyBuffer=gpu.device.makeBuffer(length:512*4,options:.storageModeShared)
+  resultBuffer=gpu.device.makeBuffer(length:360*16,options:.storageModeShared)
  }
  func sample(uniforms:[Float],history:[Float],frame:CGRect,key sampleKey:String,dark:Bool,yellow:Bool){
   guard !busy,uniforms.count==28,history.count<=240,
