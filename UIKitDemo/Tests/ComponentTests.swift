@@ -211,6 +211,19 @@ final class ComponentTests:XCTestCase {
         }
     }
 
+    @MainActor func testNonanimatedResetStopsAnExistingNumericTransition() async throws {
+        let window=UIWindow(frame:CGRect(x:0,y:0,width:390,height:844))
+        let controller=try GradientViewController(theme:.blueLight,initialProgress:0.8)
+        window.rootViewController=controller;window.makeKeyAndVisible()
+        defer {controller.pauseRendering();window.isHidden=true}
+        try await Task.sleep(nanoseconds:100_000_000)
+        controller.reset(animated:true)
+        XCTAssertTrue(controller.counterLabel?.isTransitioning == true)
+        controller.reset(animated:false)
+        XCTAssertFalse(controller.counterLabel?.isTransitioning == true,"Explicit nonanimated reset left the previous digit animation running")
+        XCTAssertEqual(controller.counterLabel?.text,"0%")
+    }
+
     func testPerformanceMetricsCountSustainedDeadlineDeficit() {
         let metrics=GradientPerformanceMetrics()
         for i in 0..<6 {

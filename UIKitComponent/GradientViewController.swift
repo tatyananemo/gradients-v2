@@ -230,7 +230,8 @@ public final class GradientViewController:UIViewController,MTKViewDelegate {
         resetPresentation=animated ? GradientResetPresentation(started:now,counter:session.targetProgress,
             mask:session.interpolatedProgress(at:now)):nil
         session.reset(at:now)
-        counterLabel?.setPercentage(0,animated:animated)
+        if animated {counterLabel?.setPercentage(0,animated:true)}
+        else {counterLabel?.setPercentageImmediately(0)}
     }
     var presentationCounter:CGFloat {resetPresentation?.values(at:f.time).counter ?? f.progress}
     var presentationMask:CGFloat {resetPresentation?.values(at:f.time).mask ?? session.interpolatedProgress(at:f.time)}

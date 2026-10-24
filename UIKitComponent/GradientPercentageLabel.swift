@@ -13,6 +13,9 @@ final class GradientPercentageLabel:UILabel {
         for column in columns {for case let label as UILabel in column.subviews {label.textColor=textColor}}
     }}
 
+    func setPercentageImmediately(_ value:Int) {
+        cancelTransition();setPercentage(value)
+    }
     func setPercentage(_ value:Int, animated:Bool=false) {
         let target="\(value)%"
         guard text != target else{return}
