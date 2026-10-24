@@ -139,6 +139,65 @@ final class ComponentTests:XCTestCase {
         XCTAssertEqual(probe.activation,0,"An obsolete theme result changed the new theme's backing")
     }
 
+    @MainActor func testHiddenViewDoesNotPrepareGPUFrames() async throws {
+        let window=UIWindow(frame:CGRect(x:0,y:0,width:390,height:844))
+        let controller=try GradientViewController(theme:.yellowDark,initialProgress:0.6)
+        window.rootViewController=controller;window.makeKeyAndVisible()
+        defer {controller.pauseRendering();window.isHidden=true}
+        try await Task.sleep(nanoseconds:250_000_000)
+        XCTAssertGreaterThan(controller.performanceSamples,0)
+        controller.view.isHidden=true
+        try await Task.sleep(nanoseconds:100_000_000)
+        let hiddenSamples=controller.performanceSamples
+        try await Task.sleep(nanoseconds:250_000_000)
+        XCTAssertEqual(controller.performanceSamples,hiddenSamples,"Hidden UIView still prepares full-resolution Dark masks")
+        controller.view.isHidden=false
+        try await Task.sleep(nanoseconds:250_000_000)
+        XCTAssertGreaterThan(controller.performanceSamples,hiddenSamples)
+    }
+
+    @MainActor func testBackgroundSuspendsInputAndRenderingWithoutHostHooks() async throws {
+        let window=UIWindow(frame:CGRect(x:0,y:0,width:390,height:844))
+        let controller=try GradientViewController(theme:.blueDark,initialProgress:0.3)
+        window.rootViewController=controller;window.makeKeyAndVisible()
+        defer {NotificationCenter.default.post(name:UIApplication.didBecomeActiveNotification,object:nil);controller.pauseRendering();window.isHidden=true}
+        try await Task.sleep(nanoseconds:150_000_000)
+        let now=Date().timeIntervalSinceReferenceDate
+        controller.session.dragChanged(to:CGPoint(x:100,y:500),at:now,size:controller.view.bounds.size)
+        NotificationCenter.default.post(name:UIApplication.willResignActiveNotification,object:nil)
+        XCTAssertFalse(controller.session.waterTouchIsActive,"The SDK left an interrupted gesture active")
+        let progress=controller.session.targetProgress
+        try await Task.sleep(nanoseconds:100_000_000)
+        let paused=controller.performanceSamples
+        try await Task.sleep(nanoseconds:200_000_000)
+        XCTAssertEqual(controller.performanceSamples,paused,"Standalone SDK rendered while inactive")
+        NotificationCenter.default.post(name:UIApplication.didBecomeActiveNotification,object:nil)
+        try await Task.sleep(nanoseconds:200_000_000)
+        XCTAssertGreaterThan(controller.performanceSamples,paused)
+        XCTAssertEqual(controller.session.targetProgress,progress,"Background time advanced progress")
+    }
+
+    @MainActor func testEmptyBoundsSuspendWithoutAllocatingInvalidTextures() async throws {
+        let window=UIWindow(frame:CGRect(x:0,y:0,width:390,height:844))
+        let controller=try GradientViewController(theme:.yellowDark)
+        window.rootViewController=controller;window.makeKeyAndVisible()
+        defer {controller.pauseRendering();window.isHidden=true}
+        try await Task.sleep(nanoseconds:150_000_000)
+        let valid=controller.view.bounds
+        for size in [CGSize.zero,CGSize(width:0.1,height:0.1)] {
+            controller.view.bounds=CGRect(origin:.zero,size:size)
+            controller.viewDidLayoutSubviews();controller.tick()
+            let samples=controller.performanceSamples
+            try await Task.sleep(nanoseconds:100_000_000)
+            XCTAssertEqual(controller.performanceSamples,samples)
+        }
+        controller.view.bounds=valid;controller.viewDidLayoutSubviews()
+        let samples=controller.performanceSamples
+        try await Task.sleep(nanoseconds:200_000_000)
+        XCTAssertGreaterThan(controller.performanceSamples,samples)
+        XCTAssertTrue(controller.gpuErrors.isEmpty)
+    }
+
     func testPerformanceMetricsCountSustainedDeadlineDeficit() {
         let metrics=GradientPerformanceMetrics()
         for i in 0..<6 {

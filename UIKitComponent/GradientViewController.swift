@@ -16,6 +16,11 @@ public final class GradientViewController:UIViewController,MTKViewDelegate {
     public var onSettings:(()->Void)?
     public var onFrame:((GradientRenderFrame)->Void)?
     var displayLink:CADisplayLink?
+    private var hasAppeared=false
+    private var explicitlyPaused=false
+    private var applicationInactive=false
+    private var sceneInactive=false
+    private var inputRecognizer:GradientInputRecognizer?
     var clock:()->TimeInterval = { Date().timeIntervalSinceReferenceDate }
     var externallyDriven=false
     var counterLabel:GradientPercentageLabel?
@@ -102,29 +107,74 @@ public final class GradientViewController:UIViewController,MTKViewDelegate {
         if !backgroundOnly && !captionOnly {addCounter();addButtons(size)}
         captionProbe=SessionCaptionProbe(gpu:gpu)
         let input=GradientInputRecognizer(target:self,action:#selector(inputChanged(_:)))
-        input.cancelsTouchesInView=false;view.addGestureRecognizer(input)
+        input.cancelsTouchesInView=false;view.addGestureRecognizer(input);inputRecognizer=input
         metal.delegate=self
+        let notifications=NotificationCenter.default
+        notifications.addObserver(self,selector:#selector(applicationWillResignActive),name:UIApplication.willResignActiveNotification,object:nil)
+        notifications.addObserver(self,selector:#selector(applicationDidBecomeActive),name:UIApplication.didBecomeActiveNotification,object:nil)
+        notifications.addObserver(self,selector:#selector(sceneWillDeactivate(_:)),name:UIScene.willDeactivateNotification,object:nil)
+        notifications.addObserver(self,selector:#selector(sceneDidActivate(_:)),name:UIScene.didActivateNotification,object:nil)
         diagnostics=["background":"unchanged v2ComposeBackground via compute adapter","pixelFormat":"bgra8Unorm; rgba16Float intermediates","colorspace":"sRGB","maskImplementation":"CG radial/ellipse -> CoreImage Gaussian -> original exclusion -> normal/multiply/screen","maskPrecision":"8-bit CG source, 16-bit float intermediate","blurRadiusMapping":"same numeric radius * screen scale * breath; equivalence unproven","caption":"Dark backing before masks in Metal compositor; Light native CAGradientLayer, original stops","UI":"UIKit fonts/materials based on visually accepted feasibility prototype"]
     }
     public override func viewDidAppear(_ animated:Bool){
-        super.viewDidAppear(animated)
-        if !externallyDriven && displayLink == nil {
+        super.viewDidAppear(animated);hasAppeared=true
+        applicationInactive=UIApplication.shared.applicationState == .background
+        sceneInactive=view.window?.windowScene.map {$0.activationState != .foregroundActive} ?? false
+        updateDisplayLink();tick()
+    }
+    private func updateDisplayLink() {
+        guard hasAppeared,!externallyDriven else{return}
+        if displayLink == nil {
             let link=CADisplayLink(target:GradientDisplayTarget(self),selector:#selector(GradientDisplayTarget.tick(_:)))
             link.preferredFrameRateRange=CAFrameRateRange(minimum:30,maximum:60,preferred:60)
             link.add(to:.main,forMode:.common);displayLink=link
         }
-        tick()
+        displayLink?.isPaused=explicitlyPaused || applicationInactive || sceneInactive
+    }
+    private var hasRenderableBounds:Bool {
+        let size=view.bounds.size
+        return size.width.isFinite && size.height.isFinite && size.width*renderingScale>=1 && size.height*renderingScale>=1
+    }
+    private var canRender:Bool {
+        guard hasAppeared,!explicitlyPaused,!applicationInactive,!sceneInactive,
+              let window=view.window,!window.isHidden,hasRenderableBounds else{return false}
+        if let scene=window.windowScene,scene.activationState != .foregroundActive {return false}
+        if UIApplication.shared.applicationState == .background {return false}
+        var ancestor:UIView?=view
+        while let current=ancestor {
+            if current.isHidden || current.alpha==0 {return false}
+            ancestor=current.superview
+        }
+        return view.convert(view.bounds,to:window).intersects(window.bounds)
+    }
+    private func endInterruptedInput() {
+        if let input=inputRecognizer,input.state == .began || input.state == .changed {
+            input.isEnabled=false;input.isEnabled=true
+        }
+        if session.waterTouchIsActive {session.dragEnded(at:clock())}
+    }
+    @objc private func applicationWillResignActive() {
+        applicationInactive=true;endInterruptedInput();updateDisplayLink()
+    }
+    @objc private func applicationDidBecomeActive() {applicationInactive=false;updateDisplayLink()}
+    @objc private func sceneWillDeactivate(_ notice:Notification) {
+        guard let scene=notice.object as? UIScene,scene === viewIfLoaded?.window?.windowScene else{return}
+        sceneInactive=true;endInterruptedInput();updateDisplayLink()
+    }
+    @objc private func sceneDidActivate(_ notice:Notification) {
+        guard let scene=notice.object as? UIScene,scene === viewIfLoaded?.window?.windowScene else{return}
+        sceneInactive=false;updateDisplayLink()
     }
     public var engineDescription:String {"UIKit + Metal / GradientsKit / \(String(describing:type(of:self)))"}
     public var renderStatistics:[String:Double] {
         ["submitted":Double(framesSubmitted),"skipped":Double(framesSkipped),"samples":Double(performanceSamples),
          "maskPreparationMS":maskCPUTime,"cpuPreparationMS":cpuFrameTime,"gpuMS":gpuTime]
     }
-    public func pauseRendering() {displayLink?.isPaused=true}
-    public func resumeRendering() {displayLink?.isPaused=false}
+    public func pauseRendering() {explicitlyPaused=true;endInterruptedInput();updateDisplayLink()}
+    public func resumeRendering() {explicitlyPaused=false;updateDisplayLink()}
     public override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        guard let metal=viewMetal,view.bounds.width>0,view.bounds.height>0 else{return}
+        guard let metal=viewMetal,hasRenderableBounds else{return}
         let size=view.bounds.size
         guard currentSize != size || metal.contentScaleFactor != renderingScale else{return}
         currentSize=size
@@ -155,8 +205,11 @@ public final class GradientViewController:UIViewController,MTKViewDelegate {
             button.frame=rect;controlBackgrounds[i].frame=rect
         }
     }
-    public override func viewDidDisappear(_ animated:Bool) {super.viewDidDisappear(animated);displayLink?.invalidate();displayLink=nil}
-    deinit {displayLink?.invalidate()}
+    public override func viewDidDisappear(_ animated:Bool) {
+        super.viewDidDisappear(animated);hasAppeared=false;endInterruptedInput()
+        displayLink?.invalidate();displayLink=nil
+    }
+    deinit {displayLink?.invalidate();NotificationCenter.default.removeObserver(self)}
     @objc private func inputChanged(_ input:GradientInputRecognizer) {
         guard !externallyDriven else{return}
         let time=clock()
@@ -164,7 +217,9 @@ public final class GradientViewController:UIViewController,MTKViewDelegate {
         inputCallbacks+=1
         if input.state == .changed {moveCallbacks+=1}
         switch input.state {
-        case .began,.changed:resetPresentation=nil;session.dragChanged(to:input.point,at:time,size:view.bounds.size)
+        case .began,.changed:
+            guard canRender else{endInterruptedInput();return}
+            resetPresentation=nil;session.dragChanged(to:input.point,at:time,size:view.bounds.size)
         case .ended,.cancelled:session.dragEnded(at:time)
         default:break
         }
@@ -182,11 +237,13 @@ public final class GradientViewController:UIViewController,MTKViewDelegate {
     @objc func settingsPressed() { onSettings?() }
     func tick() {
         guard !externallyDriven else{return}
+        guard canRender else{endInterruptedInput();return}
         let frame=session.frame(at:clock(),size:view.bounds.size,dark:dark,yellow:yellow)
         present(frame)
         onFrame?(frame)
     }
     func present(_ frame:GradientRenderFrame, activation:Double?=nil) {
+        guard hasRenderableBounds else{return}
         // Each in-flight frame owns its shared CPU inputs. No semaphore wait on main.
         guard let slot=availableSlots.firstIndex(of:true) else {framesSkipped+=1;return}
         activeSlot=slot;availableSlots[slot]=false
