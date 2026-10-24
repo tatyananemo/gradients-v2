@@ -24,6 +24,12 @@ public final class GradientViewController:UIViewController,MTKViewDelegate {
     var cpuFrameTime:Double=0
     var gpuTime:Double=0
     var performanceSamples=0
+    var performanceMetrics:GradientPerformanceMetrics?
+    private var performanceFrame=0
+    /// Enables bounded timing samples only for explicit profiling runs.
+    public func beginPerformanceMeasurement() {performanceMetrics=GradientPerformanceMetrics()}
+    public func recordPerformanceInput() {performanceMetrics?.input(at:ProcessInfo.processInfo.systemUptime)}
+    public var performanceReport:[String:Any] {performanceMetrics?.report() ?? [:]}
     var captionLabel:UILabel?
     var counterWrapper:UIView?
     var captionGradient:CAGradientLayer?
@@ -154,6 +160,7 @@ public final class GradientViewController:UIViewController,MTKViewDelegate {
     @objc private func inputChanged(_ input:GradientInputRecognizer) {
         guard !externallyDriven else{return}
         let time=clock()
+        recordPerformanceInput()
         inputCallbacks+=1
         if input.state == .changed {moveCallbacks+=1}
         switch input.state {
@@ -184,19 +191,22 @@ public final class GradientViewController:UIViewController,MTKViewDelegate {
         guard let slot=availableSlots.firstIndex(of:true) else {framesSkipped+=1;return}
         activeSlot=slot;availableSlots[slot]=false
         uniformBuffer=uniformSlots[slot];historyBuffer=historySlots[slot]
+        performanceFrame+=1
         let cpuStart=ProcessInfo.processInfo.systemUptime
         f=frame;uniforms=frame.uniforms;history=frame.history
         if resetPresentation?.values(at:f.time).finished == true {resetPresentation=nil}
         uniforms.withUnsafeBytes {memcpy(uniformBuffer.contents(),$0.baseAddress!,$0.count)}
         if !history.isEmpty {history.withUnsafeBytes {memcpy(historyBuffer.contents(),$0.baseAddress!,$0.count)}}
         let maskStart=ProcessInfo.processInfo.systemUptime
-        if f.dark {masks=maskRenderer.render(progress:presentationMask,elapsed:f.time-session.startTime,yellow:f.yellow,counter:counter,size:view.bounds.size,scale:renderingScale)}
+        if f.dark {masks=maskRenderer.render(progress:presentationMask,elapsed:f.time-session.startTime,yellow:f.yellow,counter:counter,size:view.bounds.size,scale:renderingScale,metrics:performanceMetrics,frame:performanceFrame)}
         else {masks=[gpu.clear,gpu.clear,gpu.clear]}
-        maskCPUTime+=(ProcessInfo.processInfo.systemUptime-maskStart)*1000
+        let maskMS=(ProcessInfo.processInfo.systemUptime-maskStart)*1000
+        maskCPUTime+=maskMS;performanceMetrics?.add("maskPreparationMS",maskMS)
         if !externallyDriven {captionProbe?.sample(uniforms:uniforms,history:history,frame:caption,key:"\(dark):\(yellow)",dark:dark,yellow:yellow)}
         updateUI(activation:activation ?? captionProbe?.activation ?? 0)
         rendered=false;finished=false;viewMetal.draw()
-        cpuFrameTime+=(ProcessInfo.processInfo.systemUptime-cpuStart)*1000;performanceSamples+=1
+        let cpuMS=(ProcessInfo.processInfo.systemUptime-cpuStart)*1000
+        cpuFrameTime+=cpuMS;performanceSamples+=1;performanceMetrics?.add("cpuFrameMS",cpuMS)
     }
     func updateUI(activation:Double) {
         let p=presentationCounter
@@ -235,8 +245,15 @@ public final class GradientViewController:UIViewController,MTKViewDelegate {
     public func draw(in view:MTKView) {
         guard !rendered else{return}
         let completedSlot=activeSlot
+        let drawableStart=ProcessInfo.processInfo.systemUptime
         guard let drawable=view.currentDrawable,let command=gpu.queue.makeCommandBuffer() else {availableSlots[completedSlot]=true;return}
+        performanceMetrics?.add("drawableAcquisitionMS",(ProcessInfo.processInfo.systemUptime-drawableStart)*1000)
         framesSubmitted+=1
+        let metrics=performanceMetrics,frameID=performanceFrame,expected=f.dark ? 4:1
+        let inputTime=metrics?.consumeInput() ?? 0
+        #if !targetEnvironment(simulator)
+        if let metrics {drawable.addPresentedHandler {shown in metrics.presented(at:shown.presentedTime,input:inputTime)}}
+        #endif
         let scale=Float(renderingScale)
         func encode(_ texture:MTLTexture,_ pipeline:MTLRenderPipelineState,_ bind:(MTLRenderCommandEncoder)->Void) {
             let desc=MTLRenderPassDescriptor();desc.colorAttachments[0].texture=texture
@@ -267,7 +284,12 @@ public final class GradientViewController:UIViewController,MTKViewDelegate {
             for i in 0..<3 {enc.setFragmentTexture(masks[i],index:i+1)}
             enc.setFragmentBuffer(uniformBuffer,offset:0,index:0);enc.setFragmentBytes(&p,length:16,index:1)
         }
-        command.addCompletedHandler { [weak self] command in DispatchQueue.main.async {
+        command.addCompletedHandler { [weak self] command in
+            metrics?.gpu(frame:frameID,expected:expected,kind:"compositionGPUMS",start:command.gpuStartTime,end:command.gpuEndTime)
+            #if targetEnvironment(simulator)
+            metrics?.presented(at:ProcessInfo.processInfo.systemUptime,input:inputTime)
+            #endif
+            DispatchQueue.main.async {
             self?.finished=command.status == .completed;self?.availableSlots[completedSlot]=true
             self?.gpuTime+=max(0,command.gpuEndTime-command.gpuStartTime)*1000
             if command.status != .completed {self?.gpuErrors.append(String(describing:command.error))}

@@ -41,12 +41,35 @@ final class DemoController:UIViewController,UIAdaptivePresentationControllerDele
         gradient.onSettings={ [weak self] in self?.showSettings() }
         if environment["GRADIENTS_DIAGNOSTICS"]=="1" {
             var last=0.0
+            let benchmark=environment["GRADIENTS_BENCHMARK"]=="1"
+            let launched=ProcessInfo.processInfo.systemUptime
+            var measuring=false,ended=false
+            var phase="warmup"
             let url=FileManager.default.urls(for:.documentDirectory,in:.userDomainMask)[0].appendingPathComponent("renderer-state.json")
             gradient.onFrame={ [weak gradient] frame in
-                guard let gradient,frame.time-last>=0.25 else{return};last=frame.time
+                guard let gradient else{return}
+                if benchmark {
+                    let elapsed=ProcessInfo.processInfo.systemUptime-launched
+                    if elapsed>=3 && !measuring {gradient.beginPerformanceMeasurement();measuring=true}
+                    if elapsed>=3 && elapsed<23 {
+                        let t=elapsed-3
+                        let next=t<3 ? "idle":t<9 ? "swipe":t<12 ? "hold":t<16 ? "release":"idle-after-release"
+                        if next=="swipe" {
+                            gradient.recordPerformanceInput()
+                            gradient.session.dragChanged(to:CGPoint(x:195+sin(t*3.1)*145,y:440+cos(t*2.3)*220),at:frame.time,size:gradient.view.bounds.size)
+                        } else if phase=="hold" && next=="release" {gradient.session.dragEnded(at:frame.time)}
+                        phase=next
+                    } else if elapsed>=23 && !ended {
+                        ended=true;gradient.pauseRendering()
+                        let report=gradient.performanceReport
+                        let destination=url.deletingLastPathComponent().appendingPathComponent("performance.json")
+                        try? JSONSerialization.data(withJSONObject:report,options:[.prettyPrinted,.sortedKeys]).write(to:destination,options:.atomic)
+                    }
+                }
+                guard frame.time-last>=0.25 else{return};last=frame.time
                 let data:[String:Any]=["engine":gradient.engineDescription,"progress":frame.progress,"rendered":frame.uniforms[2],
                     "theme":frame.dark ? "dark":"light","color":frame.yellow ? "yellow":"blue",
-                    "historyCount":frame.history.count,"distortion":frame.distortion,"statistics":gradient.renderStatistics]
+                    "historyCount":frame.history.count,"distortion":frame.distortion,"statistics":gradient.renderStatistics,"phase":phase]
                 try? JSONSerialization.data(withJSONObject:data).write(to:url,options:.atomic)
             }
         }

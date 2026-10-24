@@ -59,6 +59,12 @@
 			lastKnownFileType = sourcecode.swift;
 			sourceTree = "<group>";
 		};
+		C2E13FD2C3306F279B69F629 = {
+			isa = PBXFileReference;
+			path = "../UIKitComponent/GradientPerformanceMetrics.swift";
+			lastKnownFileType = sourcecode.swift;
+			sourceTree = "<group>";
+		};
 		89D8EAA29318409A481A5099 = {
 			isa = PBXFileReference;
 			path = "../UIKitComponent/GradientTheme.swift";
@@ -105,13 +111,17 @@
 		};
 		7A7EDF9310917B63BFFE3A7C = {
 			isa = PBXBuildFile;
-			fileRef = 89D8EAA29318409A481A5099;
+			fileRef = C2E13FD2C3306F279B69F629;
 		};
 		B1A344BC4CC11283C79E6077 = {
 			isa = PBXBuildFile;
-			fileRef = 561B99AAA85B23104B23B119;
+			fileRef = 89D8EAA29318409A481A5099;
 		};
 		2745DDA64832543C75688326 = {
+			isa = PBXBuildFile;
+			fileRef = 561B99AAA85B23104B23B119;
+		};
+		6AC56F2511148FED790FA49C = {
 			isa = PBXBuildFile;
 			fileRef = 4C691C5DE889E51E69A80EE8;
 		};
@@ -131,6 +141,7 @@
 				7A7EDF9310917B63BFFE3A7C,
 				B1A344BC4CC11283C79E6077,
 				2745DDA64832543C75688326,
+				6AC56F2511148FED790FA49C,
 				113246AB1D636C4B9D36DED1,
 			);
 			runOnlyForDeploymentPostprocessing = "0";
@@ -680,6 +691,7 @@
 				A86BF27CED832F4AEF1BE10E,
 				05F61233EF90D5A61A2FDE4B,
 				79AC93735702869EF01A8FBF,
+				C2E13FD2C3306F279B69F629,
 				89D8EAA29318409A481A5099,
 				561B99AAA85B23104B23B119,
 				4C691C5DE889E51E69A80EE8,

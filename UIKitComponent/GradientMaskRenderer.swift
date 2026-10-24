@@ -10,9 +10,9 @@ final class GradientMaskRenderer {
     init(device:MTLDevice,queue:MTLCommandQueue) {
         workers=(0..<3).map {_ in Surface(device:device,queue:queue)}
     }
-    func render(progress:CGFloat,elapsed:Double,yellow:Bool,counter:CGRect,size:CGSize,scale:CGFloat)->[MTLTexture] {
+    func render(progress:CGFloat,elapsed:Double,yellow:Bool,counter:CGRect,size:CGSize,scale:CGFloat,metrics:GradientPerformanceMetrics?=nil,frame:Int=0)->[MTLTexture] {
         DispatchQueue.concurrentPerform(iterations:3) { index in
-            _=self.workers[index].render(index,progress:progress,elapsed:elapsed,yellow:yellow,counter:counter,size:size,scale:scale)
+            _=self.workers[index].render(index,progress:progress,elapsed:elapsed,yellow:yellow,counter:counter,size:size,scale:scale,metrics:metrics,frame:frame)
         }
         return workers.map {$0.output!}
     }
@@ -24,7 +24,8 @@ final class GradientMaskRenderer {
             self.device=device;self.queue=queue
             ci=CIContext(mtlDevice:device,options:[.workingColorSpace:NSNull(),.outputColorSpace:NSNull()])
         }
-    func render(_ index:Int,progress p:CGFloat,elapsed:Double,yellow:Bool,counter:CGRect,size:CGSize,scale:CGFloat)->MTLTexture {
+    func render(_ index:Int,progress p:CGFloat,elapsed:Double,yellow:Bool,counter:CGRect,size:CGSize,scale:CGFloat,metrics:GradientPerformanceMetrics?,frame:Int)->MTLTexture {
+        let start=ProcessInfo.processInfo.systemUptime
         let flow=0.62+p*0.30,breath=1+CGFloat(sin(elapsed*1.18+Double(p*5)))*0.025
         let dx=CGFloat(sin(elapsed*0.34+0.7))*10,dy=CGFloat(cos(elapsed*0.27+1.3))*5
         let w:[CGFloat]=[252+p*20,204+p*14,226+p*18],h:[CGFloat]=[118+p*8,92+p*6,78+p*5]
@@ -61,6 +62,8 @@ final class GradientMaskRenderer {
             ctx.drawRadialGradient(gradient,startCenter:.zero,startRadius:index==0 ? 12:2,endCenter:.zero,endRadius:index==0 ? 136:106,options:[.drawsBeforeStartLocation,.drawsAfterEndLocation])
         }
         ctx.restoreGState()
+        let rasterEnd=ProcessInfo.processInfo.systemUptime
+        metrics?.add("maskRasterCPU\(index)MS",(rasterEnd-start)*1000)
         let fullExtent=CGRect(x:0,y:0,width:fullWidth,height:fullHeight)
         let ci=CIImage(cgImage:ctx.makeImage()!).transformed(by:CGAffineTransform(translationX:0,y:CGFloat(fullHeight-bottom)))
             .composited(over:CIImage(color:.clear).cropped(to:fullExtent))
@@ -75,7 +78,11 @@ final class GradientMaskRenderer {
         // CGContext/CI use a bottom-origin image; Metal's sampled row zero is top.
         // check_mask_coordinates.swift verifies 200 -> 644 before this flip.
         let oriented=blurred.transformed(by:CGAffineTransform(a:1,b:0,c:0,d:-1,tx:0,ty:fullExtent.height))
+        let encodeStart=ProcessInfo.processInfo.systemUptime
+        metrics?.add("maskGraphCPU\(index)MS",(encodeStart-rasterEnd)*1000)
         self.ci.render(oriented,to:texture,commandBuffer:command,bounds:fullExtent,colorSpace:cs)
+        metrics?.add("maskEncodeCPU\(index)MS",(ProcessInfo.processInfo.systemUptime-encodeStart)*1000)
+        if let metrics {command.addCompletedHandler {c in metrics.gpu(frame:frame,expected:4,kind:"maskGPU\(index)MS",start:c.gpuStartTime,end:c.gpuEndTime)}}
         command.commit()
         return texture
     }

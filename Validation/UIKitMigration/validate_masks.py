@@ -60,5 +60,5 @@ precondition(worst<=0.0001,"Mask change can be visible")
 '''
 with tempfile.TemporaryDirectory() as folder:
  folder=Path(folder);(folder/'main.swift').write_text(header+'\n'.join(classes)+main)
- subprocess.run(['xcrun','swiftc','-O',str(root/'UIKitComponent/Core/GradientSession.swift'),str(root/'UIKitComponent/GradientMaskRenderer.swift'),str(folder/'main.swift'),'-o',str(folder/'masks')],check=True)
+ subprocess.run(['xcrun','swiftc','-O',str(root/'UIKitComponent/Core/GradientSession.swift'),str(root/'UIKitComponent/GradientMaskRenderer.swift'),str(root/'UIKitComponent/GradientPerformanceMetrics.swift'),str(folder/'main.swift'),'-o',str(folder/'masks')],check=True)
  subprocess.run([str(folder/'masks')],check=True)
