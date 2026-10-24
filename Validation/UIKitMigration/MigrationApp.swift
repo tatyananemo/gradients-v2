@@ -119,7 +119,7 @@ final class MigrationController:UIViewController {
             }
         }
         MigrationEnvironment.frame.activation=probe.activation
-        if request.mode == "swiftui" {reference()}
+        if request.mode.hasPrefix("swiftui") {reference()}
         else {
             // Enabled by the separately reviewed prototype commit.
             #if UIKIT_PROTOTYPE
@@ -135,9 +135,20 @@ final class MigrationController:UIViewController {
             "size":[view.bounds.width,view.bounds.height],"progress":MigrationEnvironment.frame.replay.progress,
             "time":MigrationEnvironment.frame.time,"os":UIDevice.current.systemVersion]
         #if UIKIT_PROTOTYPE
-        if let prototype=host as? PrototypeController {metadata["prototype"]=prototype.diagnostics}
+        if let prototype=host as? PrototypeController {
+            for _ in 0..<500 where !prototype.finished {try await Task.sleep(nanoseconds:10_000_000)}
+            guard prototype.finished else{throw NSError(domain:"Migration.DrawableNotCompleted",code:3)}
+            metadata["prototype"]=prototype.diagnostics
+        }
         #endif
         try JSONSerialization.data(withJSONObject:metadata,options:[.prettyPrinted,.sortedKeys]).write(to:directory.appendingPathComponent("ready.json"),options:.atomic)
     }
     func rect(_ r:CGRect)->[CGFloat] {[r.minX,r.minY,r.width,r.height]}
+}
+
+struct MigrationVisibility:ViewModifier {
+    let ui:Bool
+    @ViewBuilder func body(content:Content)->some View {
+        if MigrationEnvironment.frame.request.mode.hasSuffix("-background") || (ui && MigrationEnvironment.frame.request.mode.hasSuffix("-caption")) {content.hidden()}else{content}
+    }
 }

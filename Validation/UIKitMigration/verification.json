@@ -1,0 +1,57 @@
+{
+  "original_v2_sources_unchanged": true,
+  "original_gpu_reference_unchanged": true,
+  "runtime_swift_lines": 1036,
+  "runtime_metal_lines": 10165,
+  "protected_projects": {
+    "approved-v2": {
+      "checked_files": 15,
+      "unchanged": true,
+      "differences": []
+    },
+    "production": {
+      "checked_files": 9,
+      "unchanged": true,
+      "differences": []
+    },
+    "v3": {
+      "checked_files": 15,
+      "unchanged": true,
+      "differences": []
+    }
+  },
+  "baseline_validation": {
+    "passed": true,
+    "base_commit": "542b89b54b9299b48d4121de7f6ee182f3e3f340",
+    "frames": 72,
+    "raw_gpu_outputs_compared": 216,
+    "behavior_checkpoints": 33,
+    "metal_exact_sharing_only": true,
+    "swift_unchanged_since": "39b50ed",
+    "shader_parameters_and_arguments_identical": true,
+    "gpu_byte_identical": true,
+    "recorded_reference": false,
+    "scope": "Offscreen GPU + original input handlers. Not a Simulator UI screenshot/replay test."
+  },
+  "builds": {
+    "v2_debug": {
+      "passed": true,
+      "log_sha256": "c2ab8ac4e53a76b01c7168fe1578d9fc5387ae77eb46d2a2be625b8bd7a0ed28"
+    },
+    "v2_release": {
+      "passed": true,
+      "log_sha256": "f6044cf65b2fb4b0dd335f0cb45d98e7f93c11447511c02b10bb8f9afcd14c3c"
+    },
+    "probe_debug": {
+      "passed": true,
+      "log_sha256": "2d464bf56e80afee92dcec06393bdd0afa1f1cf0d72a9efbc38cb96d4fb2de42"
+    },
+    "probe_release": {
+      "passed": true,
+      "log_sha256": "4965c620e0e3615370a76f9cf615c5284345963e69e3d099d09ab15817d18ec0"
+    }
+  },
+  "prototype_visual_equivalence_passed": false,
+  "native_first_frame_stability_passed": false,
+  "work_branch": "migration/v2-uikit-feasibility"
+}

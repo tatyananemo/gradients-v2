@@ -17,11 +17,15 @@ def cases():
         for kind,phase in [('swipe',0),('hold',0.3),('release',0.299),('release',0.7),('release',1.12),('reset',0.35)]:
             yield dict(id=f'{name}-060-{kind}-{phase}',dark=dark,yellow=yellow,progress=.6,kind=kind,phase=phase)
 if __name__=='__main__':
-    parser=argparse.ArgumentParser();parser.add_argument('--mode',default='swiftui');parser.add_argument('--filter',default='');parser.add_argument('--suffix',default='');args=parser.parse_args()
-    out=HERE/'Results'/(args.mode+args.suffix);out.mkdir(parents=True,exist_ok=True)
+    parser=argparse.ArgumentParser();parser.add_argument('--mode',default='swiftui');parser.add_argument('--filter',default='');parser.add_argument('--suffix',default='');parser.add_argument('--set',choices=['all','diagnostic','core'],default='all');args=parser.parse_args()
+    out=HERE/'Results'/(args.mode+args.suffix)
+    if out==HERE/'Results/swiftui' and (HERE/'baseline.json').exists():raise SystemExit('Frozen reference exists; use --suffix for repeat capture')
+    out.mkdir(parents=True,exist_ok=True)
     container=Path(run('xcrun','simctl','get_app_container',DEVICE,BUNDLE,'data'))/'Documents';container.mkdir(exist_ok=True)
-    manifest={}
+    manifest=json.loads((out/'manifest.json').read_text()) if (out/'manifest.json').exists() else {}
     selected=[c for c in cases() if args.filter in c['id']]
+    if args.set=='diagnostic':selected=[c for c in selected if (c['kind']=='contact' and c['progress'] in [.3,.6,.8] and c['phase']==1.65) or c['kind']=='swipe']
+    if args.set=='core':selected=[c for c in selected if c['kind'] in ['main','contact'] and c['phase']==1.65]
     for i,case in enumerate(selected):
         request=dict(case,mode=args.mode);request['id']+=args.suffix+'-'+str(time.time_ns())
         target=out/(case['id']+'.png')

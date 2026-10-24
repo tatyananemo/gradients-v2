@@ -6,6 +6,11 @@ HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
 BUILD = HERE / 'Build'
 BUILD.mkdir(exist_ok=True)
+lock = HERE/'baseline.json'
+if lock.exists():
+    for path,digest in json.loads(lock.read_text())['source']['files'].items():
+        if hashlib.sha256((ROOT/path).read_bytes()).hexdigest()!=digest:
+            raise SystemExit('Frozen V2 source changed: '+path)
 sys.dont_write_bytecode=True
 sys.path.insert(0,str(ROOT/'Validation'))
 spec = importlib.util.spec_from_file_location('validation', ROOT/'Validation/validate.py')
@@ -48,6 +53,7 @@ reference = reference.replace('.contentTransition(.numericText())', '''.contentT
                                 .background { GeometryReader { proxy in
                                     Color.clear.onAppear { if MigrationEnvironment.frame === migrationFixture { MigrationEnvironment.counterFrame = proxy.frame(in: .global) } }
                                 }}''')
+reference = reference.replace('.zIndex(1)', '.zIndex(1).modifier(MigrationVisibility(ui:false))').replace('.zIndex(10)', '.zIndex(10).modifier(MigrationVisibility(ui:true))')
 # UI and formulas are retained. The only adaptations above supply clocks/state,
 # isolate preferences, record geometry, and freeze separately measured activation.
 (BUILD/'GradientInstallView.swift').write_text(reference)
@@ -82,6 +88,7 @@ extras = ['MigrationReplay.swift']
 if (HERE/'PrototypeRenderer.swift').exists():
     shutil.copyfile(HERE/'PrototypeRenderer.swift',BUILD/'PrototypeRenderer.swift')
     extras.append('PrototypeRenderer.swift')
+    project=project.replace('SWIFT_VERSION = 5.0;', 'SWIFT_VERSION = 5.0;\nSWIFT_ACTIVE_COMPILATION_CONDITIONS = \"$(inherited) UIKIT_PROTOTYPE\";')
     shader = (BUILD/'LiquidSpecBackground.metal').read_text() + '\n' + (HERE/'PrototypeAdapters.metal').read_text()
     (BUILD/'PrototypeShader.txt').write_text(shader)
     project = project.replace('/* End PBXBuildFile section */','1C0000990000000000000001 = {isa = PBXBuildFile; fileRef = 1C0000990000000000000011; };\n/* End PBXBuildFile section */')
