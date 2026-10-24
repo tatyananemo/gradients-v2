@@ -93,6 +93,40 @@ final class ComponentTests:XCTestCase {
         }}
     }
 
+    @MainActor func testLiveThemeChangesReusePrivateMasksWithoutGPUFailures() async throws {
+        let window=UIWindow(frame:CGRect(x:0,y:0,width:390,height:844))
+        let session=GradientSession(at:Date().timeIntervalSinceReferenceDate,initialProgress:0.6)
+        let controller=try GradientViewController(session:session,dark:true,yellow:false)
+        window.rootViewController=controller;window.makeKeyAndVisible()
+        defer {controller.pauseRendering();window.isHidden=true}
+        for _ in 0..<2 {for dark in [true,false] {for yellow in [false,true] {
+            controller.dark=dark;controller.yellow=yellow
+            let submitted=controller.framesSubmitted
+            let deadline=ProcessInfo.processInfo.systemUptime+8
+            repeat {
+                try await Task.sleep(nanoseconds:50_000_000)
+            } while controller.framesSubmitted<submitted+12 && ProcessInfo.processInfo.systemUptime<deadline
+            XCTAssertGreaterThanOrEqual(controller.framesSubmitted,submitted+12,"Renderer stopped: dark=\(dark), yellow=\(yellow)")
+            XCTAssertTrue(controller.gpuErrors.isEmpty,controller.gpuErrors.joined(separator:"\n"))
+            if dark {
+                XCTAssertEqual(controller.masks.count,3)
+                for texture in controller.masks {
+                    XCTAssertEqual(texture.storageMode,.private)
+                    XCTAssertEqual(texture.pixelFormat,.rgba16Float)
+                    XCTAssertEqual(texture.width,Int(controller.viewMetal.drawableSize.width))
+                    XCTAssertEqual(texture.height,Int(controller.viewMetal.drawableSize.height))
+                }
+            }
+        }}}
+        controller.pauseRendering()
+        let deadline=ProcessInfo.processInfo.systemUptime+8
+        while controller.inFlight && ProcessInfo.processInfo.systemUptime<deadline {
+            try await Task.sleep(nanoseconds:20_000_000)
+        }
+        XCTAssertFalse(controller.inFlight,"GPU commands did not complete")
+        XCTAssertTrue(controller.gpuErrors.isEmpty,controller.gpuErrors.joined(separator:"\n"))
+    }
+
     func testPerformanceMetricsCountSustainedDeadlineDeficit() {
         let metrics=GradientPerformanceMetrics()
         for i in 0..<6 {

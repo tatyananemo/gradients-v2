@@ -49,3 +49,24 @@ python3 Validation/Performance/validate_mask_reuse.py
 ```
 
 Optional `GRADIENTS_SIMULATOR` selects an already booted device; `GRADIENTS_PROFILE_CASES=dark-blue` narrows the profiling trace. These tools do not create screenshots, videos or HTML reports. Synchronization/readbacks in numerical regression tests are confined to the offline test runners, never the SDK render path.
+
+## Crash investigation and launch regression (25 October 2026)
+
+The four existing `GradientsUIKit` reports concern the automatically launched app on validation Simulator `468B8589-9260-4F1B-8958-63737D5D8BB6`, not the Simulator process:
+
+- 24 October, 19:19:42 and 19:20:50 +0300: DYLD could not load `/Library/Frameworks/GradientsKit.framework/GradientsKit`. The framework install name is now `@rpath/GradientsKit.framework/GradientsKit` in both project configurations and the generator.
+- 24 October, 20:42:12 and 20:42:59 +0300: Metal aborted inside `MTLSimBuffer newTextureWithDescriptor:offset:bytesPerRow:`. The exact diagnostic was `Linear texture can only be created on buffers with MTLStorageModePrivate in the simulator`. This was an experimental shared-buffer source texture, not a MAIN/CONTACT formula or gesture failure. That entire source/staging experiment was already removed; the current mask renderer allocates reusable private textures directly from the device.
+- Crashing experimental framework UUID: `AF25049E-0386-3F1A-9C55-AE88EA92CF91`. Installed normal Release framework UUID: `0F8293F7-9525-3624-BEA6-92A9DC69B882`. The installed process was still running from 21:26 on 24 October when inspected at 01:19 on 25 October; no newer crash report was present.
+
+Verification on iPhone 14 / iOS 18.6 Simulator:
+
+- Debug: 7 component tests and 2 UI tests passed. Release: the same 7 + 2 passed; `ENABLE_TESTABILITY=YES` was confined to a separate test build, retaining Release optimization. Normal Release also builds without that override.
+- A new live-render test cycles four themes twice, checks continuing frame submission, private full-resolution Float16 Dark masks, completion of in-flight commands, and an empty GPU error list.
+- A new launch runner passed 12 independent normal Release launches (four themes at 30/60/80%), checking at least 90 advancing render frames per launch and no new application crash reports. It creates no screenshots or extra app bundle IDs.
+- Session and reset replays passed unchanged. Original V2, V3 and production protected source hashes remain unchanged.
+
+Run the launch regression with `GRADIENTS_PROFILE_APP=/path/to/Release-iphonesimulator/GradientsUIKit.app python3 Validation/Performance/validate_simulator_launches.py /tmp/launch-stability.json`. It uses the existing booted validation Simulator by default, or `GRADIENTS_SIMULATOR` when specified. The SDK's shaders, renderer, masks, resource scheduling and interaction code were not changed during this crash investigation.
+
+Follow-up normal Release trace after these checks (same 20 s interaction script): Blue Dark 59.910, Yellow Dark 59.923, Blue Light 57.960, Yellow Light 59.977 GPU completions/s. Each Dark trace missed one CADisplayLink opportunity and skipped no resource slots. Blue Light still skipped 37 slots, despite only 0.183 ms mean GPU work; this delivery/lifetime scheduling limitation remains unresolved, rather than being hidden by a larger queue or a visual simplification. These Simulator measurements do not establish perfectly stable 60 FPS. No further speculative runtime optimization was retained.
+
+GPU preservation was rechecked: 216 original outputs byte-identical; 60 accepted UIKit raw masks and 108 queued-resource reuse comparisons had zero differing components. Numerical launch/timing evidence from this run is in `/tmp/gradients-crash-repeated-launches.json` and `/tmp/gradients-crash-performance.json`.
