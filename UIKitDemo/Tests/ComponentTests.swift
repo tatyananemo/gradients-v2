@@ -127,6 +127,18 @@ final class ComponentTests:XCTestCase {
         XCTAssertTrue(controller.gpuErrors.isEmpty,controller.gpuErrors.joined(separator:"\n"))
     }
 
+    @MainActor func testCaptionProbeInvalidatesPreviousThemeWhileBusy() async throws {
+        let gpu=try GradientGPU(),probe=SessionCaptionProbe(gpu:gpu)
+        let frame=GradientSession(at:0,initialProgress:0.6).frame(at:1,size:CGSize(width:390,height:844),dark:false,yellow:false)
+        let caption=CGRect(x:0,y:699,width:390,height:63)
+        probe.sample(uniforms:frame.uniforms,history:[],frame:caption,key:"blue",dark:false,yellow:false)
+        // Completion is dispatched to main, so the second call observes busy=true.
+        probe.sample(uniforms:frame.uniforms,history:[],frame:caption,key:"yellow",dark:false,yellow:true)
+        XCTAssertEqual(probe.key,"yellow","In-flight results must not keep the old theme current")
+        try await Task.sleep(nanoseconds:200_000_000)
+        XCTAssertEqual(probe.activation,0,"An obsolete theme result changed the new theme's backing")
+    }
+
     func testPerformanceMetricsCountSustainedDeadlineDeficit() {
         let metrics=GradientPerformanceMetrics()
         for i in 0..<6 {

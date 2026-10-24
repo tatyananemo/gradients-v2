@@ -17,12 +17,13 @@ final class SessionCaptionProbe {
   resultBuffer=gpu.device.makeBuffer(length:360*16,options:.storageModeShared)
  }
  func sample(uniforms:[Float],history:[Float],frame:CGRect,key sampleKey:String,dark:Bool,yellow:Bool){
-  guard !busy,uniforms.count==28,history.count<=240,
-   let queue,let pipeline,let uniformsBuffer,let historyBuffer,let resultBuffer else{return}
+  guard uniforms.count==28,history.count<=240 else{return}
+  // Invalidate old-theme results even while a previous GPU sample is in flight.
+  if key != sampleKey {key=sampleKey;activation=0;filteredRisk=0;previousWave=0;needed=false}
+  guard !busy,let queue,let pipeline,let uniformsBuffer,let historyBuffer,let resultBuffer else{return}
   let currentTime=ProcessInfo.processInfo.systemUptime
   let dt=lastTime==0 ? 1.0/60:min(max(currentTime-lastTime,1.0/240),0.1)
   lastTime=currentTime
-  if key != sampleKey {key=sampleKey;activation=0;filteredRisk=0;previousWave=0;needed=false}
   let w=CGFloat(uniforms[0]),h=CGFloat(uniforms[1])
   let box=frame.height>0 ? frame:CGRect(x:0,y:h*0.82,width:w,height:h*0.085)
   let x0=max(0,box.minX+34),x1=min(w,box.maxX-34)
