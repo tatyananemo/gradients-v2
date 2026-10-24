@@ -24,48 +24,14 @@ float3 yellowReviewDarkPalette(float sharedLightField,float progress) {
     if(progress>0.78) mapped.r=mix(mapped.r,qaNativeBlueCap(mapped.r),late);
     return mapped;
 }
-float3 yellowReviewTransmission() {
-    float3 yellowLightOrange=mix(yellowMidColor.rgb,yellowHotColor.rgb,0.25);
-    return float3(yellowLightOrange.r,mix(yellowMidColor.g,yellowHotColor.g,0.75),
-        pow(yellowLightAccent.b,2.5));
-}
+using YellowShared::yellowReviewTransmission;
 // Colour partition of the EXISTING idleWaveDensity profiles. Geometry is
 // copied verbatim only to recover primary / (primary+secondary+halo); W and I
 // still come from the immutable physical field, including its exact clamps.
-float yellowReviewPrimaryShare(float2 position,float2 size,float idleTime) {
-    float2 p=position/max(size,float2(1.0))*float2(375.0,812.0);
-    float cycle=smootherLiquid(fract(idleTime/3.0));
-    float waveY=mix(-110.0,925.0,cycle);
-    float width=mix(72.0,420.0,cycle);
-    float thickness=mix(19.0,42.0,cycle);
-    float dx=p.x-187.5;
-    float arcY=waveY+(dx*dx)/max(width*1.72,1.0);
-    float distanceToArc=p.y-arcY;
-    float primary=exp(-pow(distanceToArc/thickness,2.0))*exp(-pow(dx/width,2.0));
-    float secondary=exp(-pow((distanceToArc+72.0)/(thickness*1.35),2.0))*
-        exp(-pow(dx/(width*1.18),2.0))*0.32;
-    float halo=exp(-pow((p.y-waveY)/180.0,2.0))*
-        exp(-pow(dx/max(width*1.18,1.0),2.0))*0.12;
-    return primary/max(primary+secondary+halo,0.000001);
-}
+using YellowShared::yellowReviewPrimaryShare;
 // Light-only colour metadata from the exact existing primary/secondary/halo.
 // Keep the scalar function and all Dark calls unchanged for pixel identity.
-float3 yellowReviewWaveShares(float2 position,float2 size,float idleTime) {
-    float2 p=position/max(size,float2(1.0))*float2(375.0,812.0);
-    float cycle=smootherLiquid(fract(idleTime/3.0));
-    float waveY=mix(-110.0,925.0,cycle);
-    float width=mix(72.0,420.0,cycle);
-    float thickness=mix(19.0,42.0,cycle);
-    float dx=p.x-187.5;
-    float arcY=waveY+(dx*dx)/max(width*1.72,1.0);
-    float distanceToArc=p.y-arcY;
-    float primary=exp(-pow(distanceToArc/thickness,2.0))*exp(-pow(dx/width,2.0));
-    float secondary=exp(-pow((distanceToArc+72.0)/(thickness*1.35),2.0))*
-        exp(-pow(dx/(width*1.18),2.0))*0.32;
-    float halo=exp(-pow((p.y-waveY)/180.0,2.0))*
-        exp(-pow(dx/max(width*1.18,1.0),2.0))*0.12;
-    return float3(primary,secondary,halo)/max(primary+secondary+halo,0.000001);
-}
+using YellowShared::yellowReviewWaveShares;
 float3 yellowReviewLightSource(float3 shares,float W) {
     float3 primary=float3(yellowLightAccent.r,yellowLightAccent.g,0.0);
     // Only the existing primary colour response: a bright Yellow crest,

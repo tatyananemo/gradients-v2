@@ -8,7 +8,7 @@ from pathlib import Path
 import re
 import subprocess
 import sys
-from metal_deletions import verify as verify_metal_deletions
+from metal_dedup import verify as verify_metal_sharing
 
 ROOT = Path(__file__).resolve().parents[1]
 BASE = "542b89b54b9299b48d4121de7f6ee182f3e3f340"
@@ -176,9 +176,9 @@ def main():
     parameters = fixed_parameters(source, approved)
     check_render_arguments(source, approved)
     check_preserved_ui(source, approved)
-    # The user-authorized Metal stage permits only documented deletions.
+    # The user-authorized stage permits only exact sharing from the accepted dead-code checkpoint.
     # Keep Swift frozen at the accepted refactor checkpoint and all output hashes original.
-    verify_metal_deletions()
+    verify_metal_sharing()
     import importlib.util
     spec = importlib.util.spec_from_file_location("composer", ROOT / "Scripts/compose_metal.py")
     composer = importlib.util.module_from_spec(spec)
@@ -218,7 +218,7 @@ def main():
         assert hashes == reference["render_sha256"], "GPU pixels, probe results or distortion differ"
     result = {"passed": True, "base_commit": BASE, "frames": len(cases),
               "raw_gpu_outputs_compared": len(hashes), "behavior_checkpoints": len(json.loads((out / "behavior.json").read_text())),
-              "metal_deletions_only": True, "swift_unchanged_since": "39b50ed",
+              "metal_exact_sharing_only": True, "swift_unchanged_since": "39b50ed",
               "shader_parameters_and_arguments_identical": True,
               "gpu_byte_identical": True, "recorded_reference": args.record,
               "scope": "Offscreen GPU + original input handlers. Not a Simulator UI screenshot/replay test."}

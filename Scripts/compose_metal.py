@@ -5,7 +5,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 YELLOW_MODULES = ("YellowDarkMAIN", "YellowLightMAIN", "YellowDarkContact", "YellowLightContact")
-MODULES = ("ApprovedBlue", "ContactFields", *YELLOW_MODULES, "V2EntryPoints")
+MODULES = ("ApprovedBlue", "ContactFields", "YellowShared", *YELLOW_MODULES, "V2EntryPoints")
 
 
 def read_module(root, name):
@@ -21,6 +21,7 @@ def compose(root=ROOT):
     # Preserve remaining public entry annotations and surviving formulas verbatim.
     result = blue.replace(entry, "half4 liquidSpecBackground(")
     result += "\n" + read_module(root, "ContactFields") + "\n\n"
+    result += read_module(root, "YellowShared") + "\n"
     for name in YELLOW_MODULES:
         source = read_module(root, name)
         if source.count("[[ stitchable ]]") != 1:

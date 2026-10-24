@@ -5,7 +5,7 @@ import subprocess
 import sys
 import tempfile
 import unittest
-from metal_deletions import verify as verify_metal_deletions
+from metal_dedup import verify as verify_metal_sharing
 
 ROOT = Path(__file__).resolve().parents[1]
 SPEC = importlib.util.spec_from_file_location("composer", ROOT / "Scripts/compose_metal.py")
@@ -19,13 +19,16 @@ class CompositionTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as folder:
             base = Path(folder)
             (base / "ShaderSources").mkdir()
-            for name in COMPOSER.MODULES:
+            original_composer = subprocess.check_output(["git", "show", "39b50ed:Scripts/compose_metal.py"], cwd=ROOT).decode()
+            scope = {"__file__": str(base / "Scripts/compose_metal.py")}
+            exec(compile(original_composer, "original_composer", "exec"), scope)
+            for name in scope["MODULES"]:
                 relative = "ShaderSources/" + name + ".metal.source"
                 (base / relative).write_bytes(subprocess.check_output(["git", "show", "39b50ed:" + relative], cwd=ROOT))
-            self.assertEqual(COMPOSER.compose(base), approved)
+            self.assertEqual(scope["compose"](base), approved)
 
-    def test_candidate_has_only_documented_deletions(self):
-        verify_metal_deletions()
+    def test_candidate_has_only_exact_shared_implementations(self):
+        verify_metal_sharing()
 
     def test_xcode_tracks_every_composition_input(self):
         declared = set((ROOT / "ShaderSources/CompositionInputs.xcfilelist").read_text().splitlines())

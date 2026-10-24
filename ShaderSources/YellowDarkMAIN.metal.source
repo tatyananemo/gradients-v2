@@ -20,86 +20,25 @@ float yellowReviewDarkMainAtPose(float2 uv,float progress,float time) {
 }
 // Both Dark alternatives use ONE scalar exposure. Only chroma stops differ.
 // No per-channel clipping, progress-dependent toe boost or alternate density curve.
-float3 yellowReviewDarkPalette(float M,float progress) {
-    float q=clamp(M/1.32,0.0,1.0);
-    float3 current=mix(yellowDeepColor.rgb,yellowHotColor.rgb,q);
-    float3 hue=current;
-    float3 w=float3(0.2126,0.7152,0.0722);
-    // Unclipped Blue reference avoids the B=1 derivative corner at M=1.
-    // A common smooth peak cap preserves colour ratios and bright maxima.
-    float reference=dot(pow(float3(.10,.55,1.0)*max(M,0.0),float3(2.2)),w);
-    float amplitude=pow(reference*1.12/max(dot(pow(current,float3(2.2)),w),.00001),1.0/2.2);
-    float commonAmplitude=qaNativeBlueCap(amplitude);
-    // Use the common exposure without re-darkening configured gold to the
-    // CURRENT palette's luminance. Chroma brightness remains palette-specific.
-    return hue*commonAmplitude;
-}
-float3 yellowReviewTransmission() {
-    float3 yellowLightOrange=mix(yellowMidColor.rgb,yellowHotColor.rgb,0.25);
-    return float3(yellowLightOrange.r,mix(yellowMidColor.g,yellowHotColor.g,0.75),
-        pow(yellowLightAccent.b,2.5));
-}
+using YellowShared::yellowReviewDarkPalette;
+using YellowShared::yellowReviewTransmission;
 // Colour partition of the EXISTING idleWaveDensity profiles. Geometry is
 // copied verbatim only to recover primary / (primary+secondary+halo); W and I
 // still come from the immutable physical field, including its exact clamps.
-float yellowReviewPrimaryShare(float2 position,float2 size,float idleTime) {
-    float2 p=position/max(size,float2(1.0))*float2(375.0,812.0);
-    float cycle=smootherLiquid(fract(idleTime/3.0));
-    float waveY=mix(-110.0,925.0,cycle);
-    float width=mix(72.0,420.0,cycle);
-    float thickness=mix(19.0,42.0,cycle);
-    float dx=p.x-187.5;
-    float arcY=waveY+(dx*dx)/max(width*1.72,1.0);
-    float distanceToArc=p.y-arcY;
-    float primary=exp(-pow(distanceToArc/thickness,2.0))*exp(-pow(dx/width,2.0));
-    float secondary=exp(-pow((distanceToArc+72.0)/(thickness*1.35),2.0))*
-        exp(-pow(dx/(width*1.18),2.0))*0.32;
-    float halo=exp(-pow((p.y-waveY)/180.0,2.0))*
-        exp(-pow(dx/max(width*1.18,1.0),2.0))*0.12;
-    return primary/max(primary+secondary+halo,0.000001);
-}
+using YellowShared::yellowReviewPrimaryShare;
 // Light-only colour metadata from the exact existing primary/secondary/halo.
 // Keep the scalar function and all Dark calls unchanged for pixel identity.
-float3 yellowReviewWaveShares(float2 position,float2 size,float idleTime) {
-    float2 p=position/max(size,float2(1.0))*float2(375.0,812.0);
-    float cycle=smootherLiquid(fract(idleTime/3.0));
-    float waveY=mix(-110.0,925.0,cycle);
-    float width=mix(72.0,420.0,cycle);
-    float thickness=mix(19.0,42.0,cycle);
-    float dx=p.x-187.5;
-    float arcY=waveY+(dx*dx)/max(width*1.72,1.0);
-    float distanceToArc=p.y-arcY;
-    float primary=exp(-pow(distanceToArc/thickness,2.0))*exp(-pow(dx/width,2.0));
-    float secondary=exp(-pow((distanceToArc+72.0)/(thickness*1.35),2.0))*
-        exp(-pow(dx/(width*1.18),2.0))*0.32;
-    float halo=exp(-pow((p.y-waveY)/180.0,2.0))*
-        exp(-pow(dx/max(width*1.18,1.0),2.0))*0.12;
-    return float3(primary,secondary,halo)/max(primary+secondary+halo,0.000001);
-}
+using YellowShared::yellowReviewWaveShares;
 // Match the accepted Blue channel response, exchanging its blue energy
 // axis for Yellow's red axis. Same W/I and same positive relief increment.
 // Blue source (.14,.48,1), peak (.24,1,1): Yellow (1,.48,.14), (1,1,.24).
 // Constants come from the protected response, not a new spatial light layer.
-float3 yellowReviewLightSource(float3 shares,float W) {
-    return float3(1.0,0.48,0.14);
-}
-float3 yellowReviewLightPeak(float3 shares) {
-    return float3(1.0,1.0,0.24);
-}
+using YellowShared::yellowReviewLightSource;
+using YellowShared::yellowReviewLightPeak;
 // Hue-only warm gamut readout. The unchanged caption backdrop can make
 // pure R=G yellow look olive. Preserve HSV V and S, unlike the previous
 // OKLab/max-linear normalization that suppressed the luminous crest.
-float3 yellowReviewHSV(float3 rgb) {
-    float hi=max(rgb.r,max(rgb.g,rgb.b)),lo=min(rgb.r,min(rgb.g,rgb.b));
-    float d=hi-lo,h=0.0;
-    if(d>0.000001) {
-        if(hi==rgb.r)h=(rgb.g-rgb.b)/d;
-        else if(hi==rgb.g)h=2.0+(rgb.b-rgb.r)/d;
-        else h=4.0+(rgb.r-rgb.g)/d;
-        h=fract(h/6.0+1.0);
-    }
-    return float3(h,hi>0.000001 ? d/hi:0.0,hi);
-}
+using YellowShared::yellowReviewHSV;
 float3 yellowReviewGoldenHue(float3 rgb,float counterProtection) {
     float3 hsv=yellowReviewHSV(rgb);
     // Existing configured Accent to the bright yellow endpoint. Only the
