@@ -93,4 +93,19 @@ final class ComponentTests:XCTestCase {
         }}
     }
 
+    func testPerformanceMetricsCountSustainedDeadlineDeficit() {
+        let metrics=GradientPerformanceMetrics()
+        for i in 0..<6 {
+            let time=100+Double(i)*0.02
+            metrics.presented(at:time,input:0);metrics.displayLink(at:time)
+        }
+        let report=metrics.report()
+        XCTAssertEqual((report["displayLinkFPS"] as? Double) ?? 0,50,accuracy:0.0001)
+        XCTAssertEqual(report["missedDisplayLinkTicks"] as? Int,1)
+        #if targetEnvironment(simulator)
+        XCTAssertEqual(report["completionDeficitAt60Hz"] as? Int,1)
+        XCTAssertNil(report["missedVSyncsEstimate"])
+        #endif
+    }
+
 }

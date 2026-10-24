@@ -44,13 +44,14 @@ final class DemoController:UIViewController,UIAdaptivePresentationControllerDele
             let benchmark=environment["GRADIENTS_BENCHMARK"]=="1"
             let launched=ProcessInfo.processInfo.systemUptime
             var measuring=false,ended=false
+            var startingStats:[String:Double]=[:]
             var phase="warmup"
             let url=FileManager.default.urls(for:.documentDirectory,in:.userDomainMask)[0].appendingPathComponent("renderer-state.json")
             gradient.onFrame={ [weak gradient] frame in
                 guard let gradient else{return}
                 if benchmark {
                     let elapsed=ProcessInfo.processInfo.systemUptime-launched
-                    if elapsed>=3 && !measuring {gradient.beginPerformanceMeasurement();measuring=true}
+                    if elapsed>=3 && !measuring {gradient.beginPerformanceMeasurement();startingStats=gradient.renderStatistics;measuring=true}
                     if elapsed>=3 && elapsed<23 {
                         let t=elapsed-3
                         let next=t<3 ? "idle":t<9 ? "swipe":t<12 ? "hold":t<16 ? "release":"idle-after-release"
@@ -61,7 +62,8 @@ final class DemoController:UIViewController,UIAdaptivePresentationControllerDele
                         phase=next
                     } else if elapsed>=23 && !ended {
                         ended=true;gradient.pauseRendering()
-                        let report=gradient.performanceReport
+                        var report=gradient.performanceReport
+                        report["renderer"]=gradient.renderStatistics.mapValues{$0}.reduce(into:[String:Double]()){d,pair in d[pair.key]=pair.value-(startingStats[pair.key] ?? 0)}
                         let destination=url.deletingLastPathComponent().appendingPathComponent("performance.json")
                         try? JSONSerialization.data(withJSONObject:report,options:[.prettyPrinted,.sortedKeys]).write(to:destination,options:.atomic)
                     }

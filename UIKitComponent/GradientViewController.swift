@@ -109,7 +109,7 @@ public final class GradientViewController:UIViewController,MTKViewDelegate {
     public override func viewDidAppear(_ animated:Bool){
         super.viewDidAppear(animated)
         if !externallyDriven && displayLink == nil {
-            let link=CADisplayLink(target:GradientDisplayTarget(self),selector:#selector(GradientDisplayTarget.tick))
+            let link=CADisplayLink(target:GradientDisplayTarget(self),selector:#selector(GradientDisplayTarget.tick(_:)))
             link.preferredFrameRateRange=CAFrameRateRange(minimum:30,maximum:60,preferred:60)
             link.add(to:.main,forMode:.common);displayLink=link
         }
@@ -353,7 +353,7 @@ public final class GradientViewController:UIViewController,MTKViewDelegate {
 private final class GradientDisplayTarget:NSObject {
     weak var owner:GradientViewController?
     init(_ owner:GradientViewController){self.owner=owner}
-    @objc func tick(){owner?.tick()}
+    @objc func tick(_ link:CADisplayLink){owner?.performanceMetrics?.displayLink(at:link.timestamp);owner?.tick()}
 }
 /// Zero minimum-distance continuous input; taps never replace swipes.
 private final class GradientInputRecognizer:UIGestureRecognizer {

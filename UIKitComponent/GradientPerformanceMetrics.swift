@@ -5,6 +5,7 @@ final class GradientPerformanceMetrics {
     private let lock=NSLock()
     private var samples:[String:[Double]]=[:]
     private var presentations:[Double]=[]
+    private var displayLinks:[Double]=[]
     private var envelopes:[Int:(Int,Double,Double,Double)]=[:]
     private var latestInput=0.0
     private var consumedInput=0.0
@@ -47,8 +48,12 @@ final class GradientPerformanceMetrics {
             samples["inputTo\(cadence.capitalized)MS",default:[]].append((time-input)*1000)
         }
     }
+    func displayLink(at time:Double) {
+        lock.lock();defer{lock.unlock()}
+        if displayLinks.count<limit {displayLinks.append(time)}
+    }
     func report()->[String:Any] {
-        lock.lock();let values=samples,shown=presentations.sorted();lock.unlock()
+        lock.lock();let values=samples,shown=presentations.sorted(),ticks=displayLinks.sorted();lock.unlock()
         func summary(_ values:[Double])->[String:Double] {
             let s=values.sorted();guard !s.isEmpty else{return ["count":0]}
             func percentile(_ p:Double)->Double{s[min(s.count-1,Int(ceil(Double(s.count)*p))-1)]}
@@ -63,7 +68,19 @@ final class GradientPerformanceMetrics {
             result["durationSeconds"]=last-first
         }
         result["timingBasis"]=cadence=="completion" ? "Simulator completion callback; not physical presentation":"MTLDrawable.presentedTime"
-        result["missedVSyncsEstimate"]=intervals.reduce(0){$0+max(0,Int(($1/(1000/60)).rounded())-1)}
+        if let first=shown.first,let last=shown.last {
+            let deficit=max(0,Int(((last-first)*60).rounded())-intervals.count)
+            result[cadence=="completion" ? "completionDeficitAt60Hz":"missedVSyncsEstimate"]=deficit
+        }
+        // Completion callbacks are not vsync timestamps in Simulator. A stream
+        // of 20 ms callbacks loses capacity at 60 Hz even with no >25 ms gaps.
+        result["longCompletionGapsOver25MS"]=intervals.filter{$0>25}.count
+        let tickIntervals=zip(ticks.dropFirst(),ticks).map{($0-$1)*1000}
+        result["displayLinkIntervalMS"]=summary(tickIntervals)
+        if let first=ticks.first,let last=ticks.last,last>first {
+            result["displayLinkFPS"]=Double(ticks.count-1)/(last-first)
+            result["missedDisplayLinkTicks"]=max(0,Int(((last-first)*60).rounded())-tickIntervals.count)
+        }
         return result
     }
 }

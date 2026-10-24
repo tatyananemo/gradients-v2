@@ -14,6 +14,7 @@ subprocess.run(['xcrun','simctl','install',uid,app],check=True,timeout=40)
 data=Path(subprocess.check_output(['xcrun','simctl','get_app_container',uid,bundle,'data'],text=True,timeout=20).strip())/'Documents'
 out={}
 for theme,color in [('dark','blue'),('dark','yellow'),('light','blue'),('light','yellow')]:
+ if os.environ.get('GRADIENTS_PROFILE_CASES') and theme+'-'+color not in os.environ['GRADIENTS_PROFILE_CASES'].split(','):continue
  subprocess.run(['xcrun','simctl','terminate',uid,bundle],capture_output=True,timeout=20)
  target=data/'performance.json';target.unlink(missing_ok=True)
  env=dict(os.environ,SIMCTL_CHILD_GRADIENTS_THEME=theme,SIMCTL_CHILD_GRADIENTS_COLOR=color,SIMCTL_CHILD_GRADIENTS_PROGRESS='0.6',SIMCTL_CHILD_GRADIENTS_DIAGNOSTICS='1',SIMCTL_CHILD_GRADIENTS_BENCHMARK='1')
@@ -23,4 +24,4 @@ for theme,color in [('dark','blue'),('dark','yellow'),('light','blue'),('light',
  if not target.exists():raise RuntimeError('Benchmark timed out')
  result=json.loads(target.read_text());out[theme+'-'+color]=result
  Path(sys.argv[1]).write_text(json.dumps(out,indent=2))
- print(theme,color,json.dumps({k:result.get(k) for k in ['completionFPS','completionIntervalMS','cpuFrameMS','maskPreparationMS','gpuWorkMS','gpuEnvelopeMS','inputToCompletionMS','missedVSyncsEstimate']}),flush=True)
+ print(theme,color,json.dumps({k:result.get(k) for k in ['completionFPS','completionIntervalMS','cpuFrameMS','maskPreparationMS','gpuWorkMS','gpuEnvelopeMS','inputToCompletionMS','displayLinkFPS','missedDisplayLinkTicks','completionDeficitAt60Hz','renderer']}),flush=True)
