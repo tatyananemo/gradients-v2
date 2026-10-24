@@ -49,6 +49,16 @@ reference = reference.replace(old, '''.onChange(of: elapsed,initial:true) { _,_ 
                     MigrationEnvironment.history = v2History
                     MigrationEnvironment.distortion = Float(trailDistortionStrength)
                 }''')
+reference = reference.replace('@StateObject private var touchRuntime', '@ObservedObject private var behaviorClock = BehaviorEnvironment.clock\n    @StateObject private var touchRuntime')
+reference = reference.replace('let now = migrationFixture.time', 'let now = migrationFixture.time')
+# Feed the real reference View with the original replay state; no View recreation per frame.
+reference = reference.replace('.statusBarHidden(true)', '.statusBarHidden(true).onReceive(behaviorClock.$tick) { _ in\n' + r'''        guard BehaviorEnvironment.active, MigrationEnvironment.frame === migrationFixture else {return}
+        let r=migrationFixture.replay
+        progress=r.progress;progressIncrements=r.progressIncrements;startTime=r.startTime
+        waterTouchPoint=r.waterTouchPoint;waterTouchPreviousPoint=r.waterTouchPreviousPoint
+        waterTouchLastMove=r.waterTouchLastMove;waterTouchIsActive=r.waterTouchIsActive
+        idleWaveStartTime=r.idleWaveStartTime;waterDragEnergy=r.waterDragEnergy;interactionTrail=r.interactionTrail
+    }''')
 reference = reference.replace('.contentTransition(.numericText())', '''.contentTransition(.numericText())
                                 .background { GeometryReader { proxy in
                                     Color.clear.onAppear { if MigrationEnvironment.frame === migrationFixture { MigrationEnvironment.counterFrame = proxy.frame(in: .global) } }
@@ -85,6 +95,9 @@ project = project.replace('com.local.gradients.v2;', 'com.local.gradients.v2.mig
 project = project.replace('PRODUCT_NAME = GradientsV2;', 'PRODUCT_NAME = MigrationProbe;')
 project = project.replace('GradientsV2.app', 'MigrationProbe.app').replace('"Gradients V2"','"V2 Migration Probe"')
 extras = ['MigrationReplay.swift']
+for path in sorted((ROOT/'UIKitComponent').rglob('*.swift')):
+    shutil.copyfile(path,BUILD/path.name);extras.append(path.name)
+shutil.copyfile(HERE/'BehaviorDemo.swift',BUILD/'BehaviorDemo.swift');extras.append('BehaviorDemo.swift')
 if (HERE/'PrototypeRenderer.swift').exists():
     shutil.copyfile(HERE/'PrototypeRenderer.swift',BUILD/'PrototypeRenderer.swift')
     extras.append('PrototypeRenderer.swift')

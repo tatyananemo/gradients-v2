@@ -72,6 +72,8 @@ final class MigrationController:UIViewController {
     var timer:Timer?
     var processing=false
     var lastID=""
+    // System Home Indicator fades after a cold scene launch; this affects capture readiness only.
+    let captureWarmupDeadline=ProcessInfo.processInfo.systemUptime+3.5
     let directory=FileManager.default.urls(for:.documentDirectory,in:.userDomainMask)[0]
     override var prefersStatusBarHidden:Bool {true}
     override var prefersHomeIndicatorAutoHidden:Bool {true}
@@ -100,6 +102,11 @@ final class MigrationController:UIViewController {
         }
     }
     @MainActor func render(_ request:MigrationRequest) async throws {
+        if request.mode.hasPrefix("behavior-") {
+            try await renderBehavior(request)
+            return
+        }
+        BehaviorEnvironment.active=false
         MigrationEnvironment.frame=MigrationFrame(request)
         MigrationEnvironment.captionFrame = .zero;MigrationEnvironment.counterFrame = .zero
         MigrationEnvironment.uniforms=[];MigrationEnvironment.history=[]
@@ -141,6 +148,8 @@ final class MigrationController:UIViewController {
             metadata["prototype"]=prototype.diagnostics
         }
         #endif
+        let remaining=captureWarmupDeadline-ProcessInfo.processInfo.systemUptime
+        if remaining>0 {try await Task.sleep(nanoseconds:UInt64(remaining*1_000_000_000))}
         try JSONSerialization.data(withJSONObject:metadata,options:[.prettyPrinted,.sortedKeys]).write(to:directory.appendingPathComponent("ready.json"),options:.atomic)
     }
     func rect(_ r:CGRect)->[CGFloat] {[r.minX,r.minY,r.width,r.height]}

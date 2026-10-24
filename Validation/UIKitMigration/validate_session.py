@@ -7,6 +7,26 @@ sys.path.insert(0,str(ROOT/'Validation'))
 import validate as v
 legacy=v.behavior_source(v.app_source())
 legacy=legacy[:legacy.index('private let replay = Replay()')].replace('private final class Replay','final class Replay').replace('private func ','func ')
+# Compile the original View's frame expressions too, not a second hand-written oracle.
+view=(ROOT/'GradientInstallView.swift').read_text()
+a=view.index('            let elapsed = now - startTime');b=view.index('            let isDarkTheme',a)
+clock=view[a:b]
+a=view.index('                let waterPoint =');b=view.index('                ZStack {',a)
+geometry=view[a:b]
+import re
+names=['progressSpeed','fillGain','waveStrength','waveSpread','topBloom','whiteCore','blueDepth','shockStrength','shockInteraction','shockTrail','waveCount']
+constants='\n'.join(re.search(r'^    private let '+n+r'[^\n]+',view,re.M).group() for n in names)
+method="""
+    func frameOracle(at now:TimeInterval,dark:Bool,yellow:Bool)->([Float],[Float],Float) {
+        let showSettings=false
+        struct Theme { let rawValue:String; let shaderValue:Float }
+        struct Color { let rawValue:String; let shaderIndex:Float }
+        let appTheme=Theme(rawValue:dark ? "dark":"light",shaderValue:dark ? 1:0)
+        let gradientColor=Color(rawValue:yellow ? "yellow":"blue",shaderIndex:yellow ? 3:0)
+        let globalFrame=CGRect(origin:.zero,size:geo.size)
+        let gradientLayerSize=geo.size
+"""+clock+geometry+"\nreturn (v2Uniforms,v2History,Float(trailDistortionStrength))\n    }\n"
+legacy=legacy.replace('final class Replay {','final class Replay {\n'+constants+'\n'+method)
 comparison=r'''
 func equal(_ a: Any, _ b: Any, _ name: String) {
     let x = try! JSONSerialization.data(withJSONObject: a, options: [.sortedKeys, .fragmentsAllowed])
@@ -23,6 +43,11 @@ func check(_ time: Double) {
     precondition(reference.waterTouchPoint==core.waterTouchPoint && reference.waterTouchPreviousPoint==core.waterTouchPreviousPoint && reference.waterTouchLastMove==core.waterTouchLastMove && reference.waterTouchIsActive==core.waterTouchIsActive)
     let f=core.frame(at:time,size:reference.geo.size,dark:true,yellow:true)
     precondition(f.uniforms.count==28 && f.uniforms[2]==Float(reference.interpolatedProgress(at:time)))
+    for dark in [false,true] {for yellow in [false,true] {
+        let oracle=reference.frameOracle(at:time,dark:dark,yellow:yellow)
+        let actual=core.frame(at:time,size:reference.geo.size,dark:dark,yellow:yellow)
+        precondition(oracle.0==actual.uniforms && oracle.1==actual.history && oracle.2==actual.distortion,"Frame arguments changed")
+    }}
     frames+=1
 }
 func changed(_ p:CGPoint,_ t:Double) {
@@ -44,7 +69,7 @@ core.setSettingsVisible(true,at:122)
 precondition(core.frame(at:123,size:reference.geo.size,dark:false,yellow:false).uniforms[25]==0)
 core.setSettingsVisible(false,at:123)
 precondition(core.idleWaveStartTime==123.42)
-print("Core equivalence: \(events) input events, \(frames) exact state/history/progress checks; 30/60/80/100%, hold/release/idle/reset/settings passed")
+print("Core equivalence: \(events) input events, \(frames) exact state/history/progress checks, \(frames*4) full frame-argument comparisons; 30/60/80/100%, hold/release/idle/reset/settings passed")
 '''
 with tempfile.TemporaryDirectory(prefix='v2-core-') as folder:
     folder=Path(folder);(folder/'main.swift').write_text(legacy+'\n'+comparison)
