@@ -19,7 +19,12 @@ public final class GradientViewController:UIViewController,MTKViewDelegate {
     var displayLink:CADisplayLink?
     var clock:()->TimeInterval = { Date().timeIntervalSinceReferenceDate }
     var externallyDriven=false
-    var counterLabel:UILabel?
+    var counterLabel:GradientPercentageLabel?
+    var resetPresentation:GradientResetPresentation?
+    var maskCPUTime:Double=0
+    var cpuFrameTime:Double=0
+    var gpuTime:Double=0
+    var performanceSamples=0
     var captionLabel:UILabel?
     var counterWrapper:UIView?
     var captionGradient:CAGradientLayer?
@@ -99,12 +104,21 @@ public final class GradientViewController:UIViewController,MTKViewDelegate {
         inputCallbacks+=1
         if input.state == .changed {moveCallbacks+=1}
         switch input.state {
-        case .began,.changed:session.dragChanged(to:input.point,at:time,size:view.bounds.size)
+        case .began,.changed:resetPresentation=nil;session.dragChanged(to:input.point,at:time,size:view.bounds.size)
         case .ended,.cancelled:session.dragEnded(at:time)
         default:break
         }
     }
-    @objc func resetPressed() { session.reset(at:clock()) }
+    @objc func resetPressed() { reset(animated:true) }
+    public func reset(animated:Bool=true) {
+        let now=clock()
+        resetPresentation=animated ? GradientResetPresentation(started:now,counter:session.targetProgress,
+            mask:session.interpolatedProgress(at:now)):nil
+        session.reset(at:now)
+        counterLabel?.setPercentage(0,animated:animated)
+    }
+    var presentationCounter:CGFloat {resetPresentation?.values(at:f.time).counter ?? f.progress}
+    var presentationMask:CGFloat {resetPresentation?.values(at:f.time).mask ?? session.interpolatedProgress(at:f.time)}
     @objc func settingsPressed() { onSettings?() }
     func tick() {
         guard !externallyDriven else{return}
@@ -115,25 +129,30 @@ public final class GradientViewController:UIViewController,MTKViewDelegate {
     func present(_ frame:GradientRenderFrame, activation:Double?=nil) {
         // One in-flight submission: CPU must not overwrite uniforms/history read by the GPU.
         guard !inFlight else {framesSkipped+=1;return}
+        let cpuStart=ProcessInfo.processInfo.systemUptime
         f=frame;uniforms=frame.uniforms;history=frame.history
+        if resetPresentation?.values(at:f.time).finished == true {resetPresentation=nil}
         uniforms.withUnsafeBytes {memcpy(uniformBuffer.contents(),$0.baseAddress!,$0.count)}
         if !history.isEmpty {history.withUnsafeBytes {memcpy(historyBuffer.contents(),$0.baseAddress!,$0.count)}}
+        let maskStart=ProcessInfo.processInfo.systemUptime
         if f.dark {masks=(0..<3).map {makeMask($0,size:view.bounds.size,scale:UIScreen.main.scale)}}
         else {masks=[gpu.clear,gpu.clear,gpu.clear]}
+        maskCPUTime+=(ProcessInfo.processInfo.systemUptime-maskStart)*1000
         if !externallyDriven {captionProbe?.sample(uniforms:uniforms,history:history,frame:caption,key:"\(dark):\(yellow)",dark:dark,yellow:yellow)}
         updateUI(activation:activation ?? captionProbe?.activation ?? 0)
         rendered=false;finished=false;viewMetal.draw()
+        cpuFrameTime+=(ProcessInfo.processInfo.systemUptime-cpuStart)*1000;performanceSamples+=1
     }
     func updateUI(activation:Double) {
-        let p=f.progress
-        counterLabel?.text="\(Int(round(p*100)))%"
+        let p=presentationCounter
+        counterLabel?.setPercentage(Int(round(f.progress*100)))
         counterLabel?.textColor=f.dark ? UIColor(red:0.92,green:0.95,blue:1,alpha:1):UIColor(red:0.18-p*0.02,green:0.18-p*0.02,blue:0.20,alpha:1)
         counterLabel?.layer.shadowColor=(f.dark ? UIColor.black:UIColor.cyan).cgColor
         counterLabel?.layer.shadowOpacity=Float(f.dark ? 0.34:0.04+p*0.16)
         counterLabel?.layer.shadowRadius=f.dark ? 16:2+p*9
         counterWrapper?.layer.shadowColor=(f.dark ? UIColor.black:UIColor.white).cgColor
-        counterWrapper?.layer.shadowOpacity=f.dark ? 0.18:(p>0.55 ? 0.16:0.04)
-        counterWrapper?.layer.shadowRadius=f.dark ? 8:(p>0.55 ? 5:1)
+        counterWrapper?.layer.shadowOpacity=f.dark ? 0.18:Float(resetPresentation.map {let v=$0.values(at:f.time);return 0.04+($0.counter>0.55 ? 0.12:0)*(v.counter/max($0.counter,0.0001))} ?? (p>0.55 ? 0.16:0.04))
+        counterWrapper?.layer.shadowRadius=f.dark ? 8:(resetPresentation.map {let v=$0.values(at:f.time);return 1+($0.counter>0.55 ? 4:0)*(v.counter/max($0.counter,0.0001))} ?? (p>0.55 ? 5:1))
         captionLabel?.textColor=f.dark ? UIColor(red:0.86,green:0.91,blue:0.98,alpha:1):UIColor(white:0.2,alpha:1)
         if let captionLabel,let old=captionLabel.attributedText {
             let text=NSMutableAttributedString(attributedString:old)
@@ -184,12 +203,13 @@ public final class GradientViewController:UIViewController,MTKViewDelegate {
         }
         command.addCompletedHandler { [weak self] command in DispatchQueue.main.async {
             self?.finished=command.status == .completed;self?.inFlight=false
+            self?.gpuTime+=max(0,command.gpuEndTime-command.gpuStartTime)*1000
             if command.status != .completed {self?.gpuErrors.append(String(describing:command.error))}
         }}
         command.present(drawable);command.commit();rendered=true
     }
     func makeMask(_ index:Int,size:CGSize,scale:CGFloat)->MTLTexture {
-        let p=session.interpolatedProgress(at:f.time),elapsed=f.time-session.startTime
+        let p=presentationMask,elapsed=f.time-session.startTime
         let flow=0.62+p*0.30,breath=1+CGFloat(sin(elapsed*1.18+Double(p*5)))*0.025
         let dx=CGFloat(sin(elapsed*0.34+0.7))*10,dy=CGFloat(cos(elapsed*0.27+1.3))*5
         let w:[CGFloat]=[252+p*20,204+p*14,226+p*18],h:[CGFloat]=[118+p*8,92+p*6,78+p*5]
@@ -245,7 +265,7 @@ public final class GradientViewController:UIViewController,MTKViewDelegate {
     }
     func addCounter() {
         let p=f.progress
-        let label=UILabel(frame:counter)
+        let label=GradientPercentageLabel(frame:counter)
         let base=UIFont.systemFont(ofSize:64,weight:.bold).fontDescriptor.withDesign(.rounded)!
         let font=base.addingAttributes([.featureSettings:[[UIFontDescriptor.FeatureKey.type:kNumberSpacingType,UIFontDescriptor.FeatureKey.selector:kMonospacedNumbersSelector]]])
         label.font=UIFont(descriptor:font,size:64);label.textAlignment = .center

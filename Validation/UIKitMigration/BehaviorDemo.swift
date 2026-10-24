@@ -65,6 +65,9 @@ extension MigrationController {
                     "historyCount":frame.history.count,"distortion":frame.distortion,"idleActivity":frame.uniforms[25],
                     "idleElapsed":frame.uniforms[26],"dark":frame.dark,"yellow":frame.yellow,
                     "touchPoint":[live.waterTouchPoint?.x ?? -1,live.waterTouchPoint?.y ?? -1],
+                    "frames":controllerRef.value?.framesSubmitted ?? 0,"skipped":controllerRef.value?.framesSkipped ?? 0,
+                    "maskMS":controllerRef.value?.maskCPUTime ?? 0,"cpuMS":controllerRef.value?.cpuFrameTime ?? 0,"gpuMS":controllerRef.value?.gpuTime ?? 0,
+                    "performanceSamples":controllerRef.value?.performanceSamples ?? 0,
                     "moveCallbacks":controllerRef.value?.moveCallbacks ?? 0,"inputCallbacks":controllerRef.value?.inputCallbacks ?? 0]
                 try? JSONSerialization.data(withJSONObject:data).write(to:target,options:.atomic)
             }
