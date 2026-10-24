@@ -1,4 +1,6 @@
 import UIKit
+import Metal
+import Darwin
 import GradientsKit
 
 @main final class AppDelegate:UIResponder,UIApplicationDelegate {
@@ -42,6 +44,10 @@ final class DemoController:UIViewController,UIAdaptivePresentationControllerDele
         if environment["GRADIENTS_DIAGNOSTICS"]=="1" {
             var last=0.0
             let benchmark=environment["GRADIENTS_BENCHMARK"]=="1"
+            let duration=min(max(Double(environment["GRADIENTS_BENCHMARK_DURATION"] ?? "20") ?? 20,20),90)
+            let diagnosticDevice=benchmark ? MTLCreateSystemDefaultDevice():nil
+            var memorySamples:[[String:Double]]=[]
+            var lastMemorySample = -1.0
             let launched=ProcessInfo.processInfo.systemUptime
             var measuring=false,ended=false
             var startingStats:[String:Double]=[:]
@@ -51,18 +57,24 @@ final class DemoController:UIViewController,UIAdaptivePresentationControllerDele
                 guard let gradient else{return}
                 if benchmark {
                     let elapsed=ProcessInfo.processInfo.systemUptime-launched
+                    if elapsed-lastMemorySample>=0.5 {
+                        var sample=diagnosticMemory(device:diagnosticDevice);sample["elapsedSeconds"]=elapsed
+                        memorySamples.append(sample);lastMemorySample=elapsed
+                    }
                     if elapsed>=3 && !measuring {gradient.beginPerformanceMeasurement();startingStats=gradient.renderStatistics;measuring=true}
-                    if elapsed>=3 && elapsed<23 {
+                    if elapsed>=3 && elapsed<duration+3 {
                         let t=elapsed-3
-                        let next=t<3 ? "idle":t<9 ? "swipe":t<12 ? "hold":t<16 ? "release":"idle-after-release"
+                        let next=t<3 ? "idle":t<duration-11 ? "swipe":t<duration-8 ? "hold":t<duration-4 ? "release":"idle-after-release"
                         if next=="swipe" {
                             gradient.recordPerformanceInput()
                             gradient.session.dragChanged(to:CGPoint(x:195+sin(t*3.1)*145,y:440+cos(t*2.3)*220),at:frame.time,size:gradient.view.bounds.size)
                         } else if phase=="hold" && next=="release" {gradient.session.dragEnded(at:frame.time)}
                         phase=next
-                    } else if elapsed>=23 && !ended {
+                    } else if elapsed>=duration+3 && !ended {
                         ended=true;gradient.pauseRendering()
                         var report=gradient.performanceReport
+                        report["memorySamples"]=memorySamples
+                        report["benchmarkDurationSeconds"]=duration
                         report["renderer"]=gradient.renderStatistics.mapValues{$0}.reduce(into:[String:Double]()){d,pair in d[pair.key]=pair.value-(startingStats[pair.key] ?? 0)}
                         let destination=url.deletingLastPathComponent().appendingPathComponent("performance.json")
                         try? JSONSerialization.data(withJSONObject:report,options:[.prettyPrinted,.sortedKeys]).write(to:destination,options:.atomic)
@@ -156,4 +168,34 @@ final class SettingsController:UIViewController {
             button.subviews.first?.layer.borderWidth=selected ? 3:1
         }
     }
+}
+
+// Opt-in demo diagnostics only; never used by GradientsKit or ordinary launches.
+private func diagnosticMemory(device:MTLDevice?)->[String:Double] {
+    var info=task_vm_info_data_t()
+    var count=mach_msg_type_number_t(MemoryLayout<task_vm_info_data_t>.size/MemoryLayout<integer_t>.size)
+    let status=withUnsafeMutablePointer(to:&info) {pointer in
+        pointer.withMemoryRebound(to:integer_t.self,capacity:Int(count)) {
+            task_info(mach_task_self_,task_flavor_t(TASK_VM_INFO),$0,&count)
+        }
+    }
+    var result:[String:Double]=["machStatus":Double(status)]
+    if status == KERN_SUCCESS {
+        result["residentBytes"]=Double(info.resident_size)
+        result["footprintBytes"]=Double(info.phys_footprint)
+    }
+    if let device {result["deviceAllocatedBytes"]=Double(device.currentAllocatedSize)}
+    let thread=mach_thread_self()
+    defer {mach_port_deallocate(mach_task_self_,thread)}
+    var cpu=thread_basic_info_data_t()
+    var threadCount=mach_msg_type_number_t(MemoryLayout<thread_basic_info_data_t>.size/MemoryLayout<integer_t>.size)
+    let cpuStatus=withUnsafeMutablePointer(to:&cpu) {pointer in
+        pointer.withMemoryRebound(to:integer_t.self,capacity:Int(threadCount)) {
+            thread_info(thread,thread_flavor_t(THREAD_BASIC_INFO),$0,&threadCount)
+        }
+    }
+    if cpuStatus == KERN_SUCCESS {
+        result["mainThreadCPUSeconds"]=Double(cpu.user_time.seconds+cpu.system_time.seconds)+Double(cpu.user_time.microseconds+cpu.system_time.microseconds)/1_000_000
+    }
+    return result
 }

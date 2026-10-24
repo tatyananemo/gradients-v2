@@ -190,6 +190,12 @@
 			lastKnownFileType = sourcecode.swift;
 			sourceTree = "<group>";
 		};
+		A0FC01BF0136B4F9A57FF845 = {
+			isa = PBXFileReference;
+			path = "Tests/SDKStabilityTests.swift";
+			lastKnownFileType = sourcecode.swift;
+			sourceTree = "<group>";
+		};
 		9925A0BE93F148CD70907995 = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -502,11 +508,16 @@
 			isa = PBXBuildFile;
 			fileRef = F32238F82CFA34883A5D4889;
 		};
+		18772DC37CD32EC7FCD04139 = {
+			isa = PBXBuildFile;
+			fileRef = A0FC01BF0136B4F9A57FF845;
+		};
 		254997B761D4EBEC4B65DD70 = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = "2147483647";
 			files = (
 				4415F5B43643D50F7BB6DAEE,
+				18772DC37CD32EC7FCD04139,
 			);
 			runOnlyForDeploymentPostprocessing = "0";
 		};
@@ -698,6 +709,7 @@
 				7C289D983607252490579E13,
 				12BE6F43C250EA1C0ABFBF32,
 				F32238F82CFA34883A5D4889,
+				A0FC01BF0136B4F9A57FF845,
 				023014B20AA705FB7DB4183D,
 				FBDC4F23F93125BBEEAE800C,
 			);

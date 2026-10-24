@@ -341,12 +341,21 @@ public final class GradientViewController:UIViewController,MTKViewDelegate {
             for i in 0..<3 {enc.setFragmentTexture(masks[i],index:i+1)}
             enc.setFragmentBuffer(uniformBuffer,offset:0,index:0);enc.setFragmentBytes(&p,length:16,index:1)
         }
+        let committedAt=metrics == nil ? 0:ProcessInfo.processInfo.systemUptime
+        if let metrics {
+            command.addScheduledHandler {_ in metrics.add("scheduledCallbackDelayMS",(ProcessInfo.processInfo.systemUptime-committedAt)*1000)}
+        }
         command.addCompletedHandler { [weak self] command in
+            let callbackTime=metrics == nil ? 0:ProcessInfo.processInfo.systemUptime
+            if let metrics,command.gpuEndTime>0,callbackTime>=command.gpuEndTime {
+                metrics.add("gpuEndToCallbackMS",(callbackTime-command.gpuEndTime)*1000)
+            }
             metrics?.gpu(frame:frameID,expected:expected,kind:"compositionGPUMS",start:command.gpuStartTime,end:command.gpuEndTime)
             #if targetEnvironment(simulator)
             metrics?.presented(at:ProcessInfo.processInfo.systemUptime,input:inputTime)
             #endif
             DispatchQueue.main.async {
+            if let metrics {metrics.add("completionToMainMS",(ProcessInfo.processInfo.systemUptime-callbackTime)*1000)}
             self?.finished=command.status == .completed;self?.availableSlots[completedSlot]=true
             self?.gpuTime+=max(0,command.gpuEndTime-command.gpuStartTime)*1000
             if command.status != .completed {self?.gpuErrors.append(String(describing:command.error))}
