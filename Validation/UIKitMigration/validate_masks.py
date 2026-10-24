@@ -18,9 +18,22 @@ final class GPU {
 }
 struct Frame {var time:Double;var yellow:Bool}
 '''
+accepted='--accepted-uikit' in sys.argv
+if accepted:
+ header+=subprocess.check_output(['git','show','9d4bd08:UIKitComponent/GradientMaskRenderer.swift'],cwd=root,text=True).replace('GradientMaskRenderer','AcceptedMaskRenderer')
 classes=[]
 for name,source in [('Legacy',old)]:
  method=v.block(source,'    func makeMask(')
+ if accepted:
+  method="""lazy var accepted=AcceptedMaskRenderer(device:gpu.device,queue:gpu.queue)
+  func makeMask(_ index:Int,size:CGSize,scale:CGFloat)->MTLTexture {
+   if maskTextures.isEmpty {
+    let values=accepted.render(progress:session.interpolatedProgress(at:f.time),elapsed:f.time-session.startTime,yellow:f.yellow,counter:counter,size:size,scale:scale)
+    for i in 0..<3 {maskTextures[i]=values[i]}
+   }
+   return maskTextures[index]!
+  }
+  """
  classes.append('class '+name+' {\nlet gpu:GPU\nlet session:GradientSession\nvar f:Frame\nlet counter=CGRect(x:0,y:356,width:390,height:76.6666666666667)\nvar maskContexts:[Int:CGContext]=[:]\nvar maskTextures:[Int:MTLTexture]=[:]\nvar presentationMask:CGFloat {session.interpolatedProgress(at:f.time)}\ninit(_ gpu:GPU,_ session:GradientSession,_ time:Double,_ yellow:Bool) {self.gpu=gpu;self.session=session;f=Frame(time:time,yellow:yellow)}\n'+method+'\n}')
 classes.append('''class Candidate {
 let renderer:GradientMaskRenderer;let session:GradientSession;let time:Double,yellow:Bool
@@ -58,6 +71,8 @@ for yellow in [false,true] {for progress in [0.0,0.3,0.6,0.8,1.0] {
 FileHandle.standardError.write(Data("Raw masks: \(count); different components: \(changed); max delta: \(worst)\n".utf8))
 precondition(worst<=0.0001,"Mask change can be visible")
 '''
+if accepted:
+ main=main.replace('precondition(worst<=0.0001,"Mask change can be visible")','precondition(changed==0,"Raw Float16 bytes differ from accepted UIKit")')
 with tempfile.TemporaryDirectory() as folder:
  folder=Path(folder);(folder/'main.swift').write_text(header+'\n'.join(classes)+main)
  subprocess.run(['xcrun','swiftc','-O',str(root/'UIKitComponent/Core/GradientSession.swift'),str(root/'UIKitComponent/GradientMaskRenderer.swift'),str(root/'UIKitComponent/GradientPerformanceMetrics.swift'),str(folder/'main.swift'),'-o',str(folder/'masks')],check=True)
