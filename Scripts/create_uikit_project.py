@@ -26,7 +26,7 @@ productUI=file('GradientsUIKitUITests.xctest','wrapper.cfbundle','BUILT_PRODUCTS
 sdkfiles=[file('../'+str(p.relative_to(R)),'sourcecode.swift') for p in sorted((R/'UIKitComponent').rglob('*.swift'))]
 metal=obj('file:metal','PBXFileReference',path='GradientsUIKit.metal',lastKnownFileType=raw('sourcecode.metal'),sourceTree='DERIVED_FILE_DIR')
 sdkSources=phase('sdkSources','PBXSourcesBuildPhase',[build(f,'sdk'+str(i)) for i,f in enumerate(sdkfiles)]+[build(metal,'metal')])
-inputs=['$(SRCROOT)/../Scripts/compose_metal.py','$(SRCROOT)/../Scripts/compose_uikit_metal.py','$(SRCROOT)/../UIKitComponent/Shaders/GradientAdapters.metal']+['$(SRCROOT)/../'+str(p.relative_to(R)) for p in sorted((R/'ShaderSources').glob('*.source'))]
+inputs=['$(SRCROOT)/../Scripts/compose_metal.py','$(SRCROOT)/../Scripts/compose_uikit_metal.py','$(SRCROOT)/../UIKitComponent/Shaders/GradientAdapters.metal']+['$(SRCROOT)/../'+str(p.relative_to(R)) for p in sorted([*(R/'ShaderSources').glob('*.source'),*(R/'ShaderSources').rglob('*.inc')])]
 compose=obj('composeSDK','PBXShellScriptBuildPhase',buildActionMask=2147483647,files=[],inputPaths=inputs,outputPaths=['$(DERIVED_FILE_DIR)/GradientsUIKit.metal'],name='Compose approved Metal',runOnlyForDeploymentPostprocessing=0,shellPath='/bin/sh',shellScript='/usr/bin/python3 -I -B "$SRCROOT/../Scripts/compose_uikit_metal.py" --output "$SCRIPT_OUTPUT_FILE_0"\n')
 demo=file('AppDelegate.swift','sourcecode.swift');unit=file('Tests/ComponentTests.swift','sourcecode.swift');ui=file('UITests/InteractionTests.swift','sourcecode.swift')
 stability=file('Tests/SDKStabilityTests.swift','sourcecode.swift')

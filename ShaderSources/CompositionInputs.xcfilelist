@@ -7,3 +7,4 @@ $(SRCROOT)/ShaderSources/YellowLightMAIN.metal.source
 $(SRCROOT)/ShaderSources/YellowDarkContact.metal.source
 $(SRCROOT)/ShaderSources/YellowLightContact.metal.source
 $(SRCROOT)/ShaderSources/V2EntryPoints.metal.source
+$(SRCROOT)/ShaderSources/Shared/InteractionHistory.inc

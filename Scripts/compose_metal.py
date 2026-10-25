@@ -1,15 +1,31 @@
 #!/usr/bin/env python3
 """Compose the approved V2 library; do not rewrite shader formulas."""
 import argparse
+import re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
+INCLUDE_BLOCKS = ("Shared/InteractionHistory.inc",)
 YELLOW_MODULES = ("YellowDarkMAIN", "YellowLightMAIN", "YellowDarkContact", "YellowLightContact")
 MODULES = ("ApprovedBlue", "ContactFields", "YellowShared", *YELLOW_MODULES, "V2EntryPoints")
 
 
+def expand_blocks(root, source):
+    # Literal source inclusion only: no substitutions, formulas or new scopes.
+    def include(match):
+        name = match[1]
+        if name not in INCLUDE_BLOCKS:
+            raise ValueError("Undeclared Metal include: " + name)
+        text = (root / "ShaderSources" / name).read_bytes().decode("utf-8")
+        if not text.endswith("\n") or '#include' in text:
+            raise ValueError("Expected one flat, newline-terminated Metal block: " + name)
+        return text
+    return re.sub(r'^[ \t]*#include "([^"\n]+\.inc)"[ \t]*\n', include, source, flags=re.M)
+
+
 def read_module(root, name):
-    return (root / "ShaderSources" / (name + ".metal.source")).read_bytes().decode("utf-8")
+    source = (root / "ShaderSources" / (name + ".metal.source")).read_bytes().decode("utf-8")
+    return expand_blocks(root, source)
 
 
 def compose(root=ROOT):

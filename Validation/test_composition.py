@@ -1,5 +1,6 @@
 """Meaningful composition/build-dependency checks against the approved Git object."""
 import importlib.util
+import shutil
 from pathlib import Path
 import subprocess
 import sys
@@ -34,7 +35,38 @@ class CompositionTests(unittest.TestCase):
         declared = set((ROOT / "ShaderSources/CompositionInputs.xcfilelist").read_text().splitlines())
         expected = {"$(SRCROOT)/Scripts/compose_metal.py"}
         expected.update("$(SRCROOT)/ShaderSources/" + name + ".metal.source" for name in COMPOSER.MODULES)
+        expected.update("$(SRCROOT)/ShaderSources/" + name for name in COMPOSER.INCLUDE_BLOCKS)
         self.assertEqual(declared, expected)
+
+    def test_expanded_input_is_byte_identical_to_stable_75e1800(self):
+        source = subprocess.check_output(["git", "show", "75e1800:Scripts/compose_metal.py"], cwd=ROOT).decode()
+        scope = {"__file__": str(ROOT / "Scripts/compose_metal.py")}
+        exec(compile(source, "stable_composer", "exec"), scope)
+        scope["read_module"] = lambda root, name: subprocess.check_output(
+            ["git", "show", "75e1800:ShaderSources/" + name + ".metal.source"], cwd=ROOT).decode()
+        self.assertEqual(COMPOSER.compose(), scope["compose"]())
+
+    def test_shared_block_changes_reach_all_three_call_sites(self):
+        with tempfile.TemporaryDirectory() as folder:
+            base = Path(folder)
+            shutil.copytree(ROOT / "ShaderSources", base / "ShaderSources")
+            include = base / "ShaderSources" / COMPOSER.INCLUDE_BLOCKS[0]
+            include.write_text(include.read_text() + "// include dependency marker\n")
+            self.assertEqual(COMPOSER.compose(base).count(b"// include dependency marker"), 3)
+        project = (ROOT / "UIKitDemo/GradientsUIKit.xcodeproj/project.pbxproj").read_text()
+        for name in COMPOSER.INCLUDE_BLOCKS:
+            self.assertIn("$(SRCROOT)/../ShaderSources/" + name, project)
+
+    def test_undeclared_or_nested_blocks_are_rejected(self):
+        with self.assertRaises(ValueError):
+            COMPOSER.expand_blocks(ROOT, '#include "Unregistered.inc"\n')
+        with tempfile.TemporaryDirectory() as folder:
+            base = Path(folder)
+            path = base / "ShaderSources" / COMPOSER.INCLUDE_BLOCKS[0]
+            path.parent.mkdir(parents=True)
+            path.write_text('#include "Shared/InteractionHistory.inc"\n')
+            with self.assertRaises(ValueError):
+                COMPOSER.expand_blocks(base, '#include "Shared/InteractionHistory.inc"\n')
 
     def test_cli_is_independent_of_cwd_and_preserves_unchanged_output(self):
         with tempfile.TemporaryDirectory(prefix="V2 composition ") as folder:

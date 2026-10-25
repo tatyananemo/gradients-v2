@@ -156,6 +156,7 @@
 				"$(SRCROOT)/../Scripts/compose_uikit_metal.py",
 				"$(SRCROOT)/../UIKitComponent/Shaders/GradientAdapters.metal",
 				"$(SRCROOT)/../ShaderSources/ApprovedBlue.metal.source",
+				"$(SRCROOT)/../ShaderSources/Shared/InteractionHistory.inc",
 				"$(SRCROOT)/../ShaderSources/ContactFields.metal.source",
 				"$(SRCROOT)/../ShaderSources/V2EntryPoints.metal.source",
 				"$(SRCROOT)/../ShaderSources/YellowDarkContact.metal.source",
