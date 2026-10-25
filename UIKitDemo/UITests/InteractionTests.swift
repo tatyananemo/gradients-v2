@@ -89,6 +89,38 @@ final class InteractionTests:XCTestCase {
         }}
     }
 
+    func testSystemBackgroundCancelsAnActiveNativeGesture() {
+        let app=XCUIApplication()
+        app.launchEnvironment["GRADIENTS_DIAGNOSTICS"]="1"
+        app.launchEnvironment["GRADIENTS_TEST_INTERRUPT_AFTER"]="5"
+        app.launchEnvironment["GRADIENTS_PROGRESS"]="0"
+        app.launchEnvironment["GRADIENTS_THEME"]="dark"
+        app.launchEnvironment["GRADIENTS_COLOR"]="yellow"
+        app.launch()
+        XCTAssertTrue(app.buttons["Сбросить"].waitForExistence(timeout:10))
+        let start=app.coordinate(withNormalizedOffset:CGVector(dx:0.2,dy:0.85))
+        let end=app.coordinate(withNormalizedOffset:CGVector(dx:0.8,dy:0.2))
+        let length=hypot(app.frame.width*0.6,app.frame.height*0.65)
+        let options=XCTExpectedFailure.Options();options.isStrict=false
+        // Only injection failure is permitted here: the OS deliberately cancels
+        // an in-progress touch by opening this app's Settings page. All functional
+        // assertions below remain ordinary mandatory assertions.
+        XCTExpectFailure("OS background transition can cancel the XCTest event stream",options:options) {
+            start.press(forDuration:0.02,thenDragTo:end,withVelocity:XCUIGestureVelocity(rawValue:length/12),thenHoldForDuration:0)
+        }
+        XCTAssertEqual(app.state,.runningBackground,"The app crashed or never entered background")
+        app.activate()
+        XCTAssertTrue(app.buttons["Сбросить"].waitForExistence(timeout:10))
+        let percentage=app.staticTexts.matching(NSPredicate(format:"label ENDSWITH %@","%")).firstMatch
+        let after=Int(percentage.label.replacingOccurrences(of:"%",with:"")) ?? -1
+        XCTAssertGreaterThan(after,0)
+        Thread.sleep(forTimeInterval:1.5)
+        XCTAssertEqual(Int(percentage.label.replacingOccurrences(of:"%",with:"")),after,"Interrupted touch remained active")
+        start.press(forDuration:0.05,thenDragTo:end)
+        XCTAssertGreaterThan(Int(percentage.label.replacingOccurrences(of:"%",with:"")) ?? -1,after)
+        app.terminate()
+    }
+
     func testSettingsSwitchesBothThemesAndColors() {
         let app=XCUIApplication();app.launch()
         app.buttons["Настройки"].tap()

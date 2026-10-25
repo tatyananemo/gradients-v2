@@ -48,6 +48,8 @@ final class DemoController:UIViewController,UIAdaptivePresentationControllerDele
         gradient.onSettings={ [weak self] in self?.showSettings() }
         if environment["GRADIENTS_DIAGNOSTICS"]=="1" {
             var last=0.0
+            let interruptAfter=Double(environment["GRADIENTS_TEST_INTERRUPT_AFTER"] ?? "")
+            var interrupted=false
             let benchmark=environment["GRADIENTS_BENCHMARK"]=="1"
             let duration=min(max(Double(environment["GRADIENTS_BENCHMARK_DURATION"] ?? "20") ?? 20,20),90)
             let idleOnly=environment["GRADIENTS_BENCHMARK_IDLE_ONLY"]=="1"
@@ -60,6 +62,10 @@ final class DemoController:UIViewController,UIAdaptivePresentationControllerDele
             let url=FileManager.default.urls(for:.documentDirectory,in:.userDomainMask)[0].appendingPathComponent("renderer-state.json")
             gradient.onFrame={ [weak gradient] frame in
                 guard let gradient else{return}
+                if let interruptAfter,!interrupted,ProcessInfo.processInfo.systemUptime-launched>=interruptAfter {
+                    interrupted=true
+                    if let url=URL(string:UIApplication.openSettingsURLString) {UIApplication.shared.open(url)}
+                }
                 if benchmark {
                     let elapsed=ProcessInfo.processInfo.systemUptime-launched
                     if elapsed-lastMemorySample>=0.5 {
