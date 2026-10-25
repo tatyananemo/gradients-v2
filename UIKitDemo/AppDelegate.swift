@@ -40,7 +40,7 @@ final class DemoController:UIViewController,UIAdaptivePresentationControllerDele
     override var prefersHomeIndicatorAutoHidden:Bool {true}
     init(environment:[String:String]) throws {
         let dark=environment["GRADIENTS_THEME"].map {$0=="dark"} ?? (UserDefaults.standard.string(forKey:"theme")=="dark")
-        let yellow=environment["GRADIENTS_COLOR"]=="yellow"
+        let yellow=(environment["GRADIENTS_COLOR"] ?? "yellow")=="yellow"
         let progress=Double(environment["GRADIENTS_PROGRESS"] ?? "0") ?? 0
         let session=GradientSession(at:Date().timeIntervalSinceReferenceDate,initialProgress:CGFloat(progress))
         gradient=try GradientViewController(session:session,dark:dark,yellow:yellow)

@@ -121,6 +121,27 @@ final class InteractionTests:XCTestCase {
         app.terminate()
     }
 
+    func testDefaultYellowAndBlueSwitchPreserveThemePreference() {
+        let app=XCUIApplication();app.launch()
+        app.buttons["Настройки"].tap()
+        let theme=app.segmentedControls["theme"]
+        XCTAssertTrue(theme.waitForExistence(timeout:5))
+        XCTAssertEqual(app.buttons["yellow"].value as? String,"Выбрано")
+        theme.buttons["Светлая"].tap()
+        app.buttons["blue"].tap()
+        XCTAssertEqual(app.buttons["blue"].value as? String,"Выбрано")
+        XCTAssertTrue(theme.buttons["Светлая"].isSelected)
+        app.buttons["yellow"].tap()
+        XCTAssertEqual(app.buttons["yellow"].value as? String,"Выбрано")
+        theme.buttons["Тёмная"].tap()
+        app.terminate();app.launch()
+        app.buttons["Настройки"].tap()
+        XCTAssertTrue(theme.waitForExistence(timeout:5))
+        XCTAssertTrue(theme.buttons["Тёмная"].isSelected)
+        XCTAssertEqual(app.buttons["yellow"].value as? String,"Выбрано")
+        app.terminate()
+    }
+
     func testSettingsSwitchesBothThemesAndColors() {
         let app=XCUIApplication();app.launch()
         app.buttons["Настройки"].tap()
