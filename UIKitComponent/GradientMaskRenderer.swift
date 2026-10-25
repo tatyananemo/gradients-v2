@@ -85,7 +85,10 @@ final class GradientMaskRenderer {
         metrics?.add("maskGraphCPU\(index)MS",(encodeStart-rasterEnd)*1000)
         self.ci.render(oriented,to:texture,commandBuffer:command,bounds:fullExtent,colorSpace:cs)
         metrics?.add("maskEncodeCPU\(index)MS",(ProcessInfo.processInfo.systemUptime-encodeStart)*1000)
-        if let metrics {command.addCompletedHandler {c in metrics.gpu(frame:frame,expected:4,kind:"maskGPU\(index)MS",start:c.gpuStartTime,end:c.gpuEndTime)}}
+        if let metrics {command.addCompletedHandler {c in
+            metrics.gpu(frame:frame,expected:4,kind:"maskGPU\(index)MS",start:c.gpuStartTime,end:c.gpuEndTime)
+            if c.status != .completed {metrics.add("maskCommandErrors",1)}
+        }}
         command.commit()
         return texture
     }

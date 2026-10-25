@@ -1,5 +1,6 @@
 import UIKit
 import Metal
+import MetalKit
 import Darwin
 import GradientsKit
 
@@ -16,12 +17,16 @@ final class SceneDelegate:UIResponder,UIWindowSceneDelegate {
     func scene(_ scene:UIScene,willConnectTo session:UISceneSession,options:UIScene.ConnectionOptions) {
         guard let scene=scene as? UIWindowScene else{return}
         let window=UIWindow(windowScene:scene)
-        do {window.rootViewController=try DemoController(environment:ProcessInfo.processInfo.environment)}
+        if ProcessInfo.processInfo.environment["GRADIENTS_TEST_HOST_EMPTY"]=="1" {
+            // Isolated sanitizer controls must not have a second renderer behind them.
+            window.rootViewController=UIViewController()
+        } else {do {window.rootViewController=try DemoController(environment:ProcessInfo.processInfo.environment)}
         catch {
             let controller=UIViewController();controller.view.backgroundColor = .systemBackground
             let label=UILabel(frame:window.bounds.insetBy(dx:24,dy:100));label.numberOfLines=0
             label.text="Не удалось запустить Metal: \(error)";controller.view.addSubview(label);window.rootViewController=controller
             NSLog("GradientsUIKit startup failed: %@",String(describing:error))
+        }
         }
         window.makeKeyAndVisible();self.window=window
     }
@@ -45,7 +50,7 @@ final class DemoController:UIViewController,UIAdaptivePresentationControllerDele
             var last=0.0
             let benchmark=environment["GRADIENTS_BENCHMARK"]=="1"
             let duration=min(max(Double(environment["GRADIENTS_BENCHMARK_DURATION"] ?? "20") ?? 20,20),90)
-            let diagnosticDevice=benchmark ? MTLCreateSystemDefaultDevice():nil
+            let idleOnly=environment["GRADIENTS_BENCHMARK_IDLE_ONLY"]=="1"
             var memorySamples:[[String:Double]]=[]
             var lastMemorySample = -1.0
             let launched=ProcessInfo.processInfo.systemUptime
@@ -58,13 +63,13 @@ final class DemoController:UIViewController,UIAdaptivePresentationControllerDele
                 if benchmark {
                     let elapsed=ProcessInfo.processInfo.systemUptime-launched
                     if elapsed-lastMemorySample>=0.5 {
-                        var sample=diagnosticMemory(device:diagnosticDevice);sample["elapsedSeconds"]=elapsed
+                        var sample=diagnosticMemory(device:(gradient.view.subviews.first as? MTKView)?.device);sample["elapsedSeconds"]=elapsed
                         memorySamples.append(sample);lastMemorySample=elapsed
                     }
                     if elapsed>=3 && !measuring {gradient.beginPerformanceMeasurement();startingStats=gradient.renderStatistics;measuring=true}
                     if elapsed>=3 && elapsed<duration+3 {
                         let t=elapsed-3
-                        let next=t<3 ? "idle":t<duration-11 ? "swipe":t<duration-8 ? "hold":t<duration-4 ? "release":"idle-after-release"
+                        let next=idleOnly ? "idle":t<3 ? "idle":t<duration-11 ? "swipe":t<duration-8 ? "hold":t<duration-4 ? "release":"idle-after-release"
                         if next=="swipe" {
                             gradient.recordPerformanceInput()
                             gradient.session.dragChanged(to:CGPoint(x:195+sin(t*3.1)*145,y:440+cos(t*2.3)*220),at:frame.time,size:gradient.view.bounds.size)
@@ -72,17 +77,31 @@ final class DemoController:UIViewController,UIAdaptivePresentationControllerDele
                         phase=next
                     } else if elapsed>=duration+3 && !ended {
                         ended=true;gradient.pauseRendering()
-                        var report=gradient.performanceReport
-                        report["memorySamples"]=memorySamples
-                        report["benchmarkDurationSeconds"]=duration
-                        report["renderer"]=gradient.renderStatistics.mapValues{$0}.reduce(into:[String:Double]()){d,pair in d[pair.key]=pair.value-(startingStats[pair.key] ?? 0)}
-                        let destination=url.deletingLastPathComponent().appendingPathComponent("performance.json")
-                        try? JSONSerialization.data(withJSONObject:report,options:[.prettyPrinted,.sortedKeys]).write(to:destination,options:.atomic)
+                        let expected=max(0,Int(gradient.renderStatistics["submitted",default:0]-startingStats["submitted",default:0]))
+                        let drainDeadline=ProcessInfo.processInfo.systemUptime+2
+                        func exportWhenDrained() {
+                            var report=gradient.performanceReport
+                            let completed=(report["completionFrames"] ?? report["presentationFrames"]) as? Int ?? 0
+                            let pending=max(0,expected-completed)
+                            if pending>0 && ProcessInfo.processInfo.systemUptime<drainDeadline {
+                                DispatchQueue.main.asyncAfter(deadline:.now()+0.05,execute:exportWhenDrained);return
+                            }
+                            report["pendingAtExport"]=pending
+                            report["measurementSubmitted"]=expected
+                            report["memorySamples"]=memorySamples
+                            report["benchmarkDurationSeconds"]=duration
+                            report["idleOnly"]=idleOnly
+                            report["renderer"]=gradient.renderStatistics.mapValues{$0}.reduce(into:[String:Double]()){d,pair in d[pair.key]=pair.value-(startingStats[pair.key] ?? 0)}
+                            let destination=url.deletingLastPathComponent().appendingPathComponent("performance.json")
+                            try? JSONSerialization.data(withJSONObject:report,options:[.prettyPrinted,.sortedKeys]).write(to:destination,options:.atomic)
+                        }
+                        DispatchQueue.main.asyncAfter(deadline:.now()+0.05,execute:exportWhenDrained)
                     }
                 }
                 guard frame.time-last>=0.25 else{return};last=frame.time
                 let data:[String:Any]=["engine":gradient.engineDescription,"progress":frame.progress,"rendered":frame.uniforms[2],
                     "theme":frame.dark ? "dark":"light","color":frame.yellow ? "yellow":"blue",
+                    "viewport":[frame.uniforms[0],frame.uniforms[1]],"displayScale":gradient.view.window?.screen.scale ?? UIScreen.main.scale,
                     "historyCount":frame.history.count,"distortion":frame.distortion,"statistics":gradient.renderStatistics,"phase":phase]
                 try? JSONSerialization.data(withJSONObject:data).write(to:url,options:.atomic)
             }

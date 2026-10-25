@@ -16,7 +16,7 @@ final class SessionCaptionProbe {
   historyBuffer=gpu.device.makeBuffer(length:512*4,options:.storageModeShared)
   resultBuffer=gpu.device.makeBuffer(length:360*16,options:.storageModeShared)
  }
- func sample(uniforms:[Float],history:[Float],frame:CGRect,key sampleKey:String,dark:Bool,yellow:Bool){
+ func sample(uniforms:[Float],history:[Float],frame:CGRect,key sampleKey:String,dark:Bool,yellow:Bool,metrics:GradientPerformanceMetrics?=nil){
   guard uniforms.count==28,history.count<=240 else{return}
   // Invalidate old-theme results even while a previous GPU sample is in flight.
   if key != sampleKey {key=sampleKey;activation=0;filteredRisk=0;previousWave=0;needed=false}
@@ -38,6 +38,7 @@ final class SessionCaptionProbe {
   encoder.setBuffer(historyBuffer,offset:0,index:1);encoder.setBuffer(resultBuffer,offset:0,index:2)
   encoder.dispatchThreads(MTLSize(width:360,height:1,depth:1),threadsPerThreadgroup:MTLSize(width:32,height:1,depth:1));encoder.endEncoding()
   command.addCompletedHandler { [weak self] command in
+   if command.status != .completed {metrics?.add("captionCommandErrors",1)}
    let samples=Array(UnsafeBufferPointer(start:resultBuffer.contents().assumingMemoryBound(to:SIMD4<Float>.self),count:360))
    DispatchQueue.main.async {
     guard let self else{return};self.busy=false

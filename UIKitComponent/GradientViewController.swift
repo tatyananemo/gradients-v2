@@ -260,7 +260,7 @@ public final class GradientViewController:UIViewController,MTKViewDelegate {
         else {masks=[gpu.clear,gpu.clear,gpu.clear]}
         let maskMS=(ProcessInfo.processInfo.systemUptime-maskStart)*1000
         maskCPUTime+=maskMS;performanceMetrics?.add("maskPreparationMS",maskMS)
-        if !externallyDriven {captionProbe?.sample(uniforms:uniforms,history:history,frame:caption,key:"\(dark):\(yellow)",dark:dark,yellow:yellow)}
+        if !externallyDriven {captionProbe?.sample(uniforms:uniforms,history:history,frame:caption,key:"\(dark):\(yellow)",dark:dark,yellow:yellow,metrics:performanceMetrics)}
         updateUI(activation:activation ?? captionProbe?.activation ?? 0)
         rendered=false;finished=false;viewMetal.draw()
         let cpuMS=(ProcessInfo.processInfo.systemUptime-cpuStart)*1000
@@ -359,7 +359,7 @@ public final class GradientViewController:UIViewController,MTKViewDelegate {
             if let metrics {metrics.add("completionToMainMS",(ProcessInfo.processInfo.systemUptime-callbackTime)*1000)}
             self?.finished=command.status == .completed;self?.availableSlots[completedSlot]=true
             self?.gpuTime+=max(0,command.gpuEndTime-command.gpuStartTime)*1000
-            if command.status != .completed {self?.gpuErrors.append(String(describing:command.error))}
+            if command.status != .completed {self?.gpuErrors.append(String(describing:command.error));metrics?.add("compositionCommandErrors",1)}
         }}
         command.present(drawable);command.commit();rendered=true
     }

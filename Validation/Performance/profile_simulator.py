@@ -18,7 +18,7 @@ for theme,color in [('dark','blue'),('dark','yellow'),('light','blue'),('light',
  if os.environ.get('GRADIENTS_PROFILE_CASES') and theme+'-'+color not in os.environ['GRADIENTS_PROFILE_CASES'].split(','):continue
  subprocess.run(['xcrun','simctl','terminate',uid,bundle],capture_output=True,timeout=20)
  target=data/'performance.json';target.unlink(missing_ok=True)
- env=dict(os.environ,SIMCTL_CHILD_GRADIENTS_THEME=theme,SIMCTL_CHILD_GRADIENTS_COLOR=color,SIMCTL_CHILD_GRADIENTS_PROGRESS='0.6',SIMCTL_CHILD_GRADIENTS_DIAGNOSTICS='1',SIMCTL_CHILD_GRADIENTS_BENCHMARK='1',SIMCTL_CHILD_GRADIENTS_BENCHMARK_DURATION=str(duration))
+ env=dict(os.environ,SIMCTL_CHILD_GRADIENTS_THEME=theme,SIMCTL_CHILD_GRADIENTS_COLOR=color,SIMCTL_CHILD_GRADIENTS_PROGRESS='0.6',SIMCTL_CHILD_GRADIENTS_DIAGNOSTICS='1',SIMCTL_CHILD_GRADIENTS_BENCHMARK='1',SIMCTL_CHILD_GRADIENTS_BENCHMARK_DURATION=str(duration),SIMCTL_CHILD_GRADIENTS_BENCHMARK_IDLE_ONLY=os.environ.get('GRADIENTS_PROFILE_IDLE','0'))
  subprocess.run(['xcrun','simctl','launch',uid,bundle],env=env,check=True,timeout=20)
  deadline=time.monotonic()+duration+45
  while not target.exists() and time.monotonic()<deadline:time.sleep(.5)
