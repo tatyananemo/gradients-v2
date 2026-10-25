@@ -100,6 +100,20 @@ final class SDKStabilityTests:XCTestCase {
             for button in controller.controlButtons {XCTAssertTrue(controller.view.bounds.contains(button.frame))}
         }
     }
+    @MainActor func testBoundsChangeImmediatelyBeforeTickSynchronizesViewport() async throws {
+        let (window,_,controller)=try host(.yellowDark)
+        defer {detach(controller);window.isHidden=true}
+        try await frames(controller)
+        controller.view.bounds=CGRect(x:0,y:0,width:390.5,height:844.5)
+        controller.tick()
+        let size=controller.view.bounds.size,scale=window.screen.scale
+        print("VIEWPORT bounds=\(size), metalFrame=\(controller.viewMetal.frame), drawable=\(controller.viewMetal.drawableSize), backing=\(controller.backing.width)x\(controller.backing.height), mask=\(controller.masks[0].width)x\(controller.masks[0].height)")
+        XCTAssertEqual(controller.viewMetal.drawableSize,CGSize(width:ceil(size.width*scale),height:ceil(size.height*scale)))
+        XCTAssertEqual(controller.backing.width,controller.masks[0].width)
+        XCTAssertEqual(controller.backing.height,controller.masks[0].height)
+        XCTAssertEqual(controller.uniforms[0],Float(size.width));XCTAssertEqual(controller.uniforms[1],Float(size.height))
+    }
+
     @MainActor func testDetachReattachManualPauseAndHiddenAncestor() async throws {
         let (window,parent,controller)=try host(.yellowDark)
         defer {detach(controller);window.isHidden=true}

@@ -173,10 +173,13 @@ public final class GradientViewController:UIViewController,MTKViewDelegate {
     public func pauseRendering() {explicitlyPaused=true;endInterruptedInput();updateDisplayLink()}
     public func resumeRendering() {explicitlyPaused=false;updateDisplayLink()}
     public override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
+        super.viewDidLayoutSubviews();synchronizeDrawableLayout()
+    }
+    private func synchronizeDrawableLayout() {
         guard let metal=viewMetal,hasRenderableBounds else{return}
         let size=view.bounds.size
-        guard currentSize != size || metal.contentScaleFactor != renderingScale else{return}
+        let pixelSize=CGSize(width:ceil(size.width*renderingScale),height:ceil(size.height*renderingScale))
+        guard currentSize != size || metal.contentScaleFactor != renderingScale || metal.drawableSize != pixelSize else{return}
         currentSize=size
         let textHeight:CGFloat
         if abs(size.width-390)<0.01 {textHeight=63.3333333333333}
@@ -239,12 +242,16 @@ public final class GradientViewController:UIViewController,MTKViewDelegate {
     func tick() {
         guard !externallyDriven else{return}
         guard canRender else{endInterruptedInput();return}
+        // Bounds may change before UIKit's next layout pass. All textures,
+        // masks and frame arguments must observe one authoritative viewport.
+        view.layoutIfNeeded();synchronizeDrawableLayout()
         let frame=session.frame(at:clock(),size:view.bounds.size,dark:dark,yellow:yellow)
         present(frame)
         onFrame?(frame)
     }
     func present(_ frame:GradientRenderFrame, activation:Double?=nil) {
         guard hasRenderableBounds else{return}
+        synchronizeDrawableLayout()
         // Each in-flight frame owns its shared CPU inputs. No semaphore wait on main.
         guard let slot=availableSlots.firstIndex(of:true) else {framesSkipped+=1;return}
         activeSlot=slot;availableSlots[slot]=false
