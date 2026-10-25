@@ -95,7 +95,9 @@ def expected_sources(root=ROOT):
 def verify(root=ROOT):
     expected = expected_sources(root)
     for path, text in expected.items():
-        assert (root / path).read_text() == text, f"Unapproved change outside exact sharing: {path}"
+        fixture = path in {"GradientInstallView.swift", "_22App.swift"} or path.startswith("Sources/")
+        actual_path = root / "Validation/ReferenceV2" / path if fixture else root / path
+        assert actual_path.read_text() == text, f"Unapproved change outside exact sharing: {path}"
     actual = {str(p.relative_to(root)) for p in (root / "ShaderSources").rglob("*") if p.suffix in {".source", ".inc"}}
     assert actual == {p for p in expected if p.endswith((".metal.source", ".inc"))}
     # The old deletion proof remains valid on its recorded checkpoint; current Swift is still frozen.

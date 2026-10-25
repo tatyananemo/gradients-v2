@@ -4,9 +4,8 @@ final class InteractionTests:XCTestCase {
     func testAllThemesSwipeHoldReleaseAndReset() {
         let app=XCUIApplication()
         app.launchEnvironment["GRADIENTS_DIAGNOSTICS"]="1"
-        for dark in [false,true] {for yellow in [false,true] {
+        for dark in [false,true] {for yellow in [true] {
             app.launchEnvironment["GRADIENTS_THEME"]=dark ? "dark":"light"
-            app.launchEnvironment["GRADIENTS_COLOR"]=yellow ? "yellow":"blue"
             app.launch()
             XCTAssertTrue(app.buttons["Сбросить"].waitForExistence(timeout:20))
             let start=app.coordinate(withNormalizedOffset:CGVector(dx:0.2,dy:0.8))
@@ -28,9 +27,8 @@ final class InteractionTests:XCTestCase {
     }
     func testInstructionIsExposedInAllThemes() {
         let app=XCUIApplication()
-        for dark in [false,true] {for yellow in [false,true] {
+        for dark in [false,true] {for yellow in [true] {
             app.launchEnvironment["GRADIENTS_THEME"]=dark ? "dark":"light"
-            app.launchEnvironment["GRADIENTS_COLOR"]=yellow ? "yellow":"blue"
             app.launch()
             XCTAssertTrue(app.staticTexts["Устанавливаем защищенное соединение. Водите пальцем в разных частях экрана"].waitForExistence(timeout:3))
             app.terminate()
@@ -43,9 +41,8 @@ final class InteractionTests:XCTestCase {
             let text=app.staticTexts.matching(NSPredicate(format:"label ENDSWITH %@","%")).firstMatch.label
             return Int(text.replacingOccurrences(of:"%",with:"")) ?? -1
         }
-        for dark in [false,true] {for yellow in [false,true] {
+        for dark in [false,true] {for yellow in [true] {
             app.launchEnvironment["GRADIENTS_THEME"]=dark ? "dark":"light"
-            app.launchEnvironment["GRADIENTS_COLOR"]=yellow ? "yellow":"blue"
             app.launchEnvironment["GRADIENTS_PROGRESS"]="0"
             app.launch()
             XCTAssertTrue(app.buttons["Сбросить"].waitForExistence(timeout:10))
@@ -95,7 +92,6 @@ final class InteractionTests:XCTestCase {
         app.launchEnvironment["GRADIENTS_TEST_INTERRUPT_AFTER"]="5"
         app.launchEnvironment["GRADIENTS_PROGRESS"]="0"
         app.launchEnvironment["GRADIENTS_THEME"]="dark"
-        app.launchEnvironment["GRADIENTS_COLOR"]="yellow"
         app.launch()
         XCTAssertTrue(app.buttons["Сбросить"].waitForExistence(timeout:10))
         let start=app.coordinate(withNormalizedOffset:CGVector(dx:0.2,dy:0.85))
@@ -121,34 +117,35 @@ final class InteractionTests:XCTestCase {
         app.terminate()
     }
 
-    func testDefaultYellowAndBlueSwitchPreserveThemePreference() {
+    func testOnlyYellowThemesAndDarkLightPreference() {
         let app=XCUIApplication();app.launch()
         app.buttons["Настройки"].tap()
         let theme=app.segmentedControls["theme"]
         XCTAssertTrue(theme.waitForExistence(timeout:5))
-        XCTAssertEqual(app.buttons["yellow"].value as? String,"Выбрано")
+        XCTAssertFalse(app.buttons["blue"].exists)
+        XCTAssertFalse(app.buttons["yellow"].exists)
+        XCTAssertFalse(app.staticTexts["Цвет градиента"].exists)
         theme.buttons["Светлая"].tap()
-        app.buttons["blue"].tap()
-        XCTAssertEqual(app.buttons["blue"].value as? String,"Выбрано")
         XCTAssertTrue(theme.buttons["Светлая"].isSelected)
-        app.buttons["yellow"].tap()
-        XCTAssertEqual(app.buttons["yellow"].value as? String,"Выбрано")
+        app.terminate();app.launch()
+        app.buttons["Настройки"].tap()
+        XCTAssertTrue(theme.waitForExistence(timeout:5))
+        XCTAssertTrue(theme.buttons["Светлая"].isSelected)
         theme.buttons["Тёмная"].tap()
         app.terminate();app.launch()
         app.buttons["Настройки"].tap()
         XCTAssertTrue(theme.waitForExistence(timeout:5))
         XCTAssertTrue(theme.buttons["Тёмная"].isSelected)
-        XCTAssertEqual(app.buttons["yellow"].value as? String,"Выбрано")
         app.terminate()
     }
 
-    func testSettingsSwitchesBothThemesAndColors() {
+    func testSettingsSwitchesDarkAndLight() {
         let app=XCUIApplication();app.launch()
         app.buttons["Настройки"].tap()
         XCTAssertTrue(app.segmentedControls["theme"].waitForExistence(timeout:5))
         app.segmentedControls["theme"].buttons["Тёмная"].tap()
-        app.buttons["yellow"].tap();app.buttons["blue"].tap()
         app.segmentedControls["theme"].buttons["Светлая"].tap()
+        app.segmentedControls["theme"].buttons["Тёмная"].tap()
         app.swipeDown()
         XCTAssertTrue(app.buttons["Сбросить"].waitForExistence(timeout:5))
     }

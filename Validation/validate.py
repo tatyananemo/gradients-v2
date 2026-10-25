@@ -29,7 +29,8 @@ def block(source, marker):
 
 
 def app_source():
-    files = sorted(ROOT.glob("*.swift")) + sorted((ROOT / "Sources").glob("*.swift"))
+    reference = ROOT / "Validation/ReferenceV2"
+    files = sorted(reference.glob("*.swift")) + sorted((reference / "Sources").glob("*.swift"))
     return "\n".join(p.read_text() for p in files)
 
 

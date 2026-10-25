@@ -5,7 +5,7 @@ import CoreImage
 @testable import GradientsKit
 
 final class SDKStabilityTests:XCTestCase {
-    @MainActor private func host(_ theme:GradientTheme = .blueDark,_ progress:CGFloat=0.3) throws -> (UIWindow,UIViewController,GradientViewController) {
+    @MainActor private func host(_ theme:GradientTheme = .yellowDark,_ progress:CGFloat=0.3) throws -> (UIWindow,UIViewController,GradientViewController) {
         let window=UIWindow(frame:UIScreen.main.bounds)
         let host=UIViewController();window.rootViewController=host;window.makeKeyAndVisible()
         let component=try GradientViewController(theme:theme,initialProgress:progress)
@@ -26,7 +26,7 @@ final class SDKStabilityTests:XCTestCase {
         controller.pauseRendering()
     }
     @MainActor func testIndependentInstancesOwnStateAndMutableGPUResources() async throws {
-        let (window,parent,a)=try host(.blueDark,0.3)
+        let (window,parent,a)=try host(.yellowDark,0.3)
         let b=try GradientViewController(theme:.yellowDark,initialProgress:0.8)
         parent.addChild(b);b.view.frame=parent.view.bounds;parent.view.addSubview(b.view);b.didMove(toParent:parent)
         defer {detach(a);detach(b);window.isHidden=true}
@@ -53,11 +53,11 @@ final class SDKStabilityTests:XCTestCase {
         XCTAssertEqual(a.framesSubmitted,paused)
     }
     @MainActor func testRapidThemeChangesDuringInputRemainRenderable() async throws {
-        let (window,_,controller)=try host(.blueDark)
+        let (window,_,controller)=try host(.yellowDark)
         defer {detach(controller);window.isHidden=true}
         try await frames(controller)
         for i in 0..<32 {
-            controller.theme=GradientTheme.allCases[i%4]
+            controller.theme=GradientTheme.allCases[i%GradientTheme.allCases.count]
             controller.session.dragChanged(to:CGPoint(x:i%2==0 ? 20:370,y:400),at:Date().timeIntervalSinceReferenceDate,size:controller.view.bounds.size)
             controller.tick()
         }
@@ -86,7 +86,7 @@ final class SDKStabilityTests:XCTestCase {
         }}
     }
     @MainActor func testResizeAndScaleKeepResourcesAndLayoutConsistent() async throws {
-        let (window,_,controller)=try host(.blueDark,0.8)
+        let (window,_,controller)=try host(.yellowDark,0.8)
         defer {detach(controller);window.isHidden=true}
         for size in [CGSize(width:320,height:568),CGSize(width:375,height:667),CGSize(width:390,height:844),CGSize(width:430,height:932),CGSize(width:390.5,height:844.5)] {
             controller.view.frame=CGRect(origin:.zero,size:size);controller.view.setNeedsLayout();controller.view.layoutIfNeeded()
@@ -104,9 +104,19 @@ final class SDKStabilityTests:XCTestCase {
         let (window,_,controller)=try host(.yellowDark)
         defer {detach(controller);window.isHidden=true}
         try await frames(controller)
+        // This assertion concerns one rendered tick, not the intentional
+        // no-free-slot path. Stop automatic ticks and drain their shared inputs.
+        controller.displayLink?.isPaused=true
+        let deadline=ProcessInfo.processInfo.systemUptime+8
+        while controller.inFlight && ProcessInfo.processInfo.systemUptime<deadline {
+            try await Task.sleep(nanoseconds:20_000_000)
+        }
+        XCTAssertFalse(controller.inFlight,"Resize fixture did not obtain free input slots")
+        let submitted=controller.framesSubmitted
         controller.view.bounds=CGRect(x:0,y:0,width:390.5,height:844.5)
         controller.tick()
         let size=controller.view.bounds.size,scale=window.screen.scale
+        XCTAssertEqual(controller.framesSubmitted,submitted+1,"The resized tick must actually render")
         print("VIEWPORT bounds=\(size), metalFrame=\(controller.viewMetal.frame), drawable=\(controller.viewMetal.drawableSize), backing=\(controller.backing.width)x\(controller.backing.height), mask=\(controller.masks[0].width)x\(controller.masks[0].height)")
         XCTAssertEqual(controller.viewMetal.drawableSize,CGSize(width:ceil(size.width*scale),height:ceil(size.height*scale)))
         XCTAssertEqual(controller.backing.width,controller.masks[0].width)
@@ -140,7 +150,7 @@ final class SDKStabilityTests:XCTestCase {
         try await frames(controller)
     }
     @MainActor func testCounterResetAndThemeChangesAtCompletion() async throws {
-        let (window,_,controller)=try host(.blueLight,1)
+        let (window,_,controller)=try host(.yellowLight,1)
         defer {detach(controller);window.isHidden=true}
         for theme in GradientTheme.allCases {
             controller.theme=theme;try await frames(controller)

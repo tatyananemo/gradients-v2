@@ -237,7 +237,13 @@ public final class GradientSession {
             ]
         }
     }
+    /// V4 exposes only Yellow. The internal V2 frame builder remains unchanged
+    /// for exact replay against the frozen reference.
     public func frame(at now: TimeInterval, size: CGSize, origin: CGPoint = .zero,
+                      dark: Bool) -> GradientRenderFrame {
+        frame(at: now, size: size, origin: origin, dark: dark, yellow: true)
+    }
+    func frame(at now: TimeInterval, size: CGSize, origin: CGPoint = .zero,
                       dark: Bool, yellow: Bool) -> GradientRenderFrame {
         let elapsed = now - startTime
         let age = max(0, now - waterTouchLastMove)

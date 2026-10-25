@@ -1,0 +1,99 @@
+{
+  "baseCommit": "5847060c928e3fdd2fe99b19cc37bba3a5bb0e71",
+  "sourceBranch": "stabilization/gradientskit-sdk",
+  "experimentalChangesIncluded": false,
+  "publicThemes": [
+    "yellowDark",
+    "yellowLight"
+  ],
+  "default": "yellowDark",
+  "demoBundleID": "com.local.gradients.v4.uikit",
+  "frameworkBundleID": "com.local.gradients.v4.kit",
+  "normalBuilds": [
+    {
+      "mode": "Debug",
+      "status": 0,
+      "seconds": 25.731362458027434
+    },
+    {
+      "mode": "Release",
+      "status": 0,
+      "seconds": 20.031032333004987
+    }
+  ],
+  "numericChecks": [
+    {
+      "mode": "Debug",
+      "check": "gpu",
+      "status": 0,
+      "seconds": 35.19502312500845
+    },
+    {
+      "mode": "Debug",
+      "check": "masks60",
+      "status": 0,
+      "seconds": 104.93270604198915
+    },
+    {
+      "mode": "Debug",
+      "check": "masks108",
+      "status": 0,
+      "seconds": 4.3242428329831455
+    },
+    {
+      "mode": "Release",
+      "check": "gpu",
+      "status": 0,
+      "seconds": 26.80238866599393
+    },
+    {
+      "mode": "Release",
+      "check": "masks60",
+      "status": 0,
+      "seconds": 6.556273708003573
+    },
+    {
+      "mode": "Release",
+      "check": "masks108",
+      "status": 0,
+      "seconds": 4.56985554198036
+    },
+    {
+      "check": "session",
+      "status": 0
+    },
+    {
+      "check": "presentation",
+      "status": 0
+    }
+  ],
+  "gpuOutputsPerConfiguration": 216,
+  "yellowGpuOutputsPerConfiguration": 108,
+  "exactMasksPerConfiguration": 168,
+  "sessionReplay": {
+    "events": 931,
+    "exactStateChecks": 1385,
+    "fullFrameArgumentComparisons": 5540
+  },
+  "tests": {
+    "Debug": {
+      "unitComponentPasses": 24,
+      "knownSanitizerControlSkipped": true,
+      "uiPasses": 6
+    },
+    "Release": {
+      "unitComponentPasses": 24,
+      "knownSanitizerControlSkipped": true,
+      "uiPasses": 6
+    }
+  },
+  "testHarnessNote": "Resize fixture pauses automatic display-link ticks, drains input slots, then asserts one actual manual submission. Strict size/texture/uniform assertions unchanged; runtime scheduling unchanged. Original mixed-load failure retained in local test logs.",
+  "metallibSHA256": "99b750649719348c2f9a19667638136f4ccfc84cd84b0f3fc284b98b05f45b3f",
+  "shaderAndCompilerMathChanges": false,
+  "referenceFixtureChanges": false,
+  "oraclesOrToleranceChanges": false,
+  "v2FilesUnchanged": 30,
+  "refactorTrackedFilesUnchanged": 113,
+  "mediaCreated": false,
+  "publishedToGitHub": false
+}

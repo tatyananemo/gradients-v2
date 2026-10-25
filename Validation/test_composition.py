@@ -53,7 +53,7 @@ class CompositionTests(unittest.TestCase):
             include = base / "ShaderSources" / COMPOSER.INCLUDE_BLOCKS[0]
             include.write_text(include.read_text() + "// include dependency marker\n")
             self.assertEqual(COMPOSER.compose(base).count(b"// include dependency marker"), 3)
-        project = (ROOT / "UIKitDemo/GradientsUIKit.xcodeproj/project.pbxproj").read_text()
+        project = (ROOT / "UIKitDemo/GradientsUIKitV4.xcodeproj/project.pbxproj").read_text()
         for name in COMPOSER.INCLUDE_BLOCKS:
             self.assertIn("$(SRCROOT)/../ShaderSources/" + name, project)
 

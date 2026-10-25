@@ -12,7 +12,7 @@ public final class GradientViewController:UIViewController,MTKViewDelegate {
     var f:GradientRenderFrame
     public let session:GradientSession
     public var dark:Bool
-    public var yellow:Bool
+    let yellow=true
     public var onSettings:(()->Void)?
     public var onFrame:((GradientRenderFrame)->Void)?
     var displayLink:CADisplayLink?
@@ -67,10 +67,10 @@ public final class GradientViewController:UIViewController,MTKViewDelegate {
     var finished=false
     var backgroundOnly:Bool {false}
     var captionOnly:Bool {false}
-    public init(session:GradientSession, dark:Bool, yellow:Bool,
+    public init(session:GradientSession, dark:Bool,
                 size:CGSize=CGSize(width:390,height:844)) throws {
         if Self.context == nil {Self.context=try GradientGPU()}
-        self.gpu=Self.context!;self.session=session;self.dark=dark;self.yellow=yellow
+        self.gpu=Self.context!;self.session=session;self.dark=dark
         let frame=session.frame(at:Date().timeIntervalSinceReferenceDate,size:size,dark:dark,yellow:yellow)
         f=frame;uniforms=frame.uniforms;history=frame.history
         // These are the accepted V2 full-screen layout constants. SDK layout generalization is a later milestone.
@@ -78,7 +78,7 @@ public final class GradientViewController:UIViewController,MTKViewDelegate {
         counter=CGRect(x:0,y:356,width:size.width,height:76.6666666666667)
         super.init(nibName:nil,bundle:nil)
     }
-    public required init?(coder:NSCoder){fatalError("Use init(session:dark:yellow:size:)")}
+    public required init?(coder:NSCoder){fatalError("Use init(session:dark:size:)")}
     public override var prefersStatusBarHidden:Bool {true}
     public override var prefersHomeIndicatorAutoHidden:Bool {true}
     public override func viewDidLoad() {

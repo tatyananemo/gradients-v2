@@ -4,8 +4,20 @@ import Metal
 @testable import GradientsKit
 
 final class ComponentTests:XCTestCase {
+    @MainActor func testV4ExposesOnlyYellowWithDarkDefault() throws {
+        XCTAssertEqual(GradientTheme.allCases,[.yellowDark,.yellowLight])
+        let controller=try GradientViewController()
+        XCTAssertEqual(controller.theme,.yellowDark)
+        for dark in [false,true] {
+            let frame=controller.session.frame(at:1,size:CGSize(width:390,height:844),dark:dark)
+            XCTAssertTrue(frame.yellow)
+            XCTAssertEqual(frame.uniforms[24],3)
+            XCTAssertEqual(frame.uniforms[23],dark ? 1:0)
+        }
+    }
+
     @MainActor func testFrameworkOwnsMetalAndHasNoHostingController() throws {
-        let controller=try GradientViewController(session:GradientSession(at:Date().timeIntervalSinceReferenceDate),dark:true,yellow:true)
+        let controller=try GradientViewController(session:GradientSession(at:Date().timeIntervalSinceReferenceDate),dark:true)
         controller.loadViewIfNeeded()
         XCTAssertTrue(controller.engineDescription.contains("UIKit + Metal"))
         XCTAssertFalse(String(reflecting:type(of:controller)).contains("Hosting"))
@@ -42,7 +54,7 @@ final class ComponentTests:XCTestCase {
         XCTAssertEqual(label.text,"0%")
     }
     @MainActor func testAllThemesReachCompletionAndReset() {
-        for dark in [false,true] {for yellow in [false,true] {
+        for dark in [false,true] {for yellow in [true] {
             let session=GradientSession(at:0)
             for i in 0..<2400 {
                 let time=Double(i)/60
@@ -72,7 +84,7 @@ final class ComponentTests:XCTestCase {
         """
         let library=try device.makeLibrary(source:source,options:nil)
         let pipeline=try device.makeComputePipelineState(function:try XCTUnwrap(library.makeFunction(name:"compare")))
-        for yellow in [false,true] {for progress in [0.3,0.6,0.8] {
+        for yellow in [true] {for progress in [0.3,0.6,0.8] {
             try autoreleasepool {
                 let counter=CGRect(x:0,y:356,width:390,height:76.6666666666667),size=CGSize(width:390,height:844)
                 let a=before.render(progress:progress,elapsed:3.75,yellow:yellow,counter:counter,size:size,scale:3)
@@ -96,11 +108,11 @@ final class ComponentTests:XCTestCase {
     @MainActor func testLiveThemeChangesReusePrivateMasksWithoutGPUFailures() async throws {
         let window=UIWindow(frame:CGRect(x:0,y:0,width:390,height:844))
         let session=GradientSession(at:Date().timeIntervalSinceReferenceDate,initialProgress:0.6)
-        let controller=try GradientViewController(session:session,dark:true,yellow:false)
+        let controller=try GradientViewController(session:session,dark:true)
         window.rootViewController=controller;window.makeKeyAndVisible()
         defer {controller.pauseRendering();window.isHidden=true}
-        for _ in 0..<2 {for dark in [true,false] {for yellow in [false,true] {
-            controller.dark=dark;controller.yellow=yellow
+        for _ in 0..<2 {for dark in [true,false] {for yellow in [true] {
+            controller.dark=dark;XCTAssertTrue(controller.yellow)
             let submitted=controller.framesSubmitted
             let deadline=ProcessInfo.processInfo.systemUptime+8
             repeat {
@@ -129,12 +141,12 @@ final class ComponentTests:XCTestCase {
 
     @MainActor func testCaptionProbeInvalidatesPreviousThemeWhileBusy() async throws {
         let gpu=try GradientGPU(),probe=SessionCaptionProbe(gpu:gpu)
-        let frame=GradientSession(at:0,initialProgress:0.6).frame(at:1,size:CGSize(width:390,height:844),dark:false,yellow:false)
+        let frame=GradientSession(at:0,initialProgress:0.6).frame(at:1,size:CGSize(width:390,height:844),dark:true)
         let caption=CGRect(x:0,y:699,width:390,height:63)
-        probe.sample(uniforms:frame.uniforms,history:[],frame:caption,key:"blue",dark:false,yellow:false)
+        probe.sample(uniforms:frame.uniforms,history:[],frame:caption,key:"yellowDark",dark:true,yellow:true)
         // Completion is dispatched to main, so the second call observes busy=true.
-        probe.sample(uniforms:frame.uniforms,history:[],frame:caption,key:"yellow",dark:false,yellow:true)
-        XCTAssertEqual(probe.key,"yellow","In-flight results must not keep the old theme current")
+        probe.sample(uniforms:frame.uniforms,history:[],frame:caption,key:"yellowLight",dark:false,yellow:true)
+        XCTAssertEqual(probe.key,"yellowLight","In-flight results must not keep the old theme current")
         try await Task.sleep(nanoseconds:200_000_000)
         XCTAssertEqual(probe.activation,0,"An obsolete theme result changed the new theme's backing")
     }
@@ -158,7 +170,7 @@ final class ComponentTests:XCTestCase {
 
     @MainActor func testBackgroundSuspendsInputAndRenderingWithoutHostHooks() async throws {
         let window=UIWindow(frame:CGRect(x:0,y:0,width:390,height:844))
-        let controller=try GradientViewController(theme:.blueDark,initialProgress:0.3)
+        let controller=try GradientViewController(theme:.yellowDark,initialProgress:0.3)
         window.rootViewController=controller;window.makeKeyAndVisible()
         defer {NotificationCenter.default.post(name:UIApplication.didBecomeActiveNotification,object:nil);controller.pauseRendering();window.isHidden=true}
         try await Task.sleep(nanoseconds:150_000_000)
@@ -213,7 +225,7 @@ final class ComponentTests:XCTestCase {
 
     @MainActor func testNonanimatedResetStopsAnExistingNumericTransition() async throws {
         let window=UIWindow(frame:CGRect(x:0,y:0,width:390,height:844))
-        let controller=try GradientViewController(theme:.blueLight,initialProgress:0.8)
+        let controller=try GradientViewController(theme:.yellowLight,initialProgress:0.8)
         window.rootViewController=controller;window.makeKeyAndVisible()
         defer {controller.pauseRendering();window.isHidden=true}
         try await Task.sleep(nanoseconds:100_000_000)

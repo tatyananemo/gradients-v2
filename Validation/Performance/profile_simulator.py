@@ -7,14 +7,14 @@ The same deterministic idle/swipe/hold/release trace is used for all four themes
 """
 import subprocess,os,json,time,sys
 from pathlib import Path
-uid=os.environ.get('GRADIENTS_SIMULATOR','468B8589-9260-4F1B-8958-63737D5D8BB6');bundle='com.local.gradients.v2.uikit'
+uid=os.environ.get('GRADIENTS_SIMULATOR','E7D1D0C6-5730-4444-948D-E7B52DB2C30A');bundle='com.local.gradients.v4.uikit'
 app=os.environ['GRADIENTS_PROFILE_APP']
 duration=min(max(float(os.environ.get('GRADIENTS_PROFILE_DURATION','20')),20),90)
 subprocess.run(['xcrun','simctl','terminate',uid,bundle],capture_output=True,timeout=20)
 subprocess.run(['xcrun','simctl','install',uid,app],check=True,timeout=40)
 data=Path(subprocess.check_output(['xcrun','simctl','get_app_container',uid,bundle,'data'],text=True,timeout=20).strip())/'Documents'
 out={}
-for theme,color in [('dark','blue'),('dark','yellow'),('light','blue'),('light','yellow')]:
+for theme,color in [('dark','yellow'),('light','yellow')]:
  if os.environ.get('GRADIENTS_PROFILE_CASES') and theme+'-'+color not in os.environ['GRADIENTS_PROFILE_CASES'].split(','):continue
  subprocess.run(['xcrun','simctl','terminate',uid,bundle],capture_output=True,timeout=20)
  target=data/'performance.json';target.unlink(missing_ok=True)

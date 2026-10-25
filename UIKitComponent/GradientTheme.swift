@@ -2,17 +2,17 @@ import Foundation
 import UIKit
 
 public enum GradientTheme:String,CaseIterable,Sendable {
-    case blueDark,blueLight,yellowDark,yellowLight
-    public var isDark:Bool {self == .blueDark || self == .yellowDark}
-    public var isYellow:Bool {self == .yellowDark || self == .yellowLight}
+    case yellowDark,yellowLight
+    public var isDark:Bool {self == .yellowDark}
+    public var isYellow:Bool {true}
 }
 
 extension GradientViewController {
     public var theme:GradientTheme {
-        get {yellow ? (dark ? .yellowDark:.yellowLight):(dark ? .blueDark:.blueLight)}
-        set {dark=newValue.isDark;yellow=newValue.isYellow}
+        get {dark ? .yellowDark:.yellowLight}
+        set {dark=newValue.isDark}
     }
-    public convenience init(theme:GradientTheme = .blueLight,initialProgress:CGFloat=0) throws {
-        try self.init(session:GradientSession(at:Date().timeIntervalSinceReferenceDate,initialProgress:initialProgress),dark:theme.isDark,yellow:theme.isYellow)
+    public convenience init(theme:GradientTheme = .yellowDark,initialProgress:CGFloat=0) throws {
+        try self.init(session:GradientSession(at:Date().timeIntervalSinceReferenceDate,initialProgress:initialProgress),dark:theme.isDark)
     }
 }

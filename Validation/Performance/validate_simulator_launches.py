@@ -10,8 +10,8 @@ import subprocess
 import sys
 import time
 
-UID = os.environ.get('GRADIENTS_SIMULATOR', '468B8589-9260-4F1B-8958-63737D5D8BB6')
-BUNDLE = 'com.local.gradients.v2.uikit'
+UID = os.environ.get('GRADIENTS_SIMULATOR', 'E7D1D0C6-5730-4444-948D-E7B52DB2C30A')
+BUNDLE = 'com.local.gradients.v4.uikit'
 REPORTS = Path.home() / 'Library/Logs/DiagnosticReports'
 
 

@@ -8,7 +8,7 @@ import validate as v
 legacy=v.behavior_source(v.app_source())
 legacy=legacy[:legacy.index('private let replay = Replay()')].replace('private final class Replay','final class Replay').replace('private func ','func ')
 # Compile the original View's frame expressions too, not a second hand-written oracle.
-view=(ROOT/'GradientInstallView.swift').read_text()
+view=(ROOT/'Validation/ReferenceV2/GradientInstallView.swift').read_text()
 a=view.index('            let elapsed = now - startTime');b=view.index('            let isDarkTheme',a)
 clock=view[a:b]
 a=view.index('                let waterPoint =');b=view.index('                ZStack {',a)

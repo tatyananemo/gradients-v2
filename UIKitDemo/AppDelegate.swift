@@ -39,11 +39,10 @@ final class DemoController:UIViewController,UIAdaptivePresentationControllerDele
     override var prefersStatusBarHidden:Bool {true}
     override var prefersHomeIndicatorAutoHidden:Bool {true}
     init(environment:[String:String]) throws {
-        let dark=environment["GRADIENTS_THEME"].map {$0=="dark"} ?? (UserDefaults.standard.string(forKey:"theme")=="dark")
-        let yellow=(environment["GRADIENTS_COLOR"] ?? "yellow")=="yellow"
+        let dark=environment["GRADIENTS_THEME"].map {$0=="dark"} ?? ((UserDefaults.standard.string(forKey:"theme") ?? "dark")=="dark")
         let progress=Double(environment["GRADIENTS_PROGRESS"] ?? "0") ?? 0
         let session=GradientSession(at:Date().timeIntervalSinceReferenceDate,initialProgress:CGFloat(progress))
-        gradient=try GradientViewController(session:session,dark:dark,yellow:yellow)
+        gradient=try GradientViewController(session:session,dark:dark)
         super.init(nibName:nil,bundle:nil)
         gradient.onSettings={ [weak self] in self?.showSettings() }
         if environment["GRADIENTS_DIAGNOSTICS"]=="1" {
@@ -137,7 +136,6 @@ final class DemoController:UIViewController,UIAdaptivePresentationControllerDele
 final class SettingsController:UIViewController {
     weak var gradient:GradientViewController?
     var onThemeChanged:((Bool)->Void)?
-    var swatches:[UIButton]=[]
     init(gradient:GradientViewController){self.gradient=gradient;super.init(nibName:nil,bundle:nil)}
     required init?(coder:NSCoder){fatalError("Use init(gradient:)")}
     override func viewDidLoad() {
@@ -162,37 +160,13 @@ final class SettingsController:UIViewController {
             guard let self,let value=action.sender as? UISegmentedControl else{return}
             self.gradient?.dark=value.selectedSegmentIndex==1;self.onThemeChanged?(value.selectedSegmentIndex==1);self.updateTheme()
         },for:.valueChanged);section("Тема").addArrangedSubview(theme)
-        let colors=UIStackView();colors.axis = .horizontal;colors.distribution = .fillEqually;colors.spacing=9
-        section("Цвет градиента").addArrangedSubview(colors)
-        for (index,name) in ["Синий","Жёлтый"].enumerated() {
-            let button=UIButton();button.heightAnchor.constraint(equalToConstant:45).isActive=true
-            button.accessibilityLabel=name;button.accessibilityIdentifier=index==0 ? "blue":"yellow"
-            let circle=UIView();circle.translatesAutoresizingMaskIntoConstraints=false;circle.isUserInteractionEnabled=false
-            circle.backgroundColor=index==0 ? UIColor(red:0.26,green:0.55,blue:0.98,alpha:1):UIColor(red:1,green:0.7,blue:0,alpha:1)
-            circle.layer.cornerRadius=14;circle.layer.shadowColor=circle.backgroundColor?.cgColor;circle.layer.shadowOpacity=0.3;circle.layer.shadowRadius=8;circle.layer.shadowOffset=CGSize(width:0,height:3)
-            let label=UILabel();label.translatesAutoresizingMaskIntoConstraints=false;label.font = .systemFont(ofSize:10,weight:.semibold)
-            label.textAlignment = .center;label.textColor = .secondaryLabel;label.text=name
-            button.addSubview(circle);button.addSubview(label)
-            NSLayoutConstraint.activate([circle.widthAnchor.constraint(equalToConstant:28),circle.heightAnchor.constraint(equalToConstant:28),
-                circle.topAnchor.constraint(equalTo:button.topAnchor),circle.centerXAnchor.constraint(equalTo:button.centerXAnchor),
-                label.topAnchor.constraint(equalTo:circle.bottomAnchor,constant:5),label.centerXAnchor.constraint(equalTo:button.centerXAnchor)])
-            button.addAction(UIAction { [weak self] _ in self?.gradient?.yellow=index==1;self?.updateSwatches() },for:.touchUpInside)
-            swatches.append(button);colors.addArrangedSubview(button)
-        }
-        updateSwatches()
     }
     func updateTheme() {
         let dark=gradient?.dark == true
         overrideUserInterfaceStyle=dark ? .dark:.light
         view.backgroundColor=dark ? UIColor(red:0.04,green:0.05,blue:0.08,alpha:1):.white
     }
-    func updateSwatches() {
-        for (i,button) in swatches.enumerated() {
-            let selected=gradient?.yellow == (i==1);button.accessibilityValue=selected ? "Выбрано":""
-            button.subviews.first?.layer.borderColor=UIColor.white.withAlphaComponent(selected ? 0.95:0.28).cgColor
-            button.subviews.first?.layer.borderWidth=selected ? 3:1
-        }
-    }
+
 }
 
 // Opt-in demo diagnostics only; never used by GradientsKit or ordinary launches.

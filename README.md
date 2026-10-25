@@ -1,73 +1,27 @@
-# Gradients V2
+# GradientsKit V4 — Yellow
 
-Рабочее iOS-приложение на SwiftUI + Metal, отдельное от оригинального production.
+Самостоятельная UIKit + Metal-версия из стабильного `5847060` (`stabilization/gradientskit-sdk`). Экспериментальные изменения не включены. В приложении и публичном API доступны только **Yellow Dark** и **Yellow Light**. При первом запуске — Yellow Dark.
 
-Эта рабочая копия находится в ветке `refactor/v2-metal-composition`, основанной
-строго на утверждённой V2 `542b89b`. Выполнены фиксация эталона,
-воспроизводимая композиция Metal, упрощение настроек и безопасная очистка Swift.
-В Metal выполнен первый этап удаления доказанно мёртвого кода; активные формулы
-сохранены, эталонные GPU-кадры совпадают точно. UIKit-миграция не начата.
-После этого объединены семь точных Yellow-helpers; крупные переносы Blue
-отклонены по GPU-проверкам. Подробности Metal: `Validation/metal-dead-code.md`
-и `Validation/metal-dedup.md`.
-В настройках оставлены только цвет и светлая/тёмная тема; прочие значения
-зафиксированы на утверждённом Default. Подробности: `Validation/swift-refactor.md`.
+## Запуск
 
-Bundle ID сохранён. Для интерактивных проверок используется отдельный Simulator
-**Gradients V2 Refactor Validation**. Запуск на основном Simulator с тем же bundle ID
-заменит установленную там V2: для сохранения эталона выбирайте отдельный Simulator.
-Production и V3 не затрагиваются.
+1. Откройте `UIKitDemo/GradientsUIKitV4.xcodeproj` в Xcode.
+2. Выберите scheme **GradientsUIKitV4**, конфигурацию Debug или Release и iPhone Simulator с iOS 17+.
+3. Запустите приложение **GradientsKit V4**. Для сборки только SDK выберите **GradientsKit**.
 
-## Запуск в Xcode
+Demo bundle ID: `com.local.gradients.v4.uikit`; SDK: `com.local.gradients.v4.kit`. Они не совпадают с production, V2 или V3. Выбор Light/Dark сохраняется обычной настройкой Demo; выбора цвета нет. Управление — непрерывные свайпы, без механики тапов V3.
 
-1. Откройте `GradientsV2.xcodeproj`.
-2. Выберите общую схему **222** и iPhone Simulator с iOS 17.0 или новее.
-3. Нажмите **Run** (`⌘R`). Приложение появится как **Gradients V2**.
-4. В настройках приложения выберите светлую/тёмную тему и синий/жёлтый цвет.
+Формулы Metal, MAIN, CONTACT, SUBSTRATE FIX, маски, Gaussian blur, смешивание, разрешение, подпись и поведение перенесены без изменений. Общая Metal-библиотека сохранена целиком, включая вычисления в файлах `ApprovedBlue` и `ContactFields`: удаление по названию небезопасно и не относится к этой задаче. Синие темы не доступны через публичный API или Demo.
 
-Проверено с Xcode 26.3 и iPhone 14 Simulator на iOS 18.6. Для компиляции шейдеров должен быть установлен Metal Toolchain. Внешних пакетов и секретов для запуска в Simulator не требуется; подпись для этой сборки отключена. Для физического устройства потребуется настроить подпись своей командой в Xcode.
-
-Сборка из Terminal:
+`UIKitComponent` — SDK без SwiftUI. `Validation/ReferenceV2` — неизменённые исходники старого SwiftUI-эталона, только для регрессионных проверок; они не входят в V4 targets. Исторические материалы Validation сохранены как история, их capture/video/HTML-инструменты для V4 не запускались. Для текущей проверки используйте:
 
 ```sh
-xcodebuild -project GradientsV2.xcodeproj -scheme 222 \
-  -configuration Debug -sdk iphonesimulator \
-  -destination 'generic/platform=iOS Simulator' \
-  -derivedDataPath /tmp/GradientsV2DerivedData \
-  CODE_SIGNING_ALLOWED=NO build
+python3 -B Validation/validate.py --no-images --output /tmp/v4-gpu-check
+python3 -B Validation/UIKitMigration/validate_session.py
+python3 -B Validation/UIKitMigration/validate_presentation.py
+python3 -B Validation/UIKitMigration/validate_masks.py --accepted-uikit
+python3 -B Validation/Performance/validate_mask_reuse.py
 ```
 
-## Сохранённая версия
+Эталоны и допуски не перезаписываются. Полная каноническая библиотека проверяется всеми 216 прежними GPU-выходами, включая 108 выходов Yellow. Поведение публичного V4 API и оба режима проверяются unit/UI-тестами проекта. Удержание, release, idle, reset и скорость progress сохранены. Simulator не заменяет проверку производительности на физическом iPhone.
 
-- Все четыре темы: **Blue Dark**, **Blue Light**, **Yellow Dark**, **Yellow Light**.
-- Утверждённые MAIN, Blue CONTACT и SUBSTRATE FIX, текущие Yellow CONTACT.
-- Текущие цвета, геометрия, анимации, тайминги, непрерывные свайпы и автоматическая idle-волна.
-- Сохранение выбранной темы и исправленный переключатель настроек.
-- Постоянная градиентная подложка под нижней подписью в обеих Dark: нижние 30% экрана, чёрный от alpha 0 сверху до 0.3 снизу, без переключений и обводки букв.
-- Нижний текст во всех темах: «Устанавливаем защищенное соединение. Водите пальцем в разных частях экрана».
-
-Bundle ID: `com.local.gradients.v2`. Он отличается от оригинального production `com.local.gradientinstall`; приложения устанавливаются одновременно.
-
-## Файлы проекта
-
-- `_22App.swift` — точка входа.
-- `GradientInstallView.swift` — основной экран, состояние и существующие обработчики свайпов/прогресса.
-- `Sources/` — темы, настройки, типы взаимодействия, UI-подложки и caption probe в отдельных файлах.
-- `ShaderSources/` — единственные редактируемые исходники шейдеров. В модулях удалены документированные недостижимые функции и затёртые вычисления; `V2EntryPoints.metal.source` содержит дословно вынесенные dispatcher и entry points.
-- `Scripts/compose_metal.py` — детерминированно составляет общий `LiquidSpecBackground.metal`. Xcode запускает его перед компиляцией; результат находится только в `DERIVED_FILE_DIR`, без сохранённой копии в Git.
-- `ShaderSources/CompositionInputs.xcfilelist` — зависимости build phase: изменение любого модуля запускает композицию заново. Песочница build-скриптов остаётся включённой.
-- `Validation/` — эталонные хеши, offline GPU-проверка и replay исходных обработчиков свайпов. Эти файлы не входят в target приложения.
-- `Assets.xcassets/` — ресурсы приложения.
-- `GradientsV2.xcodeproj/` — проект и общая схема запуска.
-
-Репозиторий содержит исходники. Старые QA, отчёты, видео, скриншоты, готовые `.app`, DerivedData, данные Simulator и персональные настройки Xcode исключены через `.gitignore`.
-
-Для composer нужен Python 3, доступный в используемой установке Xcode по
-`/usr/bin/python3`; сторонние Python-пакеты не требуются. Проверка композиции:
-
-```sh
-python3 -B Validation/test_composition.py -v
-python3 Validation/validate.py --output /tmp/v2-composition-validation
-```
-
-Полные условия и границы проверки описаны в `Validation/README.md`.
+Проект воспроизводимо генерируется `python3 -I -B Scripts/create_uikit_project.py`. Сборки и `default.metallib` создаются в DerivedData; внешние исходные папки V2/V3/refactor не требуются. Локальная Git-история включена независимо, remotes отсутствуют; ничего не опубликовано.

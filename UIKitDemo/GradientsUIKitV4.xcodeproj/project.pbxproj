@@ -11,21 +11,21 @@
 			lastKnownFileType = wrapper.framework;
 			sourceTree = "BUILT_PRODUCTS_DIR";
 		};
-		861776A677E0266FDFD9C647 = {
+		E8253817D62B920D7C2C54B6 = {
 			isa = PBXFileReference;
-			path = "GradientsUIKit.app";
+			path = "GradientsUIKitV4.app";
 			lastKnownFileType = wrapper.application;
 			sourceTree = "BUILT_PRODUCTS_DIR";
 		};
-		7752D17EC738888A3E65FD79 = {
+		8F4CE0E947C46BE2CEA73688 = {
 			isa = PBXFileReference;
-			path = "GradientsUIKitTests.xctest";
+			path = "GradientsUIKitV4Tests.xctest";
 			lastKnownFileType = wrapper.cfbundle;
 			sourceTree = "BUILT_PRODUCTS_DIR";
 		};
-		4720129A7938BDE2A2067C43 = {
+		193220FC09CDE681966A2782 = {
 			isa = PBXFileReference;
-			path = "GradientsUIKitUITests.xctest";
+			path = "GradientsUIKitV4UITests.xctest";
 			lastKnownFileType = wrapper.cfbundle;
 			sourceTree = "BUILT_PRODUCTS_DIR";
 		};
@@ -156,10 +156,10 @@
 				"$(SRCROOT)/../Scripts/compose_uikit_metal.py",
 				"$(SRCROOT)/../UIKitComponent/Shaders/GradientAdapters.metal",
 				"$(SRCROOT)/../ShaderSources/ApprovedBlue.metal.source",
+				"$(SRCROOT)/../ShaderSources/ContactFields.metal.source",
+				"$(SRCROOT)/../ShaderSources/Shared/BlueGeometryTail.inc",
 				"$(SRCROOT)/../ShaderSources/Shared/InteractionHistory.inc",
 				"$(SRCROOT)/../ShaderSources/Shared/PhysicalFields.inc",
-				"$(SRCROOT)/../ShaderSources/Shared/BlueGeometryTail.inc",
-				"$(SRCROOT)/../ShaderSources/ContactFields.metal.source",
 				"$(SRCROOT)/../ShaderSources/V2EntryPoints.metal.source",
 				"$(SRCROOT)/../ShaderSources/YellowDarkContact.metal.source",
 				"$(SRCROOT)/../ShaderSources/YellowDarkMAIN.metal.source",
@@ -213,8 +213,8 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				CODE_SIGN_STYLE = "Automatic";
 				CURRENT_PROJECT_VERSION = "1";
-				MARKETING_VERSION = "2.0";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.local.gradients.kit";
+				MARKETING_VERSION = "4.0";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.local.gradients.v4.kit";
 				DEFINES_MODULE = "YES";
 				SKIP_INSTALL = "NO";
 				BUILD_LIBRARY_FOR_DISTRIBUTION = "YES";
@@ -242,8 +242,8 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				CODE_SIGN_STYLE = "Automatic";
 				CURRENT_PROJECT_VERSION = "1";
-				MARKETING_VERSION = "2.0";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.local.gradients.kit";
+				MARKETING_VERSION = "4.0";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.local.gradients.v4.kit";
 				DEFINES_MODULE = "YES";
 				SKIP_INSTALL = "NO";
 				BUILD_LIBRARY_FOR_DISTRIBUTION = "YES";
@@ -333,9 +333,9 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				CODE_SIGN_STYLE = "Automatic";
 				CURRENT_PROJECT_VERSION = "1";
-				MARKETING_VERSION = "2.0";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.local.gradients.v2.uikit";
-				INFOPLIST_KEY_CFBundleDisplayName = "Gradients V2 UIKit";
+				MARKETING_VERSION = "4.0";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.local.gradients.v4.uikit";
+				INFOPLIST_KEY_CFBundleDisplayName = "GradientsKit V4";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = "YES";
 				INFOPLIST_KEY_UILaunchScreen_Generation = "YES";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait";
@@ -362,9 +362,9 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				CODE_SIGN_STYLE = "Automatic";
 				CURRENT_PROJECT_VERSION = "1";
-				MARKETING_VERSION = "2.0";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.local.gradients.v2.uikit";
-				INFOPLIST_KEY_CFBundleDisplayName = "Gradients V2 UIKit";
+				MARKETING_VERSION = "4.0";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.local.gradients.v4.uikit";
+				INFOPLIST_KEY_CFBundleDisplayName = "GradientsKit V4";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = "YES";
 				INFOPLIST_KEY_UILaunchScreen_Generation = "YES";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait";
@@ -431,9 +431,9 @@
 		};
 		89E495E7941CF9E40E6980D1 = {
 			isa = PBXNativeTarget;
-			name = "GradientsUIKit";
-			productName = "GradientsUIKit";
-			productReference = 861776A677E0266FDFD9C647;
+			name = "GradientsUIKitV4";
+			productName = "GradientsUIKitV4";
+			productReference = E8253817D62B920D7C2C54B6;
 			productType = "com.apple.product-type.application";
 			buildConfigurationList = 08350E39CB02F1A07EA15590;
 			buildPhases = (
@@ -462,9 +462,9 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				CODE_SIGN_STYLE = "Automatic";
 				CURRENT_PROJECT_VERSION = "1";
-				MARKETING_VERSION = "2.0";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.local.gradients.v2.uikit.unit";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/GradientsUIKit.app/GradientsUIKit";
+				MARKETING_VERSION = "4.0";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.local.gradients.v4.uikit.unit";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/GradientsUIKitV4.app/GradientsUIKitV4";
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				DEBUG_INFORMATION_FORMAT = "dwarf";
@@ -487,9 +487,9 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				CODE_SIGN_STYLE = "Automatic";
 				CURRENT_PROJECT_VERSION = "1";
-				MARKETING_VERSION = "2.0";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.local.gradients.v2.uikit.unit";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/GradientsUIKit.app/GradientsUIKit";
+				MARKETING_VERSION = "4.0";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.local.gradients.v4.uikit.unit";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/GradientsUIKitV4.app/GradientsUIKitV4";
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
@@ -557,8 +557,8 @@
 		};
 		0DF9EEA0BAD5A55395DB9EC2 = {
 			isa = PBXNativeTarget;
-			name = "GradientsUIKitTests";
-			productReference = 7752D17EC738888A3E65FD79;
+			name = "GradientsUIKitV4Tests";
+			productReference = 8F4CE0E947C46BE2CEA73688;
 			productName = "Tests";
 			productType = "com.apple.product-type.bundle.unit-test";
 			buildConfigurationList = 2D367368963E15D0DD2158D3;
@@ -587,9 +587,9 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				CODE_SIGN_STYLE = "Automatic";
 				CURRENT_PROJECT_VERSION = "1";
-				MARKETING_VERSION = "2.0";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.local.gradients.v2.uikit.ui";
-				TEST_TARGET_NAME = "GradientsUIKit";
+				MARKETING_VERSION = "4.0";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.local.gradients.v4.uikit.ui";
+				TEST_TARGET_NAME = "GradientsUIKitV4";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				DEBUG_INFORMATION_FORMAT = "dwarf";
 				ENABLE_TESTABILITY = "YES";
@@ -611,9 +611,9 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				CODE_SIGN_STYLE = "Automatic";
 				CURRENT_PROJECT_VERSION = "1";
-				MARKETING_VERSION = "2.0";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.local.gradients.v2.uikit.ui";
-				TEST_TARGET_NAME = "GradientsUIKit";
+				MARKETING_VERSION = "4.0";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.local.gradients.v4.uikit.ui";
+				TEST_TARGET_NAME = "GradientsUIKitV4";
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_TESTABILITY = "NO";
@@ -670,8 +670,8 @@
 		};
 		636117B25F17DA7E91194E09 = {
 			isa = PBXNativeTarget;
-			name = "GradientsUIKitUITests";
-			productReference = 4720129A7938BDE2A2067C43;
+			name = "GradientsUIKitV4UITests";
+			productReference = 193220FC09CDE681966A2782;
 			productName = "Tests";
 			productType = "com.apple.product-type.bundle.ui-testing";
 			buildConfigurationList = 9438044C2E3DA8B7D373989E;
@@ -691,9 +691,9 @@
 			name = "Products";
 			children = (
 				96AC57CCE0D8E1CAF692A970,
-				861776A677E0266FDFD9C647,
-				7752D17EC738888A3E65FD79,
-				4720129A7938BDE2A2067C43,
+				E8253817D62B920D7C2C54B6,
+				8F4CE0E947C46BE2CEA73688,
+				193220FC09CDE681966A2782,
 			);
 			sourceTree = "<group>";
 		};
@@ -732,7 +732,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				CODE_SIGN_STYLE = "Automatic";
 				CURRENT_PROJECT_VERSION = "1";
-				MARKETING_VERSION = "2.0";
+				MARKETING_VERSION = "4.0";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				DEBUG_INFORMATION_FORMAT = "dwarf";
 				ENABLE_TESTABILITY = "YES";
@@ -754,7 +754,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				CODE_SIGN_STYLE = "Automatic";
 				CURRENT_PROJECT_VERSION = "1";
-				MARKETING_VERSION = "2.0";
+				MARKETING_VERSION = "4.0";
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_TESTABILITY = "NO";
