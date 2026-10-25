@@ -153,5 +153,44 @@
   "finalTSan": "Full rendering run failed in sanitizer allocator (3 automatic XCTest restarts). CPU-only 4 passed; two earlier isolated 22-case passes do not close the gap.",
   "finalRelease": "23 component checks passed, dedicated CI control skipped, 4 UI tests passed",
   "finalLaunches": "12 ordinary Release launches, no new crash report",
-  "protectedProjects": "15 approved V2 + 9 production + 15 V3 hashes unchanged"
+  "protectedProjects": "15 approved V2 + 9 production + 15 V3 hashes unchanged",
+  "finalLimitedThreadCheck": {
+    "date": "2026-10-25T14:26:01+03:00",
+    "scope": "Limited thread-safety review; full GPU + TSan deliberately not rerun",
+    "sourceChanges": false,
+    "uiOwnership": "UIViewController/UILabel isolation; display link on main run loop; GPU callbacks dispatch controller/probe mutations to main",
+    "gpuOwnership": "Three CPU input slots released on completion; retained command resources; mask writes and composition share one queue; caption probe has independent buffers and a busy gate",
+    "sharedCPUState": "Metrics protected by NSLock; each mask worker owns its CGContext/CIContext; GradientSession requires one serial owner",
+    "staticAnalysis": {
+      "setting": "SWIFT_STRICT_CONCURRENCY=complete, Swift 5 language mode",
+      "debugBuild": true,
+      "releaseBuild": true,
+      "swiftWarningLocationsPerConfiguration": 169,
+      "sdkSwiftWarningLocations": 27,
+      "limitation": "Strict-concurrency diagnostics remain for Sendable/actor boundaries and legacy framework types; these were reviewed, not suppressed. Swift 6 readiness and absence of all races are not claimed."
+    },
+    "cpuOnlyTSan": {
+      "passed": 4,
+      "dataRaceReports": 0,
+      "fullRendererInstantiated": false
+    },
+    "ordinaryBuildTests": {
+      "Debug": {
+        "passedExecutions": 46,
+        "iterations": 2
+      },
+      "Release": {
+        "passedExecutions": 46,
+        "iterations": 2
+      },
+      "dedicatedGPUControl": "Skipped by existing ordinary test plan",
+      "mainThreadCheckerEnabled": true,
+      "mainThreadCheckerDiagnostics": 0,
+      "crashRestarts": 0,
+      "previousThreeCrashScenariosPassedPerConfiguration": 2
+    },
+    "newCrashReports": [],
+    "fullGPUPlusTSan": "UNVERIFIED: previously intermittent sanitizer allocator crashes; not retried or worked around",
+    "logs": "/tmp/gradients-final-thread-*.log"
+  }
 }
