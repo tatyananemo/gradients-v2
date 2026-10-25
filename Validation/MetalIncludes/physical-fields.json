@@ -1,0 +1,634 @@
+{
+  "base": "e1414c5",
+  "stage": "fields",
+  "expandedV2Exact": true,
+  "expandedSDKExact": true,
+  "expandedV2SHA256": "963f15cece33da76ea691388a503d7160bf23faa4ca6b072ec03a095c63579c3",
+  "expandedSDKSHA256": "185777e896d6e497c396b535f8696e21f6d0580241679a82d9b5ebff2d57bb5c",
+  "configurations": {
+    "debug": {
+      "compilerCommands": [
+        "/var/run/com.apple.security.cryptexd/mnt/com.apple.MobileAsset.MetalToolchain-v17.3.7003.10.2YlaMx/Metal.xctoolchain/usr/bin/metal -c -target air64-apple-ios17.0-simulator -I/tmp/gradients-inc-check/Build/Products/Debug-iphonesimulator/include -F/tmp/gradients-inc-check/Build/Products/Debug-iphonesimulator -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator26.2.sdk -fmetal-math-mode\\=fast -fmetal-math-fp32-functions\\=fast -serialize-diagnostics /tmp/gradients-inc-check/Build/Intermediates.noindex/GradientsUIKit.build/Debug-iphonesimulator/GradientsKit.build/Metal/GradientsUIKit.dia -o /tmp/gradients-inc-check/Build/Intermediates.noindex/GradientsUIKit.build/Debug-iphonesimulator/GradientsKit.build/Metal/GradientsUIKit.air -MMD -MT dependencies -MF /tmp/gradients-inc-check/Build/Intermediates.noindex/GradientsUIKit.build/Debug-iphonesimulator/GradientsKit.build/Metal/GradientsUIKit.dat /tmp/gradients-inc-check/Build/Intermediates.noindex/GradientsUIKit.build/Debug-iphonesimulator/GradientsKit.build/DerivedSources/GradientsUIKit.metal"
+      ],
+      "compilerFlagsExact": true,
+      "nativePreprocessorTokensEqual": true,
+      "tokens": 86404,
+      "nativePreprocessorBytesEqual": false,
+      "nativeNonWhitespaceBytesEqual": true,
+      "metallibBytesEqual": true,
+      "metallibBytes": 521788,
+      "metallibSHA256": "99b750649719348c2f9a19667638136f4ccfc84cd84b0f3fc284b98b05f45b3f",
+      "nativeFlags": [
+        "-target",
+        "air64-apple-ios17.0-simulator",
+        "-isysroot",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator26.2.sdk",
+        "-fmetal-math-mode=fast",
+        "-fmetal-math-fp32-functions=fast",
+        "-I",
+        "/Users/t.nemchinova/Desktop/4/gradients-v2-refactor/ShaderSources"
+      ]
+    },
+    "release": {
+      "compilerCommands": [
+        "/var/run/com.apple.security.cryptexd/mnt/com.apple.MobileAsset.MetalToolchain-v17.3.7003.10.2YlaMx/Metal.xctoolchain/usr/bin/metal -c -target air64-apple-ios17.0-simulator -I/tmp/gradients-inc-check/Build/Products/Release-iphonesimulator/include -F/tmp/gradients-inc-check/Build/Products/Release-iphonesimulator -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator26.2.sdk -fmetal-math-mode\\=fast -fmetal-math-fp32-functions\\=fast -serialize-diagnostics /tmp/gradients-inc-check/Build/Intermediates.noindex/GradientsUIKit.build/Release-iphonesimulator/GradientsKit.build/Metal/GradientsUIKit.dia -o /tmp/gradients-inc-check/Build/Intermediates.noindex/GradientsUIKit.build/Release-iphonesimulator/GradientsKit.build/Metal/GradientsUIKit.air -MMD -MT dependencies -MF /tmp/gradients-inc-check/Build/Intermediates.noindex/GradientsUIKit.build/Release-iphonesimulator/GradientsKit.build/Metal/GradientsUIKit.dat /tmp/gradients-inc-check/Build/Intermediates.noindex/GradientsUIKit.build/Release-iphonesimulator/GradientsKit.build/DerivedSources/GradientsUIKit.metal"
+      ],
+      "compilerFlagsExact": true,
+      "nativePreprocessorTokensEqual": true,
+      "tokens": 86404,
+      "nativePreprocessorBytesEqual": false,
+      "nativeNonWhitespaceBytesEqual": true,
+      "metallibBytesEqual": true,
+      "metallibBytes": 521788,
+      "metallibSHA256": "99b750649719348c2f9a19667638136f4ccfc84cd84b0f3fc284b98b05f45b3f",
+      "nativeFlags": [
+        "-target",
+        "air64-apple-ios17.0-simulator",
+        "-isysroot",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator26.2.sdk",
+        "-fmetal-math-mode=fast",
+        "-fmetal-math-fp32-functions=fast",
+        "-I",
+        "/Users/t.nemchinova/Desktop/4/gradients-v2-refactor/ShaderSources"
+      ]
+    }
+  },
+  "lines": {
+    "canonicalMetalIncludingInc": 4727,
+    "adapterMetal": 42,
+    "sdkMetalIncludingInc": 4769,
+    "sdkSwift": 1155,
+    "metalFiles": {
+      "ShaderSources/ApprovedBlue.metal.source": 1317,
+      "ShaderSources/ContactFields.metal.source": 311,
+      "ShaderSources/Shared/BlueGeometryTail.inc": 228,
+      "ShaderSources/Shared/InteractionHistory.inc": 63,
+      "ShaderSources/Shared/PhysicalFields.inc": 1622,
+      "ShaderSources/V2EntryPoints.metal.source": 91,
+      "ShaderSources/YellowDarkContact.metal.source": 253,
+      "ShaderSources/YellowDarkMAIN.metal.source": 233,
+      "ShaderSources/YellowLightContact.metal.source": 269,
+      "ShaderSources/YellowLightMAIN.metal.source": 261,
+      "ShaderSources/YellowShared.metal.source": 79
+    },
+    "sdkTotal": 5924
+  },
+  "previousStageCompilerInputsAndMetallibExact": true,
+  "releaseBinaries": {
+    "GradientsUIKit": {
+      "byteIdentical": true,
+      "bytes": 390784,
+      "sha256": "6e62fd4e562d8283c6dee25a7850ab48cf9a46bc5b037d3e4bd45fb30d647891"
+    },
+    "Frameworks/GradientsKit.framework/GradientsKit": {
+      "byteIdentical": true,
+      "bytes": 982080,
+      "sha256": "269e764472ba065e1273fb620d8a6edbdb4f511658c8bd8e61571975c0f56923"
+    },
+    "Frameworks/GradientsKit.framework/default.metallib": {
+      "byteIdentical": true,
+      "bytes": 521788,
+      "sha256": "99b750649719348c2f9a19667638136f4ccfc84cd84b0f3fc284b98b05f45b3f"
+    }
+  },
+  "previousStageCommit": "2f21f44",
+  "validation": {
+    "compositionTests": 8,
+    "gpu": {
+      "passed": true,
+      "base_commit": "542b89b54b9299b48d4121de7f6ee182f3e3f340",
+      "frames": 72,
+      "raw_gpu_outputs_compared": 216,
+      "behavior_checkpoints": 33,
+      "metal_exact_sharing_only": true,
+      "swift_unchanged_since": "39b50ed",
+      "shader_parameters_and_arguments_identical": true,
+      "gpu_byte_identical": true,
+      "recorded_reference": false,
+      "scope": "Offscreen GPU + original input handlers. Not a Simulator UI screenshot/replay test."
+    },
+    "acceptedMasks": {
+      "count": 60,
+      "differentComponents": 0,
+      "maxDelta": 0
+    },
+    "queuedMasks": {
+      "count": 108,
+      "frames": 36,
+      "inFlight": 3,
+      "differentComponents": 0,
+      "maxDelta": 0
+    },
+    "behaviorCore": {
+      "configurations": [
+        "Debug",
+        "Release"
+      ],
+      "eventsEach": 931,
+      "stateChecksEach": 1385,
+      "frameArgumentChecksEach": 5540
+    },
+    "simulator": {
+      "device": "iPhone 14",
+      "runtime": "iOS 18.6",
+      "udid": "E7D1D0C6-5730-4444-948D-E7B52DB2C30A",
+      "configurations": {
+        "debug": {
+          "componentPassed": 23,
+          "existingDedicatedControlSkipped": 1,
+          "uiPassed": 2,
+          "uiCases": [
+            "testAllThemesSwipeHoldReleaseAndReset",
+            "testSettingsSwitchesBothThemesAndColors"
+          ],
+          "failures": 0
+        },
+        "release": {
+          "componentPassed": 23,
+          "existingDedicatedControlSkipped": 1,
+          "uiPassed": 2,
+          "uiCases": [
+            "testAllThemesSwipeHoldReleaseAndReset",
+            "testSettingsSwitchesBothThemesAndColors"
+          ],
+          "failures": 0
+        }
+      }
+    }
+  },
+  "lineReduction": {
+    "previousStageSDKMetal": 6387,
+    "currentSDKMetal": 4769,
+    "removedUniqueMetalLinesThisStage": 1618,
+    "removedUniqueMetalLinesSinceE1414c5": 5315,
+    "below5000SDKMetalBy": 231,
+    "generatedCopiesExcluded": true,
+    "allIncIncluded": true
+  },
+  "logs": "/tmp/gradients-geometry-fields-*.log",
+  "performance": {
+    "scope": "iPhone 14 iOS 18.6 Simulator GPU-completion cadence, not physical display FPS; 3s warmup + 20s trace per theme",
+    "control": {
+      "dark-blue": {
+        "completionFPS": 59.95176235160228,
+        "completionFrames": 1199,
+        "completionDeficitAt60Hz": 1,
+        "completionIntervalMS": {
+          "count": 1198,
+          "max": 30.80291667720303,
+          "mean": 16.68007679466113,
+          "p95": 18.979458342073485,
+          "p99": 19.99224998871796
+        },
+        "cpuFrameMS": {
+          "count": 1199,
+          "max": 10.118250007508323,
+          "mean": 7.128143800486437,
+          "p95": 8.84133332874626,
+          "p99": 9.191416669636965
+        },
+        "gpuWorkMS": {
+          "count": 1199,
+          "max": 4.855624953052029,
+          "mean": 3.641276027547239,
+          "p95": 4.275750019587576,
+          "p99": 4.624000022886321
+        },
+        "gpuEnvelopeMS": {
+          "count": 1199,
+          "max": 4.914874996757135,
+          "mean": 3.654463233022692,
+          "p95": 4.288500000257045,
+          "p99": 4.637125006411225
+        },
+        "inputToCompletionMS": {
+          "count": 359,
+          "max": 41.41691667609848,
+          "mean": 28.344504642776993,
+          "p95": 31.676958315074444,
+          "p99": 33.12783333240077
+        },
+        "displayLinkFPS": 60.000000000064134,
+        "missedDisplayLinkTicks": 0,
+        "maskPreparationMS": {
+          "count": 1199,
+          "max": 10.005958320107311,
+          "mean": 7.003629240215141,
+          "p95": 8.696541655808687,
+          "p99": 9.068666666280478
+        },
+        "renderer": {
+          "cpuPreparationMS": 8546.644416783238,
+          "gpuMS": 66.27837513224222,
+          "maskPreparationMS": 8397.351459017955,
+          "samples": 1199,
+          "skipped": 0,
+          "submitted": 1199
+        }
+      },
+      "dark-yellow": {
+        "completionFPS": 59.84340966138598,
+        "completionFrames": 1197,
+        "completionDeficitAt60Hz": 3,
+        "completionIntervalMS": {
+          "count": 1196,
+          "max": 32.565333327511325,
+          "mean": 16.710277800986514,
+          "p95": 18.702916655456647,
+          "p99": 20.04383332678117
+        },
+        "cpuFrameMS": {
+          "count": 1197,
+          "max": 21.378999983426183,
+          "mean": 7.1999625106491525,
+          "p95": 8.610958320787176,
+          "p99": 9.234500001184642
+        },
+        "gpuWorkMS": {
+          "count": 1197,
+          "max": 5.325083329807967,
+          "mean": 2.768637913323195,
+          "p95": 3.7669999874196947,
+          "p99": 4.05712504289113
+        },
+        "gpuEnvelopeMS": {
+          "count": 1197,
+          "max": 5.346374993678182,
+          "mean": 2.804879002385316,
+          "p95": 3.797916666371748,
+          "p99": 4.1034999885596335
+        },
+        "inputToCompletionMS": {
+          "count": 359,
+          "max": 43.31220831954852,
+          "mean": 28.235803388252407,
+          "p95": 29.940916661871597,
+          "p99": 30.376916663954034
+        },
+        "displayLinkFPS": 59.899833055155845,
+        "missedDisplayLinkTicks": 2,
+        "maskPreparationMS": {
+          "count": 1197,
+          "max": 21.27054167794995,
+          "mean": 7.0808267542723184,
+          "p95": 8.475083333905786,
+          "p99": 9.053708316059783
+        },
+        "renderer": {
+          "cpuPreparationMS": 8618.355125247035,
+          "gpuMS": 105.68870735005476,
+          "maskPreparationMS": 8475.749624863965,
+          "samples": 1197,
+          "skipped": 0,
+          "submitted": 1197
+        }
+      },
+      "light-blue": {
+        "completionFPS": 58.99559365426628,
+        "completionFrames": 1183,
+        "completionDeficitAt60Hz": 20,
+        "completionIntervalMS": {
+          "count": 1182,
+          "max": 27.927791670663282,
+          "mean": 16.95041846447603,
+          "p95": 19.27666665869765,
+          "p99": 20.747250004205853
+        },
+        "cpuFrameMS": {
+          "count": 1183,
+          "max": 5.953291663900018,
+          "mean": 0.45920752353190003,
+          "p95": 0.732208340195939,
+          "p99": 2.276958344737068
+        },
+        "gpuWorkMS": {
+          "count": 1183,
+          "max": 2.001958346227184,
+          "mean": 0.2360278247752867,
+          "p95": 0.45979165588505566,
+          "p99": 0.5518750112969428
+        },
+        "gpuEnvelopeMS": {
+          "count": 1183,
+          "max": 2.001958346227184,
+          "mean": 0.2360278247752867,
+          "p95": 0.45979165588505566,
+          "p99": 0.5518750112969428
+        },
+        "inputToCompletionMS": {
+          "count": 361,
+          "max": 29.300708323717117,
+          "mean": 23.22401742884951,
+          "p95": 26.104666671017185,
+          "p99": 27.477833325974643
+        },
+        "displayLinkFPS": 60,
+        "missedDisplayLinkTicks": 0,
+        "maskPreparationMS": {
+          "count": 1183,
+          "max": 0.015333353076130152,
+          "mean": 0.002381938178208755,
+          "p95": 0.0040000013541430235,
+          "p99": 0.004749977961182594
+        },
+        "renderer": {
+          "cpuPreparationMS": 543.2425003382377,
+          "gpuMS": 279.33445837697946,
+          "maskPreparationMS": 2.817832864820957,
+          "samples": 1183,
+          "skipped": 18,
+          "submitted": 1183
+        }
+      },
+      "light-yellow": {
+        "completionFPS": 59.9787373125226,
+        "completionFrames": 1200,
+        "completionDeficitAt60Hz": 0,
+        "completionIntervalMS": {
+          "count": 1199,
+          "max": 22.221458348212764,
+          "mean": 16.672575062549974,
+          "p95": 18.586541671538725,
+          "p99": 19.70358335529454
+        },
+        "cpuFrameMS": {
+          "count": 1200,
+          "max": 0.8506666636094451,
+          "mean": 0.3253962503852866,
+          "p95": 0.5362916563171893,
+          "p99": 0.6604583468288183
+        },
+        "gpuWorkMS": {
+          "count": 1200,
+          "max": 1.8972500110976398,
+          "mean": 0.17095260377876306,
+          "p95": 0.30016666278243065,
+          "p99": 0.4070833383593708
+        },
+        "gpuEnvelopeMS": {
+          "count": 1200,
+          "max": 1.8972500110976398,
+          "mean": 0.17095260377876306,
+          "p95": 0.30016666278243065,
+          "p99": 0.4070833383593708
+        },
+        "inputToCompletionMS": {
+          "count": 360,
+          "max": 26.70741666224785,
+          "mean": 23.00146099571268,
+          "p95": 24.23245835234411,
+          "p99": 25.067666661925614
+        },
+        "displayLinkFPS": 59.99999999998835,
+        "missedDisplayLinkTicks": 0,
+        "maskPreparationMS": {
+          "count": 1200,
+          "max": 0.010916672181338072,
+          "mean": 0.0018506598037978013,
+          "p95": 0.0029999937396496534,
+          "p99": 0.0038750004023313522
+        },
+        "renderer": {
+          "cpuPreparationMS": 390.4755004623439,
+          "gpuMS": 205.34445784869604,
+          "maskPreparationMS": 2.2207917645573616,
+          "samples": 1200,
+          "skipped": 0,
+          "submitted": 1200
+        }
+      }
+    },
+    "candidate": {
+      "dark-blue": {
+        "completionFPS": 59.945712852168846,
+        "completionFrames": 1199,
+        "completionDeficitAt60Hz": 1,
+        "completionIntervalMS": {
+          "count": 1198,
+          "max": 30.62191666685976,
+          "mean": 16.68176008626478,
+          "p95": 18.73716665431857,
+          "p99": 19.579250016249716
+        },
+        "cpuFrameMS": {
+          "count": 1199,
+          "max": 10.083708330057561,
+          "mean": 7.303349597383837,
+          "p95": 8.724375016754493,
+          "p99": 9.294541669078171
+        },
+        "gpuWorkMS": {
+          "count": 1199,
+          "max": 4.59654166479595,
+          "mean": 3.364155963736099,
+          "p95": 4.110333335120231,
+          "p99": 4.339958308264613
+        },
+        "gpuEnvelopeMS": {
+          "count": 1199,
+          "max": 4.6203749952837825,
+          "mean": 3.381263274968205,
+          "p95": 4.130999994231388,
+          "p99": 4.379874997539446
+        },
+        "inputToCompletionMS": {
+          "count": 359,
+          "max": 41.68491665041074,
+          "mean": 28.428143220447772,
+          "p95": 30.932083347579464,
+          "p99": 32.517291663680226
+        },
+        "displayLinkFPS": 59.99999999997668,
+        "missedDisplayLinkTicks": 0,
+        "maskPreparationMS": {
+          "count": 1199,
+          "max": 9.986249991925433,
+          "mean": 7.189814359233369,
+          "p95": 8.601416659075767,
+          "p99": 9.156874992186204
+        },
+        "renderer": {
+          "cpuPreparationMS": 8756.716167263221,
+          "gpuMS": 84.40641651395708,
+          "maskPreparationMS": 8620.58741672081,
+          "samples": 1199,
+          "skipped": 0,
+          "submitted": 1199
+        }
+      },
+      "dark-yellow": {
+        "completionFPS": 59.89631969582994,
+        "completionFrames": 1198,
+        "completionDeficitAt60Hz": 2,
+        "completionIntervalMS": {
+          "count": 1197,
+          "max": 34.0227083361242,
+          "mean": 16.69551660399631,
+          "p95": 18.787291657645255,
+          "p99": 20.49779167282395
+        },
+        "cpuFrameMS": {
+          "count": 1198,
+          "max": 15.902249986538664,
+          "mean": 7.423066394801993,
+          "p95": 9.120041650021449,
+          "p99": 11.299041652819142
+        },
+        "gpuWorkMS": {
+          "count": 1198,
+          "max": 13.12666668673046,
+          "mean": 2.936914300855843,
+          "p95": 4.148458334384486,
+          "p99": 6.172749999677762
+        },
+        "gpuEnvelopeMS": {
+          "count": 1198,
+          "max": 13.140124996425584,
+          "mean": 2.968800431388533,
+          "p95": 4.165208316408098,
+          "p99": 6.5159999940078706
+        },
+        "inputToCompletionMS": {
+          "count": 359,
+          "max": 44.976083328947425,
+          "mean": 27.933176764735205,
+          "p95": 29.70758333685808,
+          "p99": 30.202041671145707
+        },
+        "displayLinkFPS": 59.94991652752261,
+        "missedDisplayLinkTicks": 1,
+        "maskPreparationMS": {
+          "count": 1198,
+          "max": 15.787916665431112,
+          "mean": 7.299633973283158,
+          "p95": 8.955083321779966,
+          "p99": 11.17258332669735
+        },
+        "renderer": {
+          "cpuPreparationMS": 8892.833540972788,
+          "gpuMS": 96.35529154911637,
+          "maskPreparationMS": 8744.961499993224,
+          "samples": 1198,
+          "skipped": 0,
+          "submitted": 1198
+        }
+      },
+      "light-blue": {
+        "completionFPS": 58.98877604095627,
+        "completionFrames": 1182,
+        "completionDeficitAt60Hz": 20,
+        "completionIntervalMS": {
+          "count": 1181,
+          "max": 28.411541687091812,
+          "mean": 16.952377504928968,
+          "p95": 19.204874988645315,
+          "p99": 20.700124994618818
+        },
+        "cpuFrameMS": {
+          "count": 1182,
+          "max": 7.954083353979513,
+          "mean": 0.5214174068838203,
+          "p95": 0.8927499875426292,
+          "p99": 2.9290833335835487
+        },
+        "gpuWorkMS": {
+          "count": 1182,
+          "max": 1.6697916435077786,
+          "mean": 0.2292493653872528,
+          "p95": 0.4157500225119293,
+          "p99": 0.5314583540894091
+        },
+        "gpuEnvelopeMS": {
+          "count": 1182,
+          "max": 1.6697916435077786,
+          "mean": 0.2292493653872528,
+          "p95": 0.4157500225119293,
+          "p99": 0.5314583540894091
+        },
+        "inputToCompletionMS": {
+          "count": 360,
+          "max": 28.32091666641645,
+          "mean": 22.577039236461538,
+          "p95": 25.22470834082924,
+          "p99": 26.551208342425525
+        },
+        "displayLinkFPS": 59.99999999998835,
+        "missedDisplayLinkTicks": 0,
+        "maskPreparationMS": {
+          "count": 1182,
+          "max": 0.009958341252058744,
+          "mean": 0.002443527984243775,
+          "p95": 0.0038750004023313522,
+          "p99": 0.00441668089479208
+        },
+        "renderer": {
+          "cpuPreparationMS": 616.3153749366757,
+          "gpuMS": 271.26266655977815,
+          "maskPreparationMS": 2.888250077376142,
+          "samples": 1182,
+          "skipped": 18,
+          "submitted": 1182
+        }
+      },
+      "light-yellow": {
+        "completionFPS": 59.978279883879324,
+        "completionFrames": 1200,
+        "completionDeficitAt60Hz": 0,
+        "completionIntervalMS": {
+          "count": 1199,
+          "max": 21.262958325678483,
+          "mean": 16.672702217136695,
+          "p95": 18.718749983236194,
+          "p99": 19.649083318654448
+        },
+        "cpuFrameMS": {
+          "count": 1200,
+          "max": 0.9979583555832505,
+          "mean": 0.38972656227997504,
+          "p95": 0.6856666586827487,
+          "p99": 0.7938333146739751
+        },
+        "gpuWorkMS": {
+          "count": 1200,
+          "max": 1.444624998839572,
+          "mean": 0.20823055626048395,
+          "p95": 0.3917499852832407,
+          "p99": 0.4733749956358224
+        },
+        "gpuEnvelopeMS": {
+          "count": 1200,
+          "max": 1.444624998839572,
+          "mean": 0.20823055626048395,
+          "p95": 0.3917499852832407,
+          "p99": 0.4733749956358224
+        },
+        "inputToCompletionMS": {
+          "count": 360,
+          "max": 29.018625005846843,
+          "mean": 24.669072223655853,
+          "p95": 26.640124997356907,
+          "p99": 27.57754165213555
+        },
+        "displayLinkFPS": 59.99999999998835,
+        "missedDisplayLinkTicks": 0,
+        "maskPreparationMS": {
+          "count": 1200,
+          "max": 0.015833356883376837,
+          "mean": 0.0022679516647864753,
+          "p95": 0.003958324668928981,
+          "p99": 0.004750007065013051
+        },
+        "renderer": {
+          "cpuPreparationMS": 467.67187473597005,
+          "gpuMS": 250.03245918196626,
+          "maskPreparationMS": 2.7215419977437705,
+          "samples": 1200,
+          "skipped": 0,
+          "submitted": 1200
+        }
+      }
+    },
+    "interpretation": "Same Release executable and metallib bytes; no established performance change. No GPU arithmetic or rendering work removed.",
+    "rawData": "/tmp/gradients-geometry-evidence/fields/performance.json"
+  }
+}

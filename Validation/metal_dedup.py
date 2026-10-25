@@ -72,13 +72,22 @@ def expected_sources(root=ROOT):
     expected["ShaderSources/CompositionInputs.xcfilelist"] += "$(SRCROOT)/" + include + "\n"
     # Literal includes preserve the old function bodies; this is not the rejected
     # extraction into a function/result structure recorded by blue_prefix.
-    include = "ShaderSources/Shared/BlueGeometry.inc"
-    block = (root / include).read_text()
+    prefix_path = "ShaderSources/Shared/PhysicalFields.inc"
+    tail_path = "ShaderSources/Shared/BlueGeometryTail.inc"
+    prefix, tail = (root / prefix_path).read_text(), (root / tail_path).read_text()
+    assert hashlib.sha256(prefix.encode()).hexdigest() == "c1f77bec637e582df5fa9b04840e93dcf2945c5cd0987f284d60734f5ed2d8e2"
+    assert hashlib.sha256(tail.encode()).hexdigest() == "abf2453a006349ff2c18d581d29e7d83fc64368dad1c6e89a8e4ddd1ca1ac97d"
+    block = prefix + tail
     assert hashlib.sha256(block.encode()).hexdigest() == "8108b59cca2997b58fff9b3f4530d70f7aa89c57d3258e0f4ec9415439361e10"
     assert expected[blue].count(block) == 3
-    expected[blue] = expected[blue].replace(block, '#include "Shared/BlueGeometry.inc"\n')
-    expected[include] = block
-    expected["ShaderSources/CompositionInputs.xcfilelist"] += "$(SRCROOT)/" + include + "\n"
+    expected[blue] = expected[blue].replace(block,
+        '#include "Shared/PhysicalFields.inc"\n#include "Shared/BlueGeometryTail.inc"\n')
+    contact = "ShaderSources/ContactFields.metal.source"
+    assert expected[contact].count(prefix) == 1
+    expected[contact] = expected[contact].replace(prefix, '#include "Shared/PhysicalFields.inc"\n')
+    for path, text in [(prefix_path, prefix), (tail_path, tail)]:
+        expected[path] = text
+        expected["ShaderSources/CompositionInputs.xcfilelist"] += "$(SRCROOT)/" + path + "\n"
     assert plan["blue_prefix"] is None, "Blue extraction requires a separately verified source mapping"
     return expected
 

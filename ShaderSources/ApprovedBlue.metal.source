@@ -468,7 +468,8 @@ half4 qaCurrentAcceptedDarkBlue(
     // Keep the accepted Dark Blue body below untouched. Other theme changes
     // compile in a separate function and cannot rewrite its main/idle arithmetic.
 
-#include "Shared/BlueGeometry.inc"
+#include "Shared/PhysicalFields.inc"
+#include "Shared/BlueGeometryTail.inc"
     darkResult += grain * mix(0.0010, 0.0035, grainMask) *
         (1.0 - completionBlackout) * darkCanvasReveal;
     blueDarkReference = clamp(blueDarkReference + grain * mix(0.0010, 0.0035, grainMask) *
@@ -803,7 +804,8 @@ half4 liquidSpecBackground(
     // Keep the accepted Dark Blue body below untouched. Other theme changes
     // compile in a separate function and cannot rewrite its main/idle arithmetic.
 
-#include "Shared/BlueGeometry.inc"
+#include "Shared/PhysicalFields.inc"
+#include "Shared/BlueGeometryTail.inc"
     // QA A: MAIN spatial symmetry only. Palette, density readout and all
     // interaction fields above stay original. No RGB/pixel mirroring.
     float qaVisualDistance = referenceDistance;
@@ -1175,7 +1177,8 @@ half4 qaContactDarkReference(
     device const float *interactionSegments,
     int interactionFloatCount
 ) {
-#include "Shared/BlueGeometry.inc"
+#include "Shared/PhysicalFields.inc"
+#include "Shared/BlueGeometryTail.inc"
     // QA A: MAIN spatial symmetry only. Palette, density readout and all
     // interaction fields above stay original. No RGB/pixel mirroring.
     float qaVisualDistance = referenceDistance;

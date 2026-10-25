@@ -57,13 +57,14 @@ class CompositionTests(unittest.TestCase):
         for name in COMPOSER.INCLUDE_BLOCKS:
             self.assertIn("$(SRCROOT)/../ShaderSources/" + name, project)
 
-    def test_geometry_block_changes_reach_exactly_three_call_sites(self):
-        with tempfile.TemporaryDirectory() as folder:
-            base = Path(folder)
-            shutil.copytree(ROOT / "ShaderSources", base / "ShaderSources")
-            include = base / "ShaderSources/Shared/BlueGeometry.inc"
-            include.write_text(include.read_text() + "// geometry dependency marker\n")
-            self.assertEqual(COMPOSER.compose(base).count(b"// geometry dependency marker"), 3)
+    def test_shared_fields_and_blue_tail_reach_only_their_original_sites(self):
+        for name, count in [("PhysicalFields.inc", 4), ("BlueGeometryTail.inc", 3)]:
+            with self.subTest(name=name), tempfile.TemporaryDirectory() as folder:
+                base = Path(folder)
+                shutil.copytree(ROOT / "ShaderSources", base / "ShaderSources")
+                include = base / "ShaderSources/Shared" / name
+                include.write_text(include.read_text() + "// geometry dependency marker\n")
+                self.assertEqual(COMPOSER.compose(base).count(b"// geometry dependency marker"), count)
 
     def test_undeclared_or_nested_blocks_are_rejected(self):
         with self.assertRaises(ValueError):
