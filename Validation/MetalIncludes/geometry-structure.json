@@ -1,0 +1,50 @@
+{
+  "base": "e1414c5",
+  "blue_functions": [
+    "qaCurrentAcceptedDarkBlue",
+    "liquidSpecBackground",
+    "qaContactDarkReference"
+  ],
+  "blue_occurrences": 3,
+  "blue_original_lines": [
+    471,
+    2655,
+    4876
+  ],
+  "contact_prefix_original_line": 32,
+  "include_is_literal": true,
+  "new_function_or_scope": false,
+  "blocks": {
+    "BlueGeometry": {
+      "lines": 1850,
+      "sha256": "8108b59cca2997b58fff9b3f4530d70f7aa89c57d3258e0f4ec9415439361e10",
+      "balanced_braces": true,
+      "balanced_parentheses": true,
+      "balanced_brackets": true,
+      "preprocessor_directives": false,
+      "source_location_macros": false,
+      "ends_at_statement_boundary": true
+    },
+    "PhysicalFields": {
+      "lines": 1622,
+      "sha256": "c1f77bec637e582df5fa9b04840e93dcf2945c5cd0987f284d60734f5ed2d8e2",
+      "balanced_braces": true,
+      "balanced_parentheses": true,
+      "balanced_brackets": true,
+      "preprocessor_directives": false,
+      "source_location_macros": false,
+      "ends_at_statement_boundary": true
+    },
+    "BlueGeometryTail": {
+      "lines": 228,
+      "sha256": "abf2453a006349ff2c18d581d29e7d83fc64368dad1c6e89a8e4ddd1ca1ac97d",
+      "balanced_braces": true,
+      "balanced_parentheses": true,
+      "balanced_brackets": true,
+      "preprocessor_directives": false,
+      "source_location_macros": false,
+      "ends_at_statement_boundary": true
+    }
+  },
+  "shared_prefix_plus_tail_byte_identical": true
+}

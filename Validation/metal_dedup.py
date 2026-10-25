@@ -70,6 +70,15 @@ def expected_sources(root=ROOT):
     expected[blue] = expected[blue].replace(block, '#include "Shared/InteractionHistory.inc"\n')
     expected[include] = block
     expected["ShaderSources/CompositionInputs.xcfilelist"] += "$(SRCROOT)/" + include + "\n"
+    # Literal includes preserve the old function bodies; this is not the rejected
+    # extraction into a function/result structure recorded by blue_prefix.
+    include = "ShaderSources/Shared/BlueGeometry.inc"
+    block = (root / include).read_text()
+    assert hashlib.sha256(block.encode()).hexdigest() == "8108b59cca2997b58fff9b3f4530d70f7aa89c57d3258e0f4ec9415439361e10"
+    assert expected[blue].count(block) == 3
+    expected[blue] = expected[blue].replace(block, '#include "Shared/BlueGeometry.inc"\n')
+    expected[include] = block
+    expected["ShaderSources/CompositionInputs.xcfilelist"] += "$(SRCROOT)/" + include + "\n"
     assert plan["blue_prefix"] is None, "Blue extraction requires a separately verified source mapping"
     return expected
 

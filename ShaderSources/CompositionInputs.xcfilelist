@@ -8,3 +8,4 @@ $(SRCROOT)/ShaderSources/YellowDarkContact.metal.source
 $(SRCROOT)/ShaderSources/YellowLightContact.metal.source
 $(SRCROOT)/ShaderSources/V2EntryPoints.metal.source
 $(SRCROOT)/ShaderSources/Shared/InteractionHistory.inc
+$(SRCROOT)/ShaderSources/Shared/BlueGeometry.inc

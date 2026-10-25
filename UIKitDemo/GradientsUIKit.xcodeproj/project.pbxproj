@@ -157,6 +157,7 @@
 				"$(SRCROOT)/../UIKitComponent/Shaders/GradientAdapters.metal",
 				"$(SRCROOT)/../ShaderSources/ApprovedBlue.metal.source",
 				"$(SRCROOT)/../ShaderSources/Shared/InteractionHistory.inc",
+				"$(SRCROOT)/../ShaderSources/Shared/BlueGeometry.inc",
 				"$(SRCROOT)/../ShaderSources/ContactFields.metal.source",
 				"$(SRCROOT)/../ShaderSources/V2EntryPoints.metal.source",
 				"$(SRCROOT)/../ShaderSources/YellowDarkContact.metal.source",
