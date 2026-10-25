@@ -28,7 +28,9 @@ gradient.onFrame = { frame in /* frame.progress is the behavioral target */ }
 gradient.reset(animated: true)
 ```
 
-Create/access the controller on the main thread. The controller owns the continuous UIKit gesture recognizer and display link; the host can `pauseRendering()` / `resumeRendering()` on scene lifecycle changes. Pausing never resets session or animation clocks. Rendering stops when the controller disappears. The component renders in its own bounds and updates drawable resources when size/scale changes; the approved 390 × 844 full-screen layout retains its original measurements. Font sizes, button insets and caption bottom inset remain fixed; the host should provide a phone-sized surface, not a small toolbar-sized container.
+Create/access the controller on the main actor. The controller owns the continuous gesture recognizer and weak-target display link. It observes app/scene activation, stops preparing/rendering frames when disappeared, hidden, detached, or outside the window, and resumes when visible/active again. `pauseRendering()` / `resumeRendering()` remain available for host-controlled overlays or lifecycle policies. Pausing ends an interrupted input through the existing `dragEnded` path; it never resets progress or shifts the session/animation clocks. An explicit manual pause survives disappearance/reappearance. Arbitrary opaque occlusion that does not change UIKit visibility/appearance still needs an explicit host pause.
+
+Drawable, masks and frame arguments synchronize to the same bounds before rendering; fractional pixel extents round upward consistently. The accepted 390 × 844 layout retains its measurements. Font sizes, button insets and caption bottom inset remain fixed; this is a phone-sized surface, not an adaptive toolbar. The host owns navigation/status-bar/safe-area integration. Capture controllers weakly from stored host callbacks when appropriate.
 
 For an externally owned behavioral session, use `init(session:dark:yellow:size:)`. Supply event times in the same Date reference-time domain as the controller. `GradientSession` is Foundation/CoreGraphics-only, serially owned; public `dragChanged`, `dragEnded`, `setSettingsVisible`, `reset` and `frame` retain the approved V2 calculations. Do not feed the same gesture twice through both host callbacks and the controller's recognizer.
 
@@ -45,3 +47,8 @@ For an externally owned behavioral session, use `init(session:dark:yellow:size:)
 `Validation/validate.py` retains the original 216 raw GPU / 33 behavior checks. `validate_session.py` checks the extracted V2 oracle against the maintained core in Debug/Release; `validate_presentation.py` checks reset timing and separation from shader progress; `validate_masks.py` compares 60 raw mask textures without screenshots. The independent project includes framework unit tests and real UIKit interaction tests for all themes.
 
 The existing scale-aware compute adapter retains its known single half-float-step difference at Blue Dark 60% CONTACT t=2.1 (delta 0.000061); canonical formulas are unchanged. Simulator timing is not a guarantee of physical-device performance. Final visual review and device profiling remain required before shipping an integrated SDK.
+
+
+## Stabilization status
+
+See `../Validation/Stabilization/README.md` for tested scenarios, numerical results and remaining limits. Device/library/pipeline startup failures propagate through the throwing initializer. Runtime allocation failures after initialization are not yet a complete recoverable public contract; `onError`/prepare-resize semantics require a separate integration decision. Fixed typography and the approved animations are not automatically replaced for Dynamic Type or Reduce Motion. The full TSan/Core Image/Simulator combination is intermittently unstable inside the sanitizer allocator; do not treat successful ordinary builds as proof of no races or leaks.

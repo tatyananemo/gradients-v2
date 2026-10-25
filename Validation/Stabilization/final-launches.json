@@ -1,0 +1,185 @@
+{
+  "launches": [
+    {
+      "theme": "dark",
+      "color": "blue",
+      "progress": 0.3,
+      "pid": 40019,
+      "advancingFrames": 92,
+      "statistics": {
+        "samples": 93,
+        "gpuMS": 20.200708357151598,
+        "submitted": 93,
+        "cpuPreparationMS": 741.4060834562406,
+        "skipped": 1,
+        "maskPreparationMS": 728.0393749533687
+      }
+    },
+    {
+      "theme": "dark",
+      "color": "yellow",
+      "progress": 0.3,
+      "pid": 40036,
+      "advancingFrames": 93,
+      "statistics": {
+        "skipped": 0,
+        "cpuPreparationMS": 751.841000164859,
+        "samples": 94,
+        "submitted": 94,
+        "maskPreparationMS": 737.9392916918732,
+        "gpuMS": 10.843874886631966
+      }
+    },
+    {
+      "theme": "light",
+      "color": "blue",
+      "progress": 0.3,
+      "pid": 40045,
+      "advancingFrames": 92,
+      "statistics": {
+        "skipped": 1,
+        "cpuPreparationMS": 60.133833379950374,
+        "maskPreparationMS": 0.17329177353531122,
+        "gpuMS": 19.845333270495757,
+        "submitted": 93,
+        "samples": 93
+      }
+    },
+    {
+      "theme": "light",
+      "color": "yellow",
+      "progress": 0.3,
+      "pid": 40057,
+      "advancingFrames": 93,
+      "statistics": {
+        "maskPreparationMS": 0.1328332582488656,
+        "samples": 94,
+        "cpuPreparationMS": 23.418166587362066,
+        "skipped": 0,
+        "gpuMS": 13.251958385808393,
+        "submitted": 94
+      }
+    },
+    {
+      "theme": "dark",
+      "color": "blue",
+      "progress": 0.6,
+      "pid": 40152,
+      "advancingFrames": 93,
+      "statistics": {
+        "samples": 94,
+        "submitted": 94,
+        "maskPreparationMS": 627.4453333753627,
+        "cpuPreparationMS": 641.408666560892,
+        "skipped": 0,
+        "gpuMS": 12.340708228293806
+      }
+    },
+    {
+      "theme": "dark",
+      "color": "yellow",
+      "progress": 0.6,
+      "pid": 40167,
+      "advancingFrames": 94,
+      "statistics": {
+        "skipped": 0,
+        "samples": 95,
+        "maskPreparationMS": 734.8185834125616,
+        "gpuMS": 10.734625102486461,
+        "submitted": 95,
+        "cpuPreparationMS": 750.4806250508409
+      }
+    },
+    {
+      "theme": "light",
+      "color": "blue",
+      "progress": 0.6,
+      "pid": 40290,
+      "advancingFrames": 91,
+      "statistics": {
+        "skipped": 2,
+        "samples": 92,
+        "maskPreparationMS": 0.1905833778437227,
+        "gpuMS": 19.291291595436633,
+        "cpuPreparationMS": 66.34300007135607,
+        "submitted": 92
+      }
+    },
+    {
+      "theme": "light",
+      "color": "yellow",
+      "progress": 0.6,
+      "pid": 40302,
+      "advancingFrames": 92,
+      "statistics": {
+        "skipped": 0,
+        "samples": 93,
+        "maskPreparationMS": 0.1284164609387517,
+        "gpuMS": 13.703958160476759,
+        "cpuPreparationMS": 22.64566670055501,
+        "submitted": 93
+      }
+    },
+    {
+      "theme": "dark",
+      "color": "blue",
+      "progress": 0.8,
+      "pid": 40417,
+      "advancingFrames": 94,
+      "statistics": {
+        "cpuPreparationMS": 681.2096669455059,
+        "gpuMS": 10.435625066747889,
+        "maskPreparationMS": 667.6820834691171,
+        "submitted": 95,
+        "skipped": 0,
+        "samples": 95
+      }
+    },
+    {
+      "theme": "dark",
+      "color": "yellow",
+      "progress": 0.8,
+      "pid": 40440,
+      "advancingFrames": 93,
+      "statistics": {
+        "submitted": 94,
+        "gpuMS": 11.585375119466335,
+        "skipped": 0,
+        "maskPreparationMS": 728.4075001662131,
+        "cpuPreparationMS": 743.3916665322613,
+        "samples": 94
+      }
+    },
+    {
+      "theme": "light",
+      "color": "blue",
+      "progress": 0.8,
+      "pid": 40548,
+      "advancingFrames": 92,
+      "statistics": {
+        "maskPreparationMS": 0.18150004325434566,
+        "skipped": 2,
+        "gpuMS": 17.573249875567853,
+        "cpuPreparationMS": 52.78775005717762,
+        "samples": 93,
+        "submitted": 93
+      }
+    },
+    {
+      "theme": "light",
+      "color": "yellow",
+      "progress": 0.8,
+      "pid": 40589,
+      "advancingFrames": 93,
+      "statistics": {
+        "submitted": 94,
+        "skipped": 0,
+        "samples": 94,
+        "maskPreparationMS": 0.16099997446872294,
+        "cpuPreparationMS": 28.646541526541114,
+        "gpuMS": 17.12012500502169
+      }
+    }
+  ],
+  "newCrashReports": []
+}

@@ -1,0 +1,5506 @@
+{
+  "dark-blue": {
+    "benchmarkDurationSeconds": 75,
+    "completionDeficitAt60Hz": 8,
+    "completionFPS": 59.889070332793125,
+    "completionFrames": 4492,
+    "completionIntervalMS": {
+      "count": 4491,
+      "max": 45.496500009903684,
+      "mean": 16.697537538037814,
+      "p95": 19.03054167632945,
+      "p99": 20.04954166477546
+    },
+    "completionToMainMS": {
+      "count": 4492,
+      "max": 10.675041674403474,
+      "mean": 2.3251310106430005,
+      "p95": 5.843874998390675,
+      "p99": 6.910374999279156
+    },
+    "compositionGPUMS": {
+      "count": 4492,
+      "max": 2.9926666466053575,
+      "mean": 0.09011180957317774,
+      "p95": 0.12941667228005826,
+      "p99": 0.19041664199903607
+    },
+    "cpuFrameMS": {
+      "count": 4492,
+      "max": 37.86329165450297,
+      "mean": 7.293705578325808,
+      "p95": 8.47662499290891,
+      "p99": 9.292125003412366
+    },
+    "displayLinkFPS": 59.89330962435787,
+    "displayLinkIntervalMS": {
+      "count": 4491,
+      "max": 45.69770832313225,
+      "mean": 16.69635567431245,
+      "p95": 16.666666691889986,
+      "p99": 16.666666691889986
+    },
+    "drawableAcquisitionMS": {
+      "count": 4492,
+      "max": 3.286124992882833,
+      "mean": 0.019831561769246026,
+      "p95": 0.03166668466292322,
+      "p99": 0.03862500307150185
+    },
+    "durationSeconds": 74.98864108332782,
+    "gpuEndToCallbackMS": {
+      "count": 4492,
+      "max": 29.548625025199726,
+      "mean": 12.379134470733332,
+      "p95": 14.572833344573155,
+      "p99": 15.067500004079193
+    },
+    "gpuEnvelopeMS": {
+      "count": 4492,
+      "max": 35.46562502742745,
+      "mean": 2.7141834740916337,
+      "p95": 4.245166666805744,
+      "p99": 4.657333338400349
+    },
+    "gpuWorkMS": {
+      "count": 4492,
+      "max": 33.68183335987851,
+      "mean": 2.681587014967955,
+      "p95": 4.2215416906401515,
+      "p99": 4.633249947801232
+    },
+    "idleOnly": false,
+    "inputToCompletionMS": {
+      "count": 3655,
+      "max": 50.00120832119137,
+      "mean": 31.27196159371603,
+      "p95": 34.08870834391564,
+      "p99": 35.535708331735805
+    },
+    "longCompletionGapsOver25MS": 8,
+    "maskEncodeCPU0MS": {
+      "count": 4492,
+      "max": 33.9783749950584,
+      "mean": 5.032192805741738,
+      "p95": 6.187124992720783,
+      "p99": 6.928333343239501
+    },
+    "maskEncodeCPU1MS": {
+      "count": 4492,
+      "max": 33.86691666673869,
+      "mean": 5.27827778077431,
+      "p95": 6.604541675187647,
+      "p99": 7.431291684042662
+    },
+    "maskEncodeCPU2MS": {
+      "count": 4492,
+      "max": 35.492166673066095,
+      "mean": 5.694527771782739,
+      "p95": 6.9485416752286255,
+      "p99": 7.90687499102205
+    },
+    "maskGPU0MS": {
+      "count": 4492,
+      "max": 5.513874988537282,
+      "mean": 0.5757351306944841,
+      "p95": 1.488291658461094,
+      "p99": 1.662166672758758
+    },
+    "maskGPU1MS": {
+      "count": 4492,
+      "max": 28.078375005861744,
+      "mean": 0.8451196477975065,
+      "p95": 1.44020831794478,
+      "p99": 1.634916668990627
+    },
+    "maskGPU2MS": {
+      "count": 4492,
+      "max": 9.975791675969958,
+      "mean": 1.1706204269027862,
+      "p95": 1.6996666672639549,
+      "p99": 1.8725416448432952
+    },
+    "maskGraphCPU0MS": {
+      "count": 4492,
+      "max": 2.4245833337772638,
+      "mean": 0.09132629295511259,
+      "p95": 0.14637500862590969,
+      "p99": 0.4053750017192215
+    },
+    "maskGraphCPU1MS": {
+      "count": 4492,
+      "max": 4.256583342794329,
+      "mean": 0.08923578957628163,
+      "p95": 0.1408749958500266,
+      "p99": 0.28137501794844866
+    },
+    "maskGraphCPU2MS": {
+      "count": 4492,
+      "max": 3.454499994404614,
+      "mean": 0.132577146270749,
+      "p95": 0.19845835049636662,
+      "p99": 0.26737499865703285
+    },
+    "maskPreparationMS": {
+      "count": 4492,
+      "max": 37.2100000095088,
+      "mean": 7.16655648922544,
+      "p95": 8.342541666934267,
+      "p99": 9.14654164807871
+    },
+    "maskRasterCPU0MS": {
+      "count": 4492,
+      "max": 3.5220833378843963,
+      "mean": 2.0221192959493077,
+      "p95": 2.3898750077933073,
+      "p99": 2.492541680112481
+    },
+    "maskRasterCPU1MS": {
+      "count": 4492,
+      "max": 3.2035833573900163,
+      "mean": 1.43234007695888,
+      "p95": 1.7787083343137056,
+      "p99": 1.8997500010300428
+    },
+    "maskRasterCPU2MS": {
+      "count": 4492,
+      "max": 1.9244583090767264,
+      "mean": 0.6635757087038325,
+      "p95": 0.8798333292361349,
+      "p99": 0.9809999901335686
+    },
+    "measurementSubmitted": 4492,
+    "memorySamples": [
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 0.21013616668642499,
+        "footprintBytes": 29411896,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 0.247512,
+        "residentBytes": 136626176
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 0.7201595416700002,
+        "footprintBytes": 32361088,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 0.374595,
+        "residentBytes": 134938624
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 1.2216095416806638,
+        "footprintBytes": 32688768,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 0.496926,
+        "residentBytes": 135446528
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 1.7387827500060666,
+        "footprintBytes": 32950912,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 0.630428,
+        "residentBytes": 135708672
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 2.254232333332766,
+        "footprintBytes": 33032832,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 0.759777,
+        "residentBytes": 135790592
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 2.754401041660458,
+        "footprintBytes": 33081984,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 0.884485,
+        "residentBytes": 135856128
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 3.2545180000015534,
+        "footprintBytes": 33196672,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 1.012661,
+        "residentBytes": 136019968
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 3.7548927916795947,
+        "footprintBytes": 33213056,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 1.137203,
+        "residentBytes": 136036352
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 4.271120916673681,
+        "footprintBytes": 33000064,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 1.268903,
+        "residentBytes": 135856128
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 4.771254041668726,
+        "footprintBytes": 32852608,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 1.396665,
+        "residentBytes": 135708672
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 5.287408541684272,
+        "footprintBytes": 32836224,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 1.527682,
+        "residentBytes": 135741440
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 5.80424529168522,
+        "footprintBytes": 32819840,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 1.654559,
+        "residentBytes": 135725056
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 6.304254916671198,
+        "footprintBytes": 33213056,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 1.781435,
+        "residentBytes": 136511488
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 6.805652291659499,
+        "footprintBytes": 33262208,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 1.897429,
+        "residentBytes": 136658944
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 7.320787708333228,
+        "footprintBytes": 33278592,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 2.0245569999999997,
+        "residentBytes": 136691712
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 7.8371512916637585,
+        "footprintBytes": 32967296,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 2.152981,
+        "residentBytes": 136691712
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 8.353055583342211,
+        "footprintBytes": 33311360,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 2.284998,
+        "residentBytes": 136757248
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 8.854884500004118,
+        "footprintBytes": 33344128,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 2.4184099999999997,
+        "residentBytes": 136790016
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 9.371041083330056,
+        "footprintBytes": 33327744,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 2.554397,
+        "residentBytes": 136790016
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 9.888180958339944,
+        "footprintBytes": 33458816,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 2.682977,
+        "residentBytes": 134316032
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 10.404858124995371,
+        "footprintBytes": 33458816,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 2.815061,
+        "residentBytes": 134316032
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 10.921869208337739,
+        "footprintBytes": 33098368,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 2.947548,
+        "residentBytes": 134250496
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 11.437563000014052,
+        "footprintBytes": 33393280,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 3.075442,
+        "residentBytes": 134250496
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 11.95484399999259,
+        "footprintBytes": 33426048,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 3.204576,
+        "residentBytes": 134283264
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 12.469872958346969,
+        "footprintBytes": 33442432,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 3.328987,
+        "residentBytes": 134299648
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 12.970461666671326,
+        "footprintBytes": 33458816,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 3.451569,
+        "residentBytes": 134316032
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 13.471710500016343,
+        "footprintBytes": 33491584,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 3.579778,
+        "residentBytes": 134348800
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 13.988404458330479,
+        "footprintBytes": 33196672,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 3.720237,
+        "residentBytes": 134348800
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 14.503442541667027,
+        "footprintBytes": 33458816,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 3.857967,
+        "residentBytes": 134316032
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 15.00461100001121,
+        "footprintBytes": 33442432,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 3.982713,
+        "residentBytes": 134299648
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 15.523120541678509,
+        "footprintBytes": 33426048,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 4.112471,
+        "residentBytes": 134283264
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 16.036677791678812,
+        "footprintBytes": 33606272,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 4.242673,
+        "residentBytes": 134463488
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 16.538034916680772,
+        "footprintBytes": 33655424,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 4.365632,
+        "residentBytes": 134512640
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 17.054210833332036,
+        "footprintBytes": 33376896,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 4.494246,
+        "residentBytes": 134529024
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 17.555186958343256,
+        "footprintBytes": 33720960,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 4.622875,
+        "residentBytes": 134496256
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 18.07146220834693,
+        "footprintBytes": 33753728,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 4.751678,
+        "residentBytes": 134529024
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 18.587807583331596,
+        "footprintBytes": 33458816,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 4.883476,
+        "residentBytes": 134529024
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 19.104131416679593,
+        "footprintBytes": 33458816,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 5.01912,
+        "residentBytes": 134529024
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 19.604380541684804,
+        "footprintBytes": 33409664,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 5.154729,
+        "residentBytes": 134217728
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 20.120187416672707,
+        "footprintBytes": 33426048,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 5.288053,
+        "residentBytes": 134234112
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 20.620608791679842,
+        "footprintBytes": 33409664,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 5.419876,
+        "residentBytes": 134217728
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 21.12102141667856,
+        "footprintBytes": 33360512,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 5.542539,
+        "residentBytes": 134217728
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 21.63610158333904,
+        "footprintBytes": 33344128,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 5.66903,
+        "residentBytes": 134234112
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 22.13682825001888,
+        "footprintBytes": 33327744,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 5.791376,
+        "residentBytes": 134234112
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 22.63823737500934,
+        "footprintBytes": 33344128,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 5.915466,
+        "residentBytes": 134266880
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 23.153435999993235,
+        "footprintBytes": 33327744,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 6.044454,
+        "residentBytes": 134184960
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 23.65408025000943,
+        "footprintBytes": 33278592,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 6.1686630000000005,
+        "residentBytes": 134168576
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 24.17018400001689,
+        "footprintBytes": 33311360,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 6.307448,
+        "residentBytes": 134201344
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 24.67138116667047,
+        "footprintBytes": 33278592,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 6.44437,
+        "residentBytes": 134184960
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 25.187596208328614,
+        "footprintBytes": 33327744,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 6.581373,
+        "residentBytes": 134234112
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 25.70291462499881,
+        "footprintBytes": 33327744,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 6.716299,
+        "residentBytes": 134135808
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 26.204595000017434,
+        "footprintBytes": 33311360,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 6.842958,
+        "residentBytes": 134119424
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 26.719659208349185,
+        "footprintBytes": 33311360,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 6.971154,
+        "residentBytes": 134135808
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 27.221291875001043,
+        "footprintBytes": 33311360,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 7.0911539999999995,
+        "residentBytes": 134135808
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 27.736142125009792,
+        "footprintBytes": 33360512,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 7.22062,
+        "residentBytes": 134201344
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 28.25407354166964,
+        "footprintBytes": 33393280,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 7.356037,
+        "residentBytes": 134234112
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 28.754291874996852,
+        "footprintBytes": 33639040,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 7.490721,
+        "residentBytes": 134561792
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 29.27021516667446,
+        "footprintBytes": 33622656,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 7.628353,
+        "residentBytes": 134594560
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 29.770398041669978,
+        "footprintBytes": 33606272,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 7.763974,
+        "residentBytes": 134594560
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 30.270870416687103,
+        "footprintBytes": 33573504,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 7.895038,
+        "residentBytes": 134561792
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 30.77125458334922,
+        "footprintBytes": 33557120,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 8.034551,
+        "residentBytes": 134545408
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 31.271390541660367,
+        "footprintBytes": 33557120,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 8.160528,
+        "residentBytes": 134545408
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 31.78791679168353,
+        "footprintBytes": 33524352,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 8.291167,
+        "residentBytes": 134545408
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 32.30373445834266,
+        "footprintBytes": 33524352,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 8.425126,
+        "residentBytes": 134561792
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 32.82040933333337,
+        "footprintBytes": 33524352,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 8.560766000000001,
+        "residentBytes": 134561792
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 33.33666679167072,
+        "footprintBytes": 33557120,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 8.692247,
+        "residentBytes": 134594560
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 33.85355508333305,
+        "footprintBytes": 33573504,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 8.829146,
+        "residentBytes": 134610944
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 34.35459454168449,
+        "footprintBytes": 33589888,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 8.960977,
+        "residentBytes": 134627328
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 34.86944537499221,
+        "footprintBytes": 33589888,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 9.095525,
+        "residentBytes": 134627328
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 35.37027666668291,
+        "footprintBytes": 33557120,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 9.222167,
+        "residentBytes": 134610944
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 35.886799458327005,
+        "footprintBytes": 33524352,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 9.353253,
+        "residentBytes": 134578176
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 36.403571666684,
+        "footprintBytes": 33524352,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 9.483542,
+        "residentBytes": 134578176
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 36.920569250010885,
+        "footprintBytes": 33524352,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 9.61139,
+        "residentBytes": 134578176
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 37.43714075000025,
+        "footprintBytes": 33524352,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 9.739524,
+        "residentBytes": 134578176
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 37.93828500001109,
+        "footprintBytes": 33524352,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 9.863262,
+        "residentBytes": 134578176
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 38.45300191667047,
+        "footprintBytes": 33557120,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 9.992041,
+        "residentBytes": 134610944
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 38.95362120834761,
+        "footprintBytes": 33573504,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 10.122184,
+        "residentBytes": 134627328
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 39.45384558333899,
+        "footprintBytes": 33573504,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 10.257709,
+        "residentBytes": 134627328
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 39.97018950001802,
+        "footprintBytes": 33573504,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 10.399515,
+        "residentBytes": 134627328
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 40.487762333330465,
+        "footprintBytes": 33557120,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 10.537035,
+        "residentBytes": 134610944
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 41.00306474999525,
+        "footprintBytes": 33524352,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 10.67435,
+        "residentBytes": 134578176
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 41.50390795833664,
+        "footprintBytes": 33524352,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 10.802946,
+        "residentBytes": 134578176
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 42.020928958343575,
+        "footprintBytes": 33557120,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 10.930697,
+        "residentBytes": 134610944
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 42.52098962501623,
+        "footprintBytes": 33540736,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 11.052579,
+        "residentBytes": 134594560
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 43.02148104168009,
+        "footprintBytes": 33573504,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 11.18266,
+        "residentBytes": 134627328
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 43.536842416680884,
+        "footprintBytes": 33770112,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 11.325071,
+        "residentBytes": 134840320
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 44.03749775001779,
+        "footprintBytes": 33655424,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 11.459192999999999,
+        "residentBytes": 134725632
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 44.537599000002956,
+        "footprintBytes": 33671808,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 11.58588,
+        "residentBytes": 134742016
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 45.055108458327595,
+        "footprintBytes": 33688192,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 11.722038,
+        "residentBytes": 134758400
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 45.57027283334173,
+        "footprintBytes": 33671808,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 11.857385,
+        "residentBytes": 134742016
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 46.07043970833183,
+        "footprintBytes": 33639040,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 11.980702,
+        "residentBytes": 134709248
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 46.57058666666853,
+        "footprintBytes": 33622656,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 12.104699,
+        "residentBytes": 134692864
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 47.08815191668691,
+        "footprintBytes": 33622656,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 12.241358,
+        "residentBytes": 134692864
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 47.60304558335338,
+        "footprintBytes": 33606272,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 12.366006,
+        "residentBytes": 134676480
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 48.120488708344055,
+        "footprintBytes": 33606272,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 12.493893,
+        "residentBytes": 134676480
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 48.62051370833069,
+        "footprintBytes": 33622656,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 12.621304,
+        "residentBytes": 134692864
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 49.121233291662065,
+        "footprintBytes": 33639040,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 12.742122,
+        "residentBytes": 134709248
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 49.63699845832889,
+        "footprintBytes": 33655424,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 12.875035,
+        "residentBytes": 134725632
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 50.13750620835344,
+        "footprintBytes": 33655424,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 13.008607,
+        "residentBytes": 134742016
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 50.63790279167006,
+        "footprintBytes": 33639040,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 13.144749,
+        "residentBytes": 134742016
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 51.15321195832803,
+        "footprintBytes": 33622656,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 13.280619,
+        "residentBytes": 134725632
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 51.65322395833209,
+        "footprintBytes": 33622656,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 13.409966,
+        "residentBytes": 134725632
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 52.153681249998044,
+        "footprintBytes": 33622656,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 13.538619,
+        "residentBytes": 134725632
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 52.67080220833304,
+        "footprintBytes": 33606272,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 13.661887,
+        "residentBytes": 134709248
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 53.187798041675705,
+        "footprintBytes": 33589888,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 13.796028,
+        "residentBytes": 134692864
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 53.70396370833623,
+        "footprintBytes": 33639040,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 13.925557,
+        "residentBytes": 134742016
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 54.22095729166176,
+        "footprintBytes": 33639040,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 14.051643,
+        "residentBytes": 134742016
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 54.73695933332783,
+        "footprintBytes": 34409088,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 14.178319,
+        "residentBytes": 135512064
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 55.237314250000054,
+        "footprintBytes": 34441856,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 14.304758,
+        "residentBytes": 135544832
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 55.753967166674556,
+        "footprintBytes": 34441856,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 14.44668,
+        "residentBytes": 135544832
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 56.270418125001015,
+        "footprintBytes": 34441856,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 14.5902,
+        "residentBytes": 135544832
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 56.787377666682005,
+        "footprintBytes": 34425472,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 14.725081,
+        "residentBytes": 135528448
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 57.287409333337564,
+        "footprintBytes": 34441856,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 14.862258,
+        "residentBytes": 135544832
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 57.78747475001728,
+        "footprintBytes": 34441856,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 14.989786,
+        "residentBytes": 135544832
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 58.30347916667233,
+        "footprintBytes": 34425472,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 15.119105,
+        "residentBytes": 135544832
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 58.82018637500005,
+        "footprintBytes": 34425472,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 15.249291,
+        "residentBytes": 135544832
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 59.320737625006586,
+        "footprintBytes": 34458240,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 15.377089,
+        "residentBytes": 135577600
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 59.82086195834563,
+        "footprintBytes": 34491008,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 15.506809,
+        "residentBytes": 135610368
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 60.33786995834089,
+        "footprintBytes": 34491008,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 15.642895,
+        "residentBytes": 135610368
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 60.85263541666791,
+        "footprintBytes": 34736768,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 15.778784,
+        "residentBytes": 135856128
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 61.35382112499792,
+        "footprintBytes": 34540160,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 15.912912,
+        "residentBytes": 135659520
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 61.85390325001208,
+        "footprintBytes": 34507392,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 16.048265,
+        "residentBytes": 135626752
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 62.369786625000415,
+        "footprintBytes": 34900608,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 16.185125,
+        "residentBytes": 136019968
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 62.88762770834728,
+        "footprintBytes": 34491008,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 16.318509,
+        "residentBytes": 135610368
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 63.4036174583307,
+        "footprintBytes": 34474624,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 16.448868,
+        "residentBytes": 135593984
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 63.90525579167297,
+        "footprintBytes": 34474624,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 16.576931,
+        "residentBytes": 135593984
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 64.42199083333253,
+        "footprintBytes": 34491008,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 16.713173,
+        "residentBytes": 135610368
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 64.93644166667946,
+        "footprintBytes": 34507392,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 16.847151,
+        "residentBytes": 135626752
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 65.45337754167849,
+        "footprintBytes": 34523776,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 16.981957,
+        "residentBytes": 135643136
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 65.97008204166195,
+        "footprintBytes": 34540160,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 17.123854,
+        "residentBytes": 135659520
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 66.47105774999363,
+        "footprintBytes": 34540160,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 17.262592,
+        "residentBytes": 135659520
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 66.9719424166833,
+        "footprintBytes": 34523776,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 17.403484,
+        "residentBytes": 135643136
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 67.48777825001162,
+        "footprintBytes": 34491008,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 17.546887,
+        "residentBytes": 135626752
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 68.0042154166731,
+        "footprintBytes": 34474624,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 17.681013,
+        "residentBytes": 135610368
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 68.50446020835079,
+        "footprintBytes": 34458240,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 17.812753999999998,
+        "residentBytes": 135593984
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 69.02045108334278,
+        "footprintBytes": 34441856,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 17.950912,
+        "residentBytes": 135577600
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 69.52122483332641,
+        "footprintBytes": 34474624,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 18.074591,
+        "residentBytes": 135610368
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 70.03754212500644,
+        "footprintBytes": 34474624,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 18.211014,
+        "residentBytes": 135610368
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 70.53776825001114,
+        "footprintBytes": 34474624,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 18.344603,
+        "residentBytes": 135610368
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 71.05358337500365,
+        "footprintBytes": 34507392,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 18.477747,
+        "residentBytes": 135643136
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 71.57100087500294,
+        "footprintBytes": 34900608,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 18.607965,
+        "residentBytes": 136036352
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 72.0866083750152,
+        "footprintBytes": 34851456,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 18.737036,
+        "residentBytes": 135987200
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 72.60319666666328,
+        "footprintBytes": 34851456,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 18.863514,
+        "residentBytes": 135987200
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 73.10395375001826,
+        "footprintBytes": 34835072,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 18.98378,
+        "residentBytes": 135970816
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 73.62088145833695,
+        "footprintBytes": 34802304,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 19.12186,
+        "residentBytes": 135938048
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 74.1379740833363,
+        "footprintBytes": 34785920,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 19.258999,
+        "residentBytes": 135921664
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 74.65382645835052,
+        "footprintBytes": 34785920,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 19.38041,
+        "residentBytes": 135921664
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 75.16971858334728,
+        "footprintBytes": 34785920,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 19.501153,
+        "residentBytes": 135921664
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 75.67063616667292,
+        "footprintBytes": 34818688,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 19.630052,
+        "residentBytes": 135954432
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 76.18709550000494,
+        "footprintBytes": 34835072,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 19.753006,
+        "residentBytes": 135970816
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 76.68767604167806,
+        "footprintBytes": 34835072,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 19.880185,
+        "residentBytes": 135970816
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 77.2191510416742,
+        "footprintBytes": 35228288,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 20.019235,
+        "residentBytes": 134348800
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 77.72209708334412,
+        "footprintBytes": 35146368,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 20.1454,
+        "residentBytes": 131563520
+      }
+    ],
+    "missedDisplayLinkTicks": 8,
+    "pendingAtExport": 0,
+    "renderer": {
+      "cpuPreparationMS": 32763.325457839528,
+      "gpuMS": 404.87158196629025,
+      "maskPreparationMS": 32192.171749600675,
+      "samples": 4492,
+      "skipped": 0,
+      "submitted": 4492
+    },
+    "scheduledCallbackDelayMS": {
+      "count": 4492,
+      "max": 38.835541665321216,
+      "mean": 2.468748933212234,
+      "p95": 4.429083346622065,
+      "p99": 5.121458321809769
+    },
+    "timingBasis": "Simulator completion callback; not physical presentation"
+  },
+  "dark-yellow": {
+    "benchmarkDurationSeconds": 75,
+    "completionDeficitAt60Hz": 9,
+    "completionFPS": 59.874867760568215,
+    "completionFrames": 4491,
+    "completionIntervalMS": {
+      "count": 4490,
+      "max": 41.08508332865313,
+      "mean": 16.701498264662053,
+      "p95": 19.69908335013315,
+      "p99": 21.088666660944
+    },
+    "completionToMainMS": {
+      "count": 4491,
+      "max": 27.478416683152318,
+      "mean": 2.2175673014498654,
+      "p95": 6.243375013582408,
+      "p99": 7.23620833014138
+    },
+    "compositionGPUMS": {
+      "count": 4491,
+      "max": 2.9215833346825093,
+      "mean": 0.08813774784669393,
+      "p95": 0.13050000416114926,
+      "p99": 0.19462499767541885
+    },
+    "cpuFrameMS": {
+      "count": 4491,
+      "max": 49.3093749973923,
+      "mean": 7.078703944971032,
+      "p95": 8.439249999355525,
+      "p99": 9.865166677627712
+    },
+    "displayLinkFPS": 59.91998221826763,
+    "displayLinkIntervalMS": {
+      "count": 4493,
+      "max": 70.06162498146296,
+      "mean": 16.688923510647054,
+      "p95": 16.666666691889986,
+      "p99": 16.666666691889986
+    },
+    "drawableAcquisitionMS": {
+      "count": 4491,
+      "max": 6.557375018019229,
+      "mean": 0.025738077642583974,
+      "p95": 0.033958349376916885,
+      "p99": 0.040749990148469806
+    },
+    "durationSeconds": 74.98972720833262,
+    "gpuEndToCallbackMS": {
+      "count": 4491,
+      "max": 51.96470831288025,
+      "mean": 12.347023231609592,
+      "p95": 14.98124998761341,
+      "p99": 17.324125015875325
+    },
+    "gpuEnvelopeMS": {
+      "count": 4491,
+      "max": 31.365625007310882,
+      "mean": 2.831041212467403,
+      "p95": 4.203333344776183,
+      "p99": 4.613958328263834
+    },
+    "gpuWorkMS": {
+      "count": 4491,
+      "max": 27.97625001403503,
+      "mean": 2.793482335845458,
+      "p95": 4.181541677098721,
+      "p99": 4.547458316665143
+    },
+    "idleOnly": false,
+    "inputToCompletionMS": {
+      "count": 3654,
+      "max": 66.19874999159947,
+      "mean": 31.00560747318335,
+      "p95": 34.79841668740846,
+      "p99": 35.906750010326505
+    },
+    "longCompletionGapsOver25MS": 14,
+    "maskEncodeCPU0MS": {
+      "count": 4491,
+      "max": 46.634958329377696,
+      "mean": 4.8136208712475765,
+      "p95": 6.117124983575195,
+      "p99": 7.34129166812636
+    },
+    "maskEncodeCPU1MS": {
+      "count": 4491,
+      "max": 17.1543333271984,
+      "mean": 5.079280691051776,
+      "p95": 6.531999999424443,
+      "p99": 7.569125009467825
+    },
+    "maskEncodeCPU2MS": {
+      "count": 4491,
+      "max": 17.477333341958,
+      "mean": 5.491408947910188,
+      "p95": 6.975625001359731,
+      "p99": 8.097791665932164
+    },
+    "maskGPU0MS": {
+      "count": 4491,
+      "max": 15.21974999923259,
+      "mean": 0.6546796279051803,
+      "p95": 1.4946250012144446,
+      "p99": 1.7111666675191373
+    },
+    "maskGPU1MS": {
+      "count": 4491,
+      "max": 10.181249992456287,
+      "mean": 0.8874652639336356,
+      "p95": 1.41125000664033,
+      "p99": 1.589041668921709
+    },
+    "maskGPU2MS": {
+      "count": 4491,
+      "max": 17.424583347747102,
+      "mean": 1.1631996961599484,
+      "p95": 1.6768333443906158,
+      "p99": 1.8252500158268958
+    },
+    "maskGraphCPU0MS": {
+      "count": 4491,
+      "max": 5.080875009298325,
+      "mean": 0.0908580307699545,
+      "p95": 0.1523333485238254,
+      "p99": 0.38470831350423396
+    },
+    "maskGraphCPU1MS": {
+      "count": 4491,
+      "max": 5.560833349591121,
+      "mean": 0.09012448959691487,
+      "p95": 0.14083331916481256,
+      "p99": 0.3463333414401859
+    },
+    "maskGraphCPU2MS": {
+      "count": 4491,
+      "max": 0.8484999998472631,
+      "mean": 0.13520287774447032,
+      "p95": 0.21170833497308195,
+      "p99": 0.2797083288896829
+    },
+    "maskPreparationMS": {
+      "count": 4491,
+      "max": 49.19816667097621,
+      "mean": 6.942500686550344,
+      "p95": 8.309083321364596,
+      "p99": 9.647375001804903
+    },
+    "maskRasterCPU0MS": {
+      "count": 4491,
+      "max": 3.1086249800864607,
+      "mean": 2.016999136919734,
+      "p95": 2.3831249854993075,
+      "p99": 2.4938333372119814
+    },
+    "maskRasterCPU1MS": {
+      "count": 4491,
+      "max": 2.5242499832529575,
+      "mean": 1.4308491800150138,
+      "p95": 1.7601666622795165,
+      "p99": 1.8760833190754056
+    },
+    "maskRasterCPU2MS": {
+      "count": 4491,
+      "max": 1.7962083511520177,
+      "mean": 0.6671972742514277,
+      "p95": 0.8735833107493818,
+      "p99": 0.9632500004954636
+    },
+    "measurementSubmitted": 4491,
+    "memorySamples": [
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 0.217431208351627,
+        "footprintBytes": 29428256,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 0.235218,
+        "residentBytes": 136642560
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 0.7263707916717976,
+        "footprintBytes": 32131664,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 0.368823,
+        "residentBytes": 139689984
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 1.2429019166738726,
+        "footprintBytes": 32361040,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 0.497064,
+        "residentBytes": 139919360
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 1.7432180416653864,
+        "footprintBytes": 32541264,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 0.619833,
+        "residentBytes": 140099584
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 2.260038208332844,
+        "footprintBytes": 32655952,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 0.748142,
+        "residentBytes": 140230656
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 2.7766354583436623,
+        "footprintBytes": 32754256,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 0.878338,
+        "residentBytes": 140345344
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 3.2773845000192523,
+        "footprintBytes": 32787024,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 1.000661,
+        "residentBytes": 140378112
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 3.7932271666650195,
+        "footprintBytes": 32803408,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 1.126695,
+        "residentBytes": 140394496
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 4.310005916660884,
+        "footprintBytes": 32574032,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 1.256367,
+        "residentBytes": 140165120
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 4.810195208352525,
+        "footprintBytes": 32459344,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 1.387518,
+        "residentBytes": 140050432
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 5.326578250009334,
+        "footprintBytes": 32442960,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 1.523776,
+        "residentBytes": 140050432
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 5.826613666664343,
+        "footprintBytes": 32410192,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 1.650957,
+        "residentBytes": 140017664
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 6.3423084583482705,
+        "footprintBytes": 32721488,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 1.7780550000000002,
+        "residentBytes": 140394496
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 6.8577252916875295,
+        "footprintBytes": 32819792,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 1.894836,
+        "residentBytes": 140591104
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 7.373171291663311,
+        "footprintBytes": 32770640,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 2.0165360000000003,
+        "residentBytes": 140558336
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 7.874030250008218,
+        "footprintBytes": 32541264,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 2.136762,
+        "residentBytes": 140623872
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 8.391483083338244,
+        "footprintBytes": 33131112,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 2.263125,
+        "residentBytes": 140902400
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 8.907252791686915,
+        "footprintBytes": 33180264,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 2.389427,
+        "residentBytes": 140951552
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 9.407306208333466,
+        "footprintBytes": 33114728,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 2.5138540000000003,
+        "residentBytes": 140902400
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 9.907357666670578,
+        "footprintBytes": 33114728,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 2.6388499999999997,
+        "residentBytes": 140902400
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 10.42303725000238,
+        "footprintBytes": 33049192,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 2.7635899999999998,
+        "residentBytes": 140836864
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 10.923174499999732,
+        "footprintBytes": 32737896,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 2.879091,
+        "residentBytes": 140820480
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 11.424198333348613,
+        "footprintBytes": 33098344,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 2.996908,
+        "residentBytes": 140886016
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 11.92452304167091,
+        "footprintBytes": 33081960,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 3.119243,
+        "residentBytes": 140886016
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 12.424688458355376,
+        "footprintBytes": 33114728,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 3.2421379999999997,
+        "residentBytes": 140918784
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 12.941091166663682,
+        "footprintBytes": 33131112,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 3.369259,
+        "residentBytes": 140935168
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 13.44161641667597,
+        "footprintBytes": 33294952,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 3.495485,
+        "residentBytes": 141115392
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 13.94490541666164,
+        "footprintBytes": 33032808,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 3.622109,
+        "residentBytes": 141148160
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 14.459519333351636,
+        "footprintBytes": 33442408,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 3.743573,
+        "residentBytes": 138018816
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 14.974625250004465,
+        "footprintBytes": 33491560,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 3.868833,
+        "residentBytes": 137920512
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 15.476728541689226,
+        "footprintBytes": 33475176,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 3.989319,
+        "residentBytes": 137854976
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 15.990199083345942,
+        "footprintBytes": 33606248,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 4.112472,
+        "residentBytes": 138035200
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 16.49080670834519,
+        "footprintBytes": 33655400,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 4.231317,
+        "residentBytes": 138084352
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 16.99446020834148,
+        "footprintBytes": 33426024,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 4.362112,
+        "residentBytes": 138182656
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 17.50820804166142,
+        "footprintBytes": 33753704,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 4.49062,
+        "residentBytes": 138117120
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 18.023102875013137,
+        "footprintBytes": 33737320,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 4.614701,
+        "residentBytes": 138100736
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 18.524358708353247,
+        "footprintBytes": 33491560,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 4.733616,
+        "residentBytes": 138149888
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 19.04087583333603,
+        "footprintBytes": 33491560,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 4.856124,
+        "residentBytes": 138166272
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 19.557074375014054,
+        "footprintBytes": 33426024,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 4.977227,
+        "residentBytes": 138100736
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 20.073532625014195,
+        "footprintBytes": 33409640,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 5.100134,
+        "residentBytes": 138084352
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 20.575121041678358,
+        "footprintBytes": 33426024,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 5.223115,
+        "residentBytes": 138100736
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 21.07593687501503,
+        "footprintBytes": 33393256,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 5.346223,
+        "residentBytes": 138100736
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 21.59014625000418,
+        "footprintBytes": 33458792,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 5.472671,
+        "residentBytes": 138166272
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 22.090959208348067,
+        "footprintBytes": 33458792,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 5.60488,
+        "residentBytes": 138199040
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 22.607934583327733,
+        "footprintBytes": 33458792,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 5.741781,
+        "residentBytes": 138248192
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 23.11087033333024,
+        "footprintBytes": 33524328,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 5.871296,
+        "residentBytes": 138362880
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 23.625855874997796,
+        "footprintBytes": 33540712,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 6.006362,
+        "residentBytes": 138379264
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 24.14179387499462,
+        "footprintBytes": 33507944,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 6.137105,
+        "residentBytes": 138379264
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 24.65769175000605,
+        "footprintBytes": 33491560,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 6.26457,
+        "residentBytes": 138362880
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 25.15828558334033,
+        "footprintBytes": 33442408,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 6.392072,
+        "residentBytes": 138346496
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 25.676018083351664,
+        "footprintBytes": 33426024,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 6.527656,
+        "residentBytes": 138330112
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 26.190247958351392,
+        "footprintBytes": 33311336,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 6.664396,
+        "residentBytes": 138313728
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 26.690521541662747,
+        "footprintBytes": 33278568,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 6.792023,
+        "residentBytes": 138346496
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 27.190574333333643,
+        "footprintBytes": 33393256,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 6.913009,
+        "residentBytes": 138461184
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 27.691341916681267,
+        "footprintBytes": 33278568,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 7.043911,
+        "residentBytes": 138084352
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 28.207786625018343,
+        "footprintBytes": 33294952,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 7.184078,
+        "residentBytes": 138100736
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 28.72343866666779,
+        "footprintBytes": 33819240,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 7.322876,
+        "residentBytes": 138657792
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 29.22496620833408,
+        "footprintBytes": 33639016,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 7.455927,
+        "residentBytes": 138477568
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 29.741607208328787,
+        "footprintBytes": 33639016,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 7.589808,
+        "residentBytes": 138477568
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 30.242431958351517,
+        "footprintBytes": 33606248,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 7.726514,
+        "residentBytes": 138444800
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 30.75650970832794,
+        "footprintBytes": 33786472,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 7.8573830000000005,
+        "residentBytes": 138625024
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 31.25804470834555,
+        "footprintBytes": 33622632,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 7.985262,
+        "residentBytes": 138461184
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 31.775072166667087,
+        "footprintBytes": 33622632,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 8.121474,
+        "residentBytes": 138461184
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 32.291203791683074,
+        "footprintBytes": 33606248,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 8.260261,
+        "residentBytes": 138461184
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 32.807827083335724,
+        "footprintBytes": 33589864,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 8.397887,
+        "residentBytes": 138461184
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 33.30838808332919,
+        "footprintBytes": 33622632,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 8.526826,
+        "residentBytes": 138493952
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 33.809315791673725,
+        "footprintBytes": 33639016,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 8.66394,
+        "residentBytes": 138526720
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 34.32347116668825,
+        "footprintBytes": 33639016,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 8.802874,
+        "residentBytes": 138526720
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 34.82374283333775,
+        "footprintBytes": 33655400,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 8.931803,
+        "residentBytes": 138575872
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 35.34149950000574,
+        "footprintBytes": 33639016,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 9.062328,
+        "residentBytes": 138559488
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 35.84277833334636,
+        "footprintBytes": 33606248,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 9.187933,
+        "residentBytes": 138526720
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 36.358131083339686,
+        "footprintBytes": 33606248,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 9.322925,
+        "residentBytes": 138526720
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 36.87528629167355,
+        "footprintBytes": 33639016,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 9.458142,
+        "residentBytes": 138559488
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 37.38969574999646,
+        "footprintBytes": 33835624,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 9.592792,
+        "residentBytes": 138756096
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 37.89021149999462,
+        "footprintBytes": 33884776,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 9.724881,
+        "residentBytes": 138805248
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 38.39284179167589,
+        "footprintBytes": 33720936,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 9.862889,
+        "residentBytes": 138641408
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 38.90777762501966,
+        "footprintBytes": 33737320,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 10.001176000000001,
+        "residentBytes": 138657792
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 39.42451062501641,
+        "footprintBytes": 33737320,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 10.140526,
+        "residentBytes": 138657792
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 39.940654541685944,
+        "footprintBytes": 33737320,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 10.272621000000001,
+        "residentBytes": 138657792
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 40.44193337499746,
+        "footprintBytes": 33737320,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 10.404017,
+        "residentBytes": 138657792
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 40.94199995833333,
+        "footprintBytes": 33688168,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 10.529039000000001,
+        "residentBytes": 138608640
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 41.45647433333215,
+        "footprintBytes": 33671784,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 10.657882,
+        "residentBytes": 138592256
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 41.958052666683216,
+        "footprintBytes": 33671784,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 10.77952,
+        "residentBytes": 138592256
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 42.47561329166638,
+        "footprintBytes": 33655400,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 10.905499,
+        "residentBytes": 138575872
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 42.98987375001889,
+        "footprintBytes": 33671784,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 11.030550999999999,
+        "residentBytes": 138592256
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 43.49177279166179,
+        "footprintBytes": 33671784,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 11.151334,
+        "residentBytes": 138592256
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 44.00811141668237,
+        "footprintBytes": 33688168,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 11.275611,
+        "residentBytes": 138641408
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 44.50871362502221,
+        "footprintBytes": 33704552,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 11.398713,
+        "residentBytes": 138657792
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 45.023976708354894,
+        "footprintBytes": 33720936,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 11.525436,
+        "residentBytes": 138674176
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 45.54144658334553,
+        "footprintBytes": 33704552,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 11.651024,
+        "residentBytes": 138657792
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 46.057902791682864,
+        "footprintBytes": 33671784,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 11.784541,
+        "residentBytes": 138625024
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 46.57525937500759,
+        "footprintBytes": 33655400,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 11.920408,
+        "residentBytes": 138608640
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 47.09223533334443,
+        "footprintBytes": 33655400,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 12.054472,
+        "residentBytes": 138608640
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 47.59283366668387,
+        "footprintBytes": 33639016,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 12.176477,
+        "residentBytes": 138641408
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 48.1080873333558,
+        "footprintBytes": 33655400,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 12.305241,
+        "residentBytes": 138657792
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 48.60831850001705,
+        "footprintBytes": 33671784,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 12.435958,
+        "residentBytes": 138674176
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 49.10835779167246,
+        "footprintBytes": 33671784,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 12.565029,
+        "residentBytes": 138674176
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 49.623921333346516,
+        "footprintBytes": 33671784,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 12.69861,
+        "residentBytes": 138690560
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 50.1247415416874,
+        "footprintBytes": 33688168,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 12.820824,
+        "residentBytes": 138706944
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 50.64165233334643,
+        "footprintBytes": 33688168,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 12.954308,
+        "residentBytes": 138706944
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 51.14175437501399,
+        "footprintBytes": 33671784,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 13.079743,
+        "residentBytes": 138690560
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 51.65777016666834,
+        "footprintBytes": 33671784,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 13.205209,
+        "residentBytes": 138690560
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 52.174423208343796,
+        "footprintBytes": 33655400,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 13.327933999999999,
+        "residentBytes": 138674176
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 52.67500491667306,
+        "footprintBytes": 33639016,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 13.445452,
+        "residentBytes": 138657792
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 53.19125908333808,
+        "footprintBytes": 33622632,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 13.569722,
+        "residentBytes": 138641408
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 53.70879237502231,
+        "footprintBytes": 33671784,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 13.702313,
+        "residentBytes": 138690560
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 54.223506958340295,
+        "footprintBytes": 33671784,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 13.838904,
+        "residentBytes": 138690560
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 54.74168775000726,
+        "footprintBytes": 34441832,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 13.96759,
+        "residentBytes": 139460608
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 55.241991166665684,
+        "footprintBytes": 34474600,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 14.092861,
+        "residentBytes": 139493376
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 55.75767525000265,
+        "footprintBytes": 34474600,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 14.231285,
+        "residentBytes": 139493376
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 56.257718000008026,
+        "footprintBytes": 34474600,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 14.366727000000001,
+        "residentBytes": 139493376
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 56.77381562499795,
+        "footprintBytes": 34458216,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 14.497984,
+        "residentBytes": 139476992
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 57.27413704167702,
+        "footprintBytes": 34474600,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 14.619754,
+        "residentBytes": 139493376
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 57.77481920833816,
+        "footprintBytes": 34458216,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 14.744383,
+        "residentBytes": 139476992
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 58.27509945834754,
+        "footprintBytes": 34458216,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 14.870869,
+        "residentBytes": 139476992
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 58.79015129167237,
+        "footprintBytes": 34654824,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 15.006299,
+        "residentBytes": 139673600
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 59.29114120834856,
+        "footprintBytes": 34490984,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 15.136864,
+        "residentBytes": 139509760
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 59.807626750000054,
+        "footprintBytes": 34523752,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 15.277324,
+        "residentBytes": 139542528
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 60.308820125006605,
+        "footprintBytes": 34523752,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 15.407766,
+        "residentBytes": 139542528
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 60.824446500017075,
+        "footprintBytes": 34556520,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 15.545528000000001,
+        "residentBytes": 139575296
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 61.324702291662106,
+        "footprintBytes": 34556520,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 15.679058,
+        "residentBytes": 139575296
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 61.824732333334396,
+        "footprintBytes": 34523752,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 15.813507,
+        "residentBytes": 139558912
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 62.34168412501458,
+        "footprintBytes": 34523752,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 15.9466,
+        "residentBytes": 139558912
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 62.859095958352555,
+        "footprintBytes": 34507368,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 16.077276,
+        "residentBytes": 139542528
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 63.359972625010414,
+        "footprintBytes": 34507368,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 16.203845,
+        "residentBytes": 139542528
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 63.87652729166439,
+        "footprintBytes": 34490984,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 16.338857,
+        "residentBytes": 139526144
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 64.37672116668546,
+        "footprintBytes": 34507368,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 16.470606,
+        "residentBytes": 139542528
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 64.89004291666788,
+        "footprintBytes": 34720360,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 16.602888,
+        "residentBytes": 139755520
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 65.3911835833278,
+        "footprintBytes": 34540136,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 16.730493,
+        "residentBytes": 139575296
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 65.90829191668308,
+        "footprintBytes": 34556520,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 16.862526,
+        "residentBytes": 139591680
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 66.41065037500812,
+        "footprintBytes": 34540136,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 16.990869,
+        "residentBytes": 139591680
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 66.9110286666837,
+        "footprintBytes": 34523752,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 17.121503,
+        "residentBytes": 139575296
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 67.42674420835101,
+        "footprintBytes": 34507368,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 17.261579,
+        "residentBytes": 139558912
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 67.94136212501326,
+        "footprintBytes": 34490984,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 17.399977,
+        "residentBytes": 139542528
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 68.4416393749998,
+        "footprintBytes": 34474600,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 17.52587,
+        "residentBytes": 139526144
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 68.95898729166947,
+        "footprintBytes": 34458216,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 17.655528,
+        "residentBytes": 139509760
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 69.45997462500236,
+        "footprintBytes": 34474600,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 17.780248,
+        "residentBytes": 139526144
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 69.97661241667811,
+        "footprintBytes": 34474600,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 17.915182,
+        "residentBytes": 139526144
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 70.48984258333803,
+        "footprintBytes": 34867816,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 18.044067,
+        "residentBytes": 139919360
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 70.99021837499458,
+        "footprintBytes": 35949160,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 18.172746,
+        "residentBytes": 141017088
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 71.49025504168821,
+        "footprintBytes": 35490408,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 18.311608,
+        "residentBytes": 140591104
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 72.00726708333241,
+        "footprintBytes": 35244648,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 18.438269,
+        "residentBytes": 140361728
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 72.50988687502104,
+        "footprintBytes": 35211880,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 18.561736,
+        "residentBytes": 140345344
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 73.01054275000934,
+        "footprintBytes": 35195496,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 18.690437,
+        "residentBytes": 140328960
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 73.52444520834251,
+        "footprintBytes": 35326568,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 18.819359,
+        "residentBytes": 140460032
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 74.02671045833267,
+        "footprintBytes": 35179112,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 18.933812,
+        "residentBytes": 140312576
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 74.53979350000736,
+        "footprintBytes": 35555944,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 19.052964,
+        "residentBytes": 140705792
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 75.03983679166413,
+        "footprintBytes": 35555944,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 19.177613,
+        "residentBytes": 140705792
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 75.54058937501395,
+        "footprintBytes": 35179112,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 19.290789,
+        "residentBytes": 140328960
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 76.04142154168221,
+        "footprintBytes": 35195496,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 19.40772,
+        "residentBytes": 140361728
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 76.55617433335283,
+        "footprintBytes": 35785320,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 19.534205,
+        "residentBytes": 140951552
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 77.05921741668135,
+        "footprintBytes": 35195496,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 19.653151,
+        "residentBytes": 140361728
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 77.5767511666636,
+        "footprintBytes": 35195496,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 19.777908,
+        "residentBytes": 140361728
+      }
+    ],
+    "missedDisplayLinkTicks": 6,
+    "pendingAtExport": 0,
+    "renderer": {
+      "cpuPreparationMS": 31790.459416864906,
+      "gpuMS": 395.8672505978029,
+      "maskPreparationMS": 31178.77058329759,
+      "samples": 4491,
+      "skipped": 3,
+      "submitted": 4491
+    },
+    "scheduledCallbackDelayMS": {
+      "count": 4491,
+      "max": 26.745625014882535,
+      "mean": 2.618001623690575,
+      "p95": 4.4538750080391765,
+      "p99": 5.157333333045244
+    },
+    "timingBasis": "Simulator completion callback; not physical presentation"
+  },
+  "light-blue": {
+    "benchmarkDurationSeconds": 75,
+    "completionDeficitAt60Hz": 42,
+    "completionFPS": 59.441478340220186,
+    "completionFrames": 4461,
+    "completionIntervalMS": {
+      "count": 4460,
+      "max": 49.28170831408352,
+      "mean": 16.82326933856497,
+      "p95": 17.762291681719944,
+      "p99": 22.877666662679985
+    },
+    "completionToMainMS": {
+      "count": 4461,
+      "max": 4.209041653666645,
+      "mean": 0.07019066132554554,
+      "p95": 0.11541665298864245,
+      "p99": 0.18437500693835318
+    },
+    "compositionGPUMS": {
+      "count": 4461,
+      "max": 4.472416680073366,
+      "mean": 0.23181092646348753,
+      "p95": 0.3819999983534217,
+      "p99": 0.5016666545998305
+    },
+    "cpuFrameMS": {
+      "count": 4461,
+      "max": 12.309249985264614,
+      "mean": 0.3949154150595847,
+      "p95": 0.6220833165571094,
+      "p99": 0.7705416646786034
+    },
+    "displayLinkFPS": 59.99999999999379,
+    "displayLinkIntervalMS": {
+      "count": 4498,
+      "max": 16.666666691889986,
+      "mean": 16.66666666666839,
+      "p95": 16.666666691889986,
+      "p99": 16.666666691889986
+    },
+    "drawableAcquisitionMS": {
+      "count": 4461,
+      "max": 12.25279166828841,
+      "mean": 0.07351396370480183,
+      "p95": 0.08791667642071843,
+      "p99": 0.1361666654702276
+    },
+    "durationSeconds": 75.03178124999977,
+    "gpuEndToCallbackMS": {
+      "count": 4461,
+      "max": 129.3008333304897,
+      "mean": 11.622500121619833,
+      "p95": 21.460749994730577,
+      "p99": 56.360791670158505
+    },
+    "gpuEnvelopeMS": {
+      "count": 4461,
+      "max": 4.472416680073366,
+      "mean": 0.23181092646348753,
+      "p95": 0.3819999983534217,
+      "p99": 0.5016666545998305
+    },
+    "gpuWorkMS": {
+      "count": 4461,
+      "max": 4.472416680073366,
+      "mean": 0.23181092646348753,
+      "p95": 0.3819999983534217,
+      "p99": 0.5016666545998305
+    },
+    "idleOnly": false,
+    "inputToCompletionMS": {
+      "count": 3659,
+      "max": 33.899458358064294,
+      "mean": 26.905031145056398,
+      "p95": 29.407791676931083,
+      "p99": 29.817750008078292
+    },
+    "longCompletionGapsOver25MS": 32,
+    "maskPreparationMS": {
+      "count": 4461,
+      "max": 0.06462499732151628,
+      "mean": 0.0021135301039109707,
+      "p95": 0.00341667328029871,
+      "p99": 0.003958324668928981
+    },
+    "measurementSubmitted": 4461,
+    "memorySamples": [
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 0.19726245832862332,
+        "footprintBytes": 16992752,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 0.235734,
+        "residentBytes": 122126336
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 0.7118760833400302,
+        "footprintBytes": 18221600,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 0.253669,
+        "residentBytes": 120487936
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 1.2121711666695774,
+        "footprintBytes": 18467360,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 0.278453,
+        "residentBytes": 120733696
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 1.727287374989828,
+        "footprintBytes": 18565664,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 0.29149,
+        "residentBytes": 120832000
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 2.228640708315652,
+        "footprintBytes": 18631200,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 0.317989,
+        "residentBytes": 120897536
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 2.7450758333143312,
+        "footprintBytes": 18614816,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 0.343245,
+        "residentBytes": 120881152
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 3.245528541650856,
+        "footprintBytes": 18614816,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 0.359878,
+        "residentBytes": 120881152
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 3.7623551249853335,
+        "footprintBytes": 18614816,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 0.387972,
+        "residentBytes": 120881152
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 4.277522708318429,
+        "footprintBytes": 18450976,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 0.416424,
+        "residentBytes": 120881152
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 4.778803666646127,
+        "footprintBytes": 18205216,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 0.441539,
+        "residentBytes": 120815616
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 5.295535541663412,
+        "footprintBytes": 18123296,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 0.471464,
+        "residentBytes": 120782848
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 5.795809791656211,
+        "footprintBytes": 18123296,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 0.504579,
+        "residentBytes": 120782848
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 6.310488041664939,
+        "footprintBytes": 18795040,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 0.527573,
+        "residentBytes": 121716736
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 6.810833791649202,
+        "footprintBytes": 18844192,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 0.569427,
+        "residentBytes": 121765888
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 7.311281791655347,
+        "footprintBytes": 18860576,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 0.628239,
+        "residentBytes": 121782272
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 7.8275052916724235,
+        "footprintBytes": 18876960,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 0.682812,
+        "residentBytes": 121798656
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 8.328049416653812,
+        "footprintBytes": 18942496,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 0.732389,
+        "residentBytes": 121864192
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 8.844595458329422,
+        "footprintBytes": 18942496,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 0.79575,
+        "residentBytes": 121864192
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 9.361195250006858,
+        "footprintBytes": 18942496,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 0.85697,
+        "residentBytes": 121864192
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 9.877879999985453,
+        "footprintBytes": 18991648,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 0.919402,
+        "residentBytes": 121913344
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 10.39440900000045,
+        "footprintBytes": 18991648,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 0.973527,
+        "residentBytes": 121913344
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 10.894765666656895,
+        "footprintBytes": 18991648,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 1.035295,
+        "residentBytes": 121913344
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 11.411208083329257,
+        "footprintBytes": 18991648,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 1.098977,
+        "residentBytes": 121913344
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 11.927844999998342,
+        "footprintBytes": 18991648,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 1.126411,
+        "residentBytes": 121913344
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 12.427857125003356,
+        "footprintBytes": 18991648,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 1.186513,
+        "residentBytes": 121913344
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 12.9440387916693,
+        "footprintBytes": 18991648,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 1.240772,
+        "residentBytes": 121913344
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 13.444319125002949,
+        "footprintBytes": 18991648,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 1.267464,
+        "residentBytes": 121913344
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 13.944493374990998,
+        "footprintBytes": 18991648,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 1.327514,
+        "residentBytes": 121913344
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 14.444513208320132,
+        "footprintBytes": 18991648,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 1.388356,
+        "residentBytes": 121913344
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 14.960758000001078,
+        "footprintBytes": 18991648,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 1.440209,
+        "residentBytes": 121913344
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 15.460968833329389,
+        "footprintBytes": 18991648,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 1.481881,
+        "residentBytes": 121913344
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 15.97748079165467,
+        "footprintBytes": 19155488,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 1.524343,
+        "residentBytes": 122077184
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 16.493832958338317,
+        "footprintBytes": 19155488,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 1.553601,
+        "residentBytes": 122077184
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 16.994208374992013,
+        "footprintBytes": 19155488,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 1.5919539999999999,
+        "residentBytes": 122077184
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 17.494441583316075,
+        "footprintBytes": 19188256,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 1.646465,
+        "residentBytes": 122109952
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 18.010625583323417,
+        "footprintBytes": 19188256,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 1.6831019999999999,
+        "residentBytes": 122109952
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 18.51120991667267,
+        "footprintBytes": 18598432,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 1.718208,
+        "residentBytes": 122109952
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 19.027856708329637,
+        "footprintBytes": 18598432,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 1.7575340000000002,
+        "residentBytes": 122109952
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 19.544271499995375,
+        "footprintBytes": 18614816,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 1.7923499999999999,
+        "residentBytes": 122126336
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 20.044434874987928,
+        "footprintBytes": 18614816,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 1.8292410000000001,
+        "residentBytes": 122126336
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 20.544484708312666,
+        "footprintBytes": 18614816,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 1.8662800000000002,
+        "residentBytes": 122126336
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 21.044629291660385,
+        "footprintBytes": 18614816,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 1.902161,
+        "residentBytes": 122126336
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 21.560949874983635,
+        "footprintBytes": 18614816,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 1.9389729999999998,
+        "residentBytes": 122126336
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 22.07735104166204,
+        "footprintBytes": 18614816,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 1.957958,
+        "residentBytes": 122126336
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 22.594026833336102,
+        "footprintBytes": 18614816,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 1.983472,
+        "residentBytes": 122126336
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 23.110486833320465,
+        "footprintBytes": 18614816,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 2.005826,
+        "residentBytes": 122126336
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 23.6106424999889,
+        "footprintBytes": 18614816,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 2.021006,
+        "residentBytes": 122126336
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 24.11088212497998,
+        "footprintBytes": 18631200,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 2.043883,
+        "residentBytes": 122142720
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 24.627415833325358,
+        "footprintBytes": 18631200,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 2.067049,
+        "residentBytes": 122142720
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 25.144027666654438,
+        "footprintBytes": 18631200,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 2.090932,
+        "residentBytes": 122142720
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 25.64409366666223,
+        "footprintBytes": 18631200,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 2.114121,
+        "residentBytes": 122142720
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 26.144248541648267,
+        "footprintBytes": 18631200,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 2.143981,
+        "residentBytes": 122142720
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 26.66040870832512,
+        "footprintBytes": 18631200,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 2.167535,
+        "residentBytes": 122142720
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 27.160980416665552,
+        "footprintBytes": 18631200,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 2.189323,
+        "residentBytes": 122142720
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 27.677666416653665,
+        "footprintBytes": 18631200,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 2.2255380000000002,
+        "residentBytes": 122142720
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 28.17783099997905,
+        "footprintBytes": 18631200,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 2.264412,
+        "residentBytes": 121847808
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 28.678068166656885,
+        "footprintBytes": 18729504,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 2.301915,
+        "residentBytes": 121651200
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 29.19430737500079,
+        "footprintBytes": 18729504,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 2.340532,
+        "residentBytes": 121651200
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 29.711088583339006,
+        "footprintBytes": 18729504,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 2.3791219999999997,
+        "residentBytes": 121651200
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 30.22765279165469,
+        "footprintBytes": 18762272,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 2.417909,
+        "residentBytes": 121683968
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 30.744404750003014,
+        "footprintBytes": 18762272,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 2.455956,
+        "residentBytes": 121683968
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 31.244506666669622,
+        "footprintBytes": 18778656,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 2.494646,
+        "residentBytes": 121700352
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 31.76083324998035,
+        "footprintBytes": 18795040,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 2.533976,
+        "residentBytes": 121716736
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 32.27732187497895,
+        "footprintBytes": 18827808,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 2.550108,
+        "residentBytes": 121749504
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 32.77756820831564,
+        "footprintBytes": 18827808,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 2.576512,
+        "residentBytes": 121749504
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 33.29384495833074,
+        "footprintBytes": 18827808,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 2.602655,
+        "residentBytes": 121749504
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 33.79439366667066,
+        "footprintBytes": 18827808,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 2.6198509999999997,
+        "residentBytes": 121749504
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 34.311081749998266,
+        "footprintBytes": 18827808,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 2.658664,
+        "residentBytes": 121749504
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 34.827626624988625,
+        "footprintBytes": 18827808,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 2.696764,
+        "residentBytes": 121749504
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 35.3440366666473,
+        "footprintBytes": 18778656,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 2.7287660000000002,
+        "residentBytes": 121700352
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 35.84432445833227,
+        "footprintBytes": 18778656,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 2.7552190000000003,
+        "residentBytes": 121700352
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 36.34433762499248,
+        "footprintBytes": 18778656,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 2.791544,
+        "residentBytes": 121700352
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 36.860433791647665,
+        "footprintBytes": 18778656,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 2.823041,
+        "residentBytes": 121700352
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 37.3608230833197,
+        "footprintBytes": 18778656,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 2.840971,
+        "residentBytes": 121700352
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 37.86086349998368,
+        "footprintBytes": 18778656,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 2.873703,
+        "residentBytes": 121700352
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 38.36099741666112,
+        "footprintBytes": 18778656,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 2.90563,
+        "residentBytes": 121700352
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 38.86101908332785,
+        "footprintBytes": 18778656,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 2.943571,
+        "residentBytes": 121700352
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 39.36110983332037,
+        "footprintBytes": 18778656,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 2.982581,
+        "residentBytes": 121700352
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 39.87788099999307,
+        "footprintBytes": 18778656,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 3.023503,
+        "residentBytes": 121700352
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 40.394328208320076,
+        "footprintBytes": 18778656,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 3.062463,
+        "residentBytes": 121700352
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 40.91073195831268,
+        "footprintBytes": 18778656,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 3.097121,
+        "residentBytes": 121700352
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 41.42758862499613,
+        "footprintBytes": 18778656,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 3.121194,
+        "residentBytes": 121700352
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 41.94398233332322,
+        "footprintBytes": 18778656,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 3.146859,
+        "residentBytes": 121700352
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 42.46041054165107,
+        "footprintBytes": 18778656,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 3.161182,
+        "residentBytes": 121700352
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 42.960671958338935,
+        "footprintBytes": 18778656,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 3.187238,
+        "residentBytes": 121700352
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 43.477095333335456,
+        "footprintBytes": 18778656,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 3.216309,
+        "residentBytes": 121700352
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 43.9777914583392,
+        "footprintBytes": 18778656,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 3.232926,
+        "residentBytes": 121700352
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 44.49404583332944,
+        "footprintBytes": 18778656,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 3.26749,
+        "residentBytes": 121700352
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 45.010737999982666,
+        "footprintBytes": 18778656,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 3.289422,
+        "residentBytes": 121700352
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 45.510861916671274,
+        "footprintBytes": 18778656,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 3.316751,
+        "residentBytes": 121700352
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 46.02742299999227,
+        "footprintBytes": 18778656,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 3.3476369999999998,
+        "residentBytes": 121700352
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 46.527499874995556,
+        "footprintBytes": 18778656,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 3.374104,
+        "residentBytes": 121700352
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 47.04419874999439,
+        "footprintBytes": 18778656,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 3.411002,
+        "residentBytes": 121700352
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 47.56065299999318,
+        "footprintBytes": 18778656,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 3.427057,
+        "residentBytes": 121700352
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 48.060663124982966,
+        "footprintBytes": 18778656,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 3.4466099999999997,
+        "residentBytes": 121700352
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 48.5606666666572,
+        "footprintBytes": 18729504,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 3.469493,
+        "residentBytes": 121618432
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 49.06074329165858,
+        "footprintBytes": 18729504,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 3.491086,
+        "residentBytes": 121618432
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 49.57763970832457,
+        "footprintBytes": 18729504,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 3.515863,
+        "residentBytes": 121618432
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 50.07820879164501,
+        "footprintBytes": 18729504,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 3.544002,
+        "residentBytes": 121618432
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 50.59421641664812,
+        "footprintBytes": 18778656,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 3.577956,
+        "residentBytes": 121667584
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 51.110921291663544,
+        "footprintBytes": 18778656,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 3.6110569999999997,
+        "residentBytes": 121667584
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 51.61126104166033,
+        "footprintBytes": 18778656,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 3.64909,
+        "residentBytes": 121667584
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 52.12760312500177,
+        "footprintBytes": 18778656,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 3.68827,
+        "residentBytes": 121667584
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 52.643827083316864,
+        "footprintBytes": 18778656,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 3.708186,
+        "residentBytes": 121667584
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 53.14438058331143,
+        "footprintBytes": 18778656,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 3.743299,
+        "residentBytes": 121667584
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 53.66094258331577,
+        "footprintBytes": 18778656,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 3.778127,
+        "residentBytes": 121667584
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 54.17744912498165,
+        "footprintBytes": 18909728,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 3.792265,
+        "residentBytes": 121798656
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 54.69405837499653,
+        "footprintBytes": 19139104,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 3.814892,
+        "residentBytes": 122028032
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 55.19439595832955,
+        "footprintBytes": 19139104,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 3.840972,
+        "residentBytes": 122028032
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 55.694408624985954,
+        "footprintBytes": 19139104,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 3.879086,
+        "residentBytes": 122028032
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 56.211088166659465,
+        "footprintBytes": 19139104,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 3.909774,
+        "residentBytes": 122028032
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 56.72744983332814,
+        "footprintBytes": 19139104,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 3.938655,
+        "residentBytes": 122028032
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 57.24386091667111,
+        "footprintBytes": 19171872,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 3.964405,
+        "residentBytes": 122060800
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 57.74398429165012,
+        "footprintBytes": 19171872,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 3.97792,
+        "residentBytes": 122060800
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 58.24404745831271,
+        "footprintBytes": 19171872,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 4.0053529999999995,
+        "residentBytes": 122060800
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 58.74439608331886,
+        "footprintBytes": 19171872,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 4.031505,
+        "residentBytes": 122060800
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 59.26089579166728,
+        "footprintBytes": 19171872,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 4.062995,
+        "residentBytes": 122060800
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 59.77731187499012,
+        "footprintBytes": 19171872,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 4.092381,
+        "residentBytes": 122060800
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 60.277744499995606,
+        "footprintBytes": 19171872,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 4.122771,
+        "residentBytes": 122060800
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 60.77785095831496,
+        "footprintBytes": 19171872,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 4.161609,
+        "residentBytes": 122060800
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 61.294190083339345,
+        "footprintBytes": 19171872,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 4.200949,
+        "residentBytes": 122060800
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 61.794354749989,
+        "footprintBytes": 19171872,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 4.238827,
+        "residentBytes": 122060800
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 62.31106370833004,
+        "footprintBytes": 19171872,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 4.278929,
+        "residentBytes": 122060800
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 62.827140583336586,
+        "footprintBytes": 19171872,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 4.301354,
+        "residentBytes": 122060800
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 63.32758250000188,
+        "footprintBytes": 19171872,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 4.331895,
+        "residentBytes": 122060800
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 63.82769274999737,
+        "footprintBytes": 19171872,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 4.367205,
+        "residentBytes": 122060800
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 64.3444009583327,
+        "footprintBytes": 19171872,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 4.385938,
+        "residentBytes": 122060800
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 64.84441504164715,
+        "footprintBytes": 19171872,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 4.42467,
+        "residentBytes": 122060800
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 65.36100158334011,
+        "footprintBytes": 19171872,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 4.461936,
+        "residentBytes": 122060800
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 65.87771499998053,
+        "footprintBytes": 19171872,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 4.496358,
+        "residentBytes": 122060800
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 66.39434033332509,
+        "footprintBytes": 19171872,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 4.535915,
+        "residentBytes": 122060800
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 66.91095975000644,
+        "footprintBytes": 19171872,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 4.5714179999999995,
+        "residentBytes": 122060800
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 67.41096183331683,
+        "footprintBytes": 19171872,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 4.60567,
+        "residentBytes": 122060800
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 67.92759370832937,
+        "footprintBytes": 19171872,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 4.620445,
+        "residentBytes": 122060800
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 68.42773512500571,
+        "footprintBytes": 19171872,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 4.64895,
+        "residentBytes": 122060800
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 68.9443622083345,
+        "footprintBytes": 19171872,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 4.684809,
+        "residentBytes": 122060800
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 69.46066441666335,
+        "footprintBytes": 19171872,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 4.713774,
+        "residentBytes": 122044416
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 69.9609610416519,
+        "footprintBytes": 19171872,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 4.740613,
+        "residentBytes": 122044416
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 70.47745837498223,
+        "footprintBytes": 19171872,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 4.770525,
+        "residentBytes": 122044416
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 70.994075958326,
+        "footprintBytes": 19286560,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 4.795525,
+        "residentBytes": 122191872
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 71.51081466666074,
+        "footprintBytes": 19302944,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 4.8216339999999995,
+        "residentBytes": 122224640
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 72.01083499999368,
+        "footprintBytes": 19466784,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 4.847791,
+        "residentBytes": 122388480
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 72.51111070832121,
+        "footprintBytes": 19466784,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 4.876569,
+        "residentBytes": 122388480
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 73.0270984583185,
+        "footprintBytes": 19401248,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 4.894944,
+        "residentBytes": 122322944
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 73.52738779166248,
+        "footprintBytes": 19401248,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 4.919646,
+        "residentBytes": 122322944
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 74.04392341666971,
+        "footprintBytes": 19401248,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 4.946823,
+        "residentBytes": 122322944
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 74.54400433332194,
+        "footprintBytes": 19434016,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 4.957423,
+        "residentBytes": 122355712
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 75.06259358333773,
+        "footprintBytes": 19466784,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 4.982882,
+        "residentBytes": 122388480
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 75.57748708332656,
+        "footprintBytes": 19466784,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 5.011731,
+        "residentBytes": 122388480
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 76.09401991666527,
+        "footprintBytes": 19401248,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 5.035239,
+        "residentBytes": 122322944
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 76.59428283333546,
+        "footprintBytes": 19401248,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 5.0622810000000005,
+        "residentBytes": 122322944
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 77.1110044583329,
+        "footprintBytes": 19401248,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 5.093957,
+        "residentBytes": 122322944
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 77.62731524999253,
+        "footprintBytes": 19434016,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 5.1243110000000005,
+        "residentBytes": 122355712
+      }
+    ],
+    "missedDisplayLinkTicks": 0,
+    "pendingAtExport": 0,
+    "renderer": {
+      "cpuPreparationMS": 1761.7176665808074,
+      "gpuMS": 1034.3112929549534,
+      "maskPreparationMS": 9.42845779354684,
+      "samples": 4461,
+      "skipped": 38,
+      "submitted": 4461
+    },
+    "scheduledCallbackDelayMS": {
+      "count": 4461,
+      "max": 5.245416687102988,
+      "mean": 0.792907121145494,
+      "p95": 1.2341249966993928,
+      "p99": 1.5101666504051536
+    },
+    "timingBasis": "Simulator completion callback; not physical presentation"
+  },
+  "light-yellow": {
+    "benchmarkDurationSeconds": 75,
+    "completionDeficitAt60Hz": 1,
+    "completionFPS": 59.99270769901688,
+    "completionFrames": 4500,
+    "completionIntervalMS": {
+      "count": 4499,
+      "max": 22.60641666362062,
+      "mean": 16.66869255205141,
+      "p95": 19.0581250062678,
+      "p99": 19.90412501618266
+    },
+    "completionToMainMS": {
+      "count": 4500,
+      "max": 5.212749994825572,
+      "mean": 0.1317259353494996,
+      "p95": 0.4624166467692703,
+      "p99": 1.218041667016223
+    },
+    "compositionGPUMS": {
+      "count": 4500,
+      "max": 2.6497916551306844,
+      "mean": 0.19415793501280454,
+      "p95": 0.3647083358373493,
+      "p99": 0.4454166628420353
+    },
+    "cpuFrameMS": {
+      "count": 4500,
+      "max": 3.543499973602593,
+      "mean": 0.35694067604425883,
+      "p95": 0.6695000047329813,
+      "p99": 0.7770833326503634
+    },
+    "displayLinkFPS": 60.00000000002019,
+    "displayLinkIntervalMS": {
+      "count": 4499,
+      "max": 16.666666691889986,
+      "mean": 16.66666666666106,
+      "p95": 16.666666691889986,
+      "p99": 16.666666691889986
+    },
+    "drawableAcquisitionMS": {
+      "count": 4500,
+      "max": 0.3343749849591404,
+      "mean": 0.04697020346712735,
+      "p95": 0.086499989265576,
+      "p99": 0.10999999358318746
+    },
+    "durationSeconds": 74.9924477916793,
+    "gpuEndToCallbackMS": {
+      "count": 4500,
+      "max": 18.526083324104548,
+      "mean": 12.470202518394217,
+      "p95": 16.111583332531154,
+      "p99": 16.622374998405576
+    },
+    "gpuEnvelopeMS": {
+      "count": 4500,
+      "max": 2.6497916551306844,
+      "mean": 0.19415793501280454,
+      "p95": 0.3647083358373493,
+      "p99": 0.4454166628420353
+    },
+    "gpuWorkMS": {
+      "count": 4500,
+      "max": 2.6497916551306844,
+      "mean": 0.19415793501280454,
+      "p95": 0.3647083358373493,
+      "p99": 0.4454166628420353
+    },
+    "idleOnly": false,
+    "inputToCompletionMS": {
+      "count": 3660,
+      "max": 36.033291660714895,
+      "mean": 29.699445969819237,
+      "p95": 33.29445832059719,
+      "p99": 33.805333339842036
+    },
+    "longCompletionGapsOver25MS": 0,
+    "maskPreparationMS": {
+      "count": 4500,
+      "max": 0.05124998278915882,
+      "mean": 0.0019182868741659655,
+      "p95": 0.003374996595084667,
+      "p99": 0.004083325620740652
+    },
+    "measurementSubmitted": 4500,
+    "memorySamples": [
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 0.19344400000409223,
+        "footprintBytes": 16583152,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 0.226296,
+        "residentBytes": 121700352
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 0.7069187499873806,
+        "footprintBytes": 17664520,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 0.243602,
+        "residentBytes": 123191296
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 1.2074527083314024,
+        "footprintBytes": 18156064,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 0.270938,
+        "residentBytes": 123666432
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 1.7238981666741893,
+        "footprintBytes": 18188832,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 0.305737,
+        "residentBytes": 123699200
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 2.224286208336707,
+        "footprintBytes": 18254368,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 0.343401,
+        "residentBytes": 123764736
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 2.7403980833187234,
+        "footprintBytes": 18254368,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 0.371687,
+        "residentBytes": 123764736
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 3.2569720833271276,
+        "footprintBytes": 18319904,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 0.398095,
+        "residentBytes": 123830272
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 3.7735300000058487,
+        "footprintBytes": 18336288,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 0.419562,
+        "residentBytes": 123846656
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 4.273719541670289,
+        "footprintBytes": 18172448,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 0.439014,
+        "residentBytes": 123682816
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 4.773740708333207,
+        "footprintBytes": 17992224,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 0.464858,
+        "residentBytes": 123502592
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 5.290210125007434,
+        "footprintBytes": 17844768,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 0.480846,
+        "residentBytes": 123371520
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 5.790538458328228,
+        "footprintBytes": 17844768,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 0.505745,
+        "residentBytes": 123371520
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 6.290581874985946,
+        "footprintBytes": 18516512,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 0.538408,
+        "residentBytes": 124207104
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 6.791046166646993,
+        "footprintBytes": 18565664,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 0.589621,
+        "residentBytes": 124256256
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 7.291080625000177,
+        "footprintBytes": 18598432,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 0.650391,
+        "residentBytes": 124289024
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 7.807192624983145,
+        "footprintBytes": 18631200,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 0.701666,
+        "residentBytes": 124321792
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 8.307581208326155,
+        "footprintBytes": 18696736,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 0.751846,
+        "residentBytes": 124387328
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 8.823498749989085,
+        "footprintBytes": 18729504,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 0.789185,
+        "residentBytes": 124420096
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 9.323982333327876,
+        "footprintBytes": 18729504,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 0.828495,
+        "residentBytes": 124420096
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 9.824302416673163,
+        "footprintBytes": 18778656,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 0.891382,
+        "residentBytes": 124469248
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 10.324322166648926,
+        "footprintBytes": 18795040,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 0.956576,
+        "residentBytes": 124485632
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 10.841034624987515,
+        "footprintBytes": 18795040,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 1.021188,
+        "residentBytes": 124485632
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 11.357744333334267,
+        "footprintBytes": 18795040,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 1.087704,
+        "residentBytes": 124485632
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 11.874192999996012,
+        "footprintBytes": 18860576,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 1.148116,
+        "residentBytes": 124551168
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 12.374346500000684,
+        "footprintBytes": 18876960,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 1.207299,
+        "residentBytes": 124567552
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 12.874407249997603,
+        "footprintBytes": 18893344,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 1.269429,
+        "residentBytes": 124583936
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 13.390404749981826,
+        "footprintBytes": 18893344,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 1.321896,
+        "residentBytes": 124583936
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 13.906918333319481,
+        "footprintBytes": 18893344,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 1.357833,
+        "residentBytes": 124583936
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 14.407127666665474,
+        "footprintBytes": 18893344,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 1.382494,
+        "residentBytes": 124583936
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 14.907362791651394,
+        "footprintBytes": 18893344,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 1.426512,
+        "residentBytes": 124583936
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 15.423514041671297,
+        "footprintBytes": 18893344,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 1.454763,
+        "residentBytes": 124583936
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 15.924210958328331,
+        "footprintBytes": 18958880,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 1.504489,
+        "residentBytes": 124649472
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 16.424283833330264,
+        "footprintBytes": 18958880,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 1.5688689999999998,
+        "residentBytes": 124649472
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 16.94053654166055,
+        "footprintBytes": 18958880,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 1.61297,
+        "residentBytes": 124649472
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 17.457195916649653,
+        "footprintBytes": 18958880,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 1.651492,
+        "residentBytes": 124649472
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 17.9736557083379,
+        "footprintBytes": 18958880,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 1.6843789999999998,
+        "residentBytes": 124649472
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 18.473731416655937,
+        "footprintBytes": 18369056,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 1.708599,
+        "residentBytes": 124649472
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 18.990093166648876,
+        "footprintBytes": 18369056,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 1.724771,
+        "residentBytes": 124649472
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 19.490695249987766,
+        "footprintBytes": 18369056,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 1.748888,
+        "residentBytes": 124649472
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 20.007311541674426,
+        "footprintBytes": 18369056,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 1.78511,
+        "residentBytes": 124600320
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 20.524067041667877,
+        "footprintBytes": 18385440,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 1.8254540000000001,
+        "residentBytes": 124534784
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 21.040736499999184,
+        "footprintBytes": 18385440,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 1.86394,
+        "residentBytes": 124534784
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 21.557170333340764,
+        "footprintBytes": 18500128,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 1.897292,
+        "residentBytes": 124649472
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 22.057187291648006,
+        "footprintBytes": 18500128,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 1.9268990000000001,
+        "residentBytes": 124649472
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 22.557341833336977,
+        "footprintBytes": 18500128,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 1.956021,
+        "residentBytes": 124649472
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 23.05734775000019,
+        "footprintBytes": 18532896,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 1.9872459999999998,
+        "residentBytes": 124682240
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 23.574256124993553,
+        "footprintBytes": 18500128,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 2.018787,
+        "residentBytes": 124649472
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 24.090110708319116,
+        "footprintBytes": 18500128,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 2.045948,
+        "residentBytes": 124649472
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 24.59034883332788,
+        "footprintBytes": 18500128,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 2.0583270000000002,
+        "residentBytes": 124649472
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 25.090391458332306,
+        "footprintBytes": 18516512,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 2.08082,
+        "residentBytes": 124665856
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 25.60675199999241,
+        "footprintBytes": 18516512,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 2.1000449999999997,
+        "residentBytes": 124665856
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 26.10706633332302,
+        "footprintBytes": 18532896,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 2.118506,
+        "residentBytes": 124682240
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 26.607238708325895,
+        "footprintBytes": 18532896,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 2.144229,
+        "residentBytes": 124682240
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 27.123735583329108,
+        "footprintBytes": 18582048,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 2.172861,
+        "residentBytes": 119734272
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 27.62383745831903,
+        "footprintBytes": 18614816,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 2.1995839999999998,
+        "residentBytes": 119767040
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 28.124149916664464,
+        "footprintBytes": 18614816,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 2.230954,
+        "residentBytes": 119177216
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 28.640615708340192,
+        "footprintBytes": 18778656,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 2.2611410000000003,
+        "residentBytes": 119341056
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 29.15691220833105,
+        "footprintBytes": 18778656,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 2.2850989999999998,
+        "residentBytes": 119357440
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 29.65703037500498,
+        "footprintBytes": 18795040,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 2.301286,
+        "residentBytes": 119390208
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 30.15719737499603,
+        "footprintBytes": 18844192,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 2.3219890000000003,
+        "residentBytes": 119439360
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 30.65725791666773,
+        "footprintBytes": 18827808,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 2.3447839999999998,
+        "residentBytes": 119422976
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 31.173768749984447,
+        "footprintBytes": 18827808,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 2.3772070000000003,
+        "residentBytes": 119422976
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 31.690532083332073,
+        "footprintBytes": 18876960,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 2.408592,
+        "residentBytes": 119472128
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 32.190833833330544,
+        "footprintBytes": 18876960,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 2.439291,
+        "residentBytes": 119472128
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 32.70708958333125,
+        "footprintBytes": 18844192,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 2.471667,
+        "residentBytes": 119439360
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 33.22376374999294,
+        "footprintBytes": 18860576,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 2.502149,
+        "residentBytes": 119455744
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 33.7403184583236,
+        "footprintBytes": 18860576,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 2.526421,
+        "residentBytes": 119455744
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 34.24053783333511,
+        "footprintBytes": 18876960,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 2.550691,
+        "residentBytes": 119472128
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 34.75722345832037,
+        "footprintBytes": 18909728,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 2.5647729999999997,
+        "residentBytes": 119537664
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 35.257258291647304,
+        "footprintBytes": 18876960,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 2.587971,
+        "residentBytes": 119504896
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 35.773480333329644,
+        "footprintBytes": 18876960,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 2.605766,
+        "residentBytes": 119504896
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 36.27365529164672,
+        "footprintBytes": 18876960,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 2.6248,
+        "residentBytes": 119504896
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 36.77373420831282,
+        "footprintBytes": 18876960,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 2.6521470000000003,
+        "residentBytes": 119504896
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 37.27395379164955,
+        "footprintBytes": 18876960,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 2.680764,
+        "residentBytes": 119504896
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 37.79052179167047,
+        "footprintBytes": 18876960,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 2.710641,
+        "residentBytes": 119504896
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 38.29052779165795,
+        "footprintBytes": 18876960,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 2.738115,
+        "residentBytes": 119504896
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 38.790731499990216,
+        "footprintBytes": 18909728,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 2.7642420000000003,
+        "residentBytes": 119537664
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 39.30678158332012,
+        "footprintBytes": 18876960,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 2.791039,
+        "residentBytes": 119504896
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 39.8070819999848,
+        "footprintBytes": 18876960,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 2.807826,
+        "residentBytes": 119504896
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 40.307096333330264,
+        "footprintBytes": 18876960,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 2.839131,
+        "residentBytes": 119504896
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 40.80720845834003,
+        "footprintBytes": 18876960,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 2.8691969999999998,
+        "residentBytes": 119504896
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 41.32396587499534,
+        "footprintBytes": 18876960,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 2.899783,
+        "residentBytes": 119504896
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 41.82418845832581,
+        "footprintBytes": 18909728,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 2.9311730000000003,
+        "residentBytes": 119537664
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 42.34032612500596,
+        "footprintBytes": 18876960,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 2.965531,
+        "residentBytes": 119504896
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 42.8404939166503,
+        "footprintBytes": 18893344,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 2.995603,
+        "residentBytes": 119521280
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 43.35715929165599,
+        "footprintBytes": 18909728,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 3.026498,
+        "residentBytes": 119537664
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 43.873709999985294,
+        "footprintBytes": 18926112,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 3.055199,
+        "residentBytes": 119554048
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 44.37381666665897,
+        "footprintBytes": 18926112,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 3.084764,
+        "residentBytes": 119554048
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 44.87432237499161,
+        "footprintBytes": 18926112,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 3.098153,
+        "residentBytes": 119554048
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 45.39041062499746,
+        "footprintBytes": 18926112,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 3.127066,
+        "residentBytes": 119554048
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 45.90675591665786,
+        "footprintBytes": 18926112,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 3.152444,
+        "residentBytes": 119554048
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 46.407088749983814,
+        "footprintBytes": 18926112,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 3.17049,
+        "residentBytes": 119554048
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 46.907374125003116,
+        "footprintBytes": 18958880,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 3.194982,
+        "residentBytes": 119586816
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 47.42375254165381,
+        "footprintBytes": 18926112,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 3.226273,
+        "residentBytes": 119554048
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 47.92381249999744,
+        "footprintBytes": 18926112,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 3.257664,
+        "residentBytes": 119554048
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 48.42387012499967,
+        "footprintBytes": 18958880,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 3.2871319999999997,
+        "residentBytes": 119586816
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 48.92413804164971,
+        "footprintBytes": 18926112,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 3.3170710000000003,
+        "residentBytes": 119554048
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 49.44029179165955,
+        "footprintBytes": 18926112,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 3.3483419999999997,
+        "residentBytes": 119554048
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 49.94047758332454,
+        "footprintBytes": 18926112,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 3.3610949999999997,
+        "residentBytes": 119586816
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 50.44063633334008,
+        "footprintBytes": 18926112,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 3.390967,
+        "residentBytes": 119586816
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 50.95717908331426,
+        "footprintBytes": 18926112,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 3.419838,
+        "residentBytes": 119586816
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 51.45731858332874,
+        "footprintBytes": 18926112,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 3.450802,
+        "residentBytes": 119586816
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 51.97393216667115,
+        "footprintBytes": 18926112,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 3.48257,
+        "residentBytes": 119586816
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 52.47414795833174,
+        "footprintBytes": 18926112,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 3.5137739999999997,
+        "residentBytes": 119586816
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 52.990575333329616,
+        "footprintBytes": 18926112,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 3.544209,
+        "residentBytes": 119586816
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 53.507387708319584,
+        "footprintBytes": 18926112,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 3.575234,
+        "residentBytes": 119586816
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 54.02394066666602,
+        "footprintBytes": 18975264,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 3.606906,
+        "residentBytes": 119635968
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 54.5241062916466,
+        "footprintBytes": 19302944,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 3.636218,
+        "residentBytes": 119963648
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 55.04012287498335,
+        "footprintBytes": 19302944,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 3.651911,
+        "residentBytes": 119980032
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 55.54067283333279,
+        "footprintBytes": 19302944,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 3.681875,
+        "residentBytes": 119980032
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 56.05681650000042,
+        "footprintBytes": 19302944,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 3.714374,
+        "residentBytes": 119980032
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 56.55701770831365,
+        "footprintBytes": 19302944,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 3.72777,
+        "residentBytes": 119980032
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 57.0572582083405,
+        "footprintBytes": 19302944,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 3.756034,
+        "residentBytes": 119980032
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 57.57384779167478,
+        "footprintBytes": 19335712,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 3.7871550000000003,
+        "residentBytes": 120012800
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 58.09055441667442,
+        "footprintBytes": 19335712,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 3.820423,
+        "residentBytes": 120012800
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 58.60717204166576,
+        "footprintBytes": 19335712,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 3.852817,
+        "residentBytes": 120012800
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 59.12374541666941,
+        "footprintBytes": 19335712,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 3.880165,
+        "residentBytes": 120012800
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 59.62408583331853,
+        "footprintBytes": 19368480,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 3.911223,
+        "residentBytes": 120045568
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 60.12427279166877,
+        "footprintBytes": 19335712,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 3.925398,
+        "residentBytes": 120012800
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 60.6404423333297,
+        "footprintBytes": 19335712,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 3.95328,
+        "residentBytes": 120012800
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 61.14045162498951,
+        "footprintBytes": 19335712,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 3.985556,
+        "residentBytes": 120012800
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 61.657017291669035,
+        "footprintBytes": 19335712,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 4.016102,
+        "residentBytes": 120012800
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 62.157401416654466,
+        "footprintBytes": 19368480,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 4.041956,
+        "residentBytes": 120045568
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 62.673681208339985,
+        "footprintBytes": 19335712,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 4.071047,
+        "residentBytes": 120012800
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 63.173772333335364,
+        "footprintBytes": 19335712,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 4.092512,
+        "residentBytes": 120012800
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 63.69052025000565,
+        "footprintBytes": 19335712,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 4.117626,
+        "residentBytes": 120012800
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 64.19053183333017,
+        "footprintBytes": 19335712,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 4.1420010000000005,
+        "residentBytes": 120012800
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 64.7072045833338,
+        "footprintBytes": 19368480,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 4.167262,
+        "residentBytes": 120045568
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 65.22357516665943,
+        "footprintBytes": 19335712,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 4.184125,
+        "residentBytes": 120012800
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 65.723813791672,
+        "footprintBytes": 19368480,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 4.208703,
+        "residentBytes": 120045568
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 66.22414070833474,
+        "footprintBytes": 19368480,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 4.236525,
+        "residentBytes": 120045568
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 66.72421654165373,
+        "footprintBytes": 19335712,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 4.253005,
+        "residentBytes": 120012800
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 67.2403958333307,
+        "footprintBytes": 19335712,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 4.283267,
+        "residentBytes": 119996416
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 67.7405611249851,
+        "footprintBytes": 19335712,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 4.3121089999999995,
+        "residentBytes": 119996416
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 68.25736720833811,
+        "footprintBytes": 19368480,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 4.342415,
+        "residentBytes": 120029184
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 68.75743541665724,
+        "footprintBytes": 19368480,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 4.371574,
+        "residentBytes": 120029184
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 69.25750316664926,
+        "footprintBytes": 19335712,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 4.405819,
+        "residentBytes": 119996416
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 69.75778045834159,
+        "footprintBytes": 19335712,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 4.439256,
+        "residentBytes": 119996416
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 70.27380258333869,
+        "footprintBytes": 19335712,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 4.455796,
+        "residentBytes": 119996416
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 70.77385008332203,
+        "footprintBytes": 19335712,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 4.488688,
+        "residentBytes": 119996416
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 71.29072941665072,
+        "footprintBytes": 19515936,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 4.52391,
+        "residentBytes": 120176640
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 71.80710370832821,
+        "footprintBytes": 19515936,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 4.559484,
+        "residentBytes": 120176640
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 72.30725316665485,
+        "footprintBytes": 19515936,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 4.595209,
+        "residentBytes": 120176640
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 72.80744591666735,
+        "footprintBytes": 19515936,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 4.633313,
+        "residentBytes": 120176640
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 73.32400854164734,
+        "footprintBytes": 19515936,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 4.66526,
+        "residentBytes": 120176640
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 73.82407991666696,
+        "footprintBytes": 19548704,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 4.693844,
+        "residentBytes": 120209408
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 74.32423595833825,
+        "footprintBytes": 19548704,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 4.723342,
+        "residentBytes": 120209408
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 74.840498833335,
+        "footprintBytes": 19515936,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 4.7538160000000005,
+        "residentBytes": 120176640
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 75.35686166665982,
+        "footprintBytes": 19548704,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 4.775443,
+        "residentBytes": 120209408
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 75.85788904165383,
+        "footprintBytes": 19515936,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 4.804964,
+        "residentBytes": 120193024
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 76.37373916665092,
+        "footprintBytes": 19515936,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 4.840537,
+        "residentBytes": 120193024
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 76.87385291667306,
+        "footprintBytes": 19515936,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 4.854904,
+        "residentBytes": 120193024
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 77.37450279167388,
+        "footprintBytes": 19515936,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 4.892519,
+        "residentBytes": 120193024
+      },
+      {
+        "deviceAllocatedBytes": 0,
+        "elapsedSeconds": 77.891208166664,
+        "footprintBytes": 19515936,
+        "machStatus": 0,
+        "mainThreadCPUSeconds": 4.928889,
+        "residentBytes": 120193024
+      }
+    ],
+    "missedDisplayLinkTicks": 0,
+    "pendingAtExport": 0,
+    "renderer": {
+      "cpuPreparationMS": 1606.2330421991646,
+      "gpuMS": 873.8429575460032,
+      "maskPreparationMS": 8.632290933746845,
+      "samples": 4500,
+      "skipped": 0,
+      "submitted": 4500
+    },
+    "scheduledCallbackDelayMS": {
+      "count": 4500,
+      "max": 3.508458350552246,
+      "mean": 0.7152928336096617,
+      "p95": 1.1968750040978193,
+      "p99": 1.3937083422206342
+    },
+    "timingBasis": "Simulator completion callback; not physical presentation"
+  }
+}
