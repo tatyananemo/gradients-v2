@@ -85,6 +85,37 @@ final class SDKStabilityTests:XCTestCase {
             XCTAssertNil(controller);XCTAssertNil(metal);XCTAssertNil(masks)
         }}
     }
+    @MainActor func testLayoutReusesIntermediateTexturesUntilPixelExtentChanges() throws {
+        for theme in GradientTheme.allCases {
+            let controller=try GradientViewController(theme:theme)
+            controller.loadViewIfNeeded()
+            let backing=try XCTUnwrap(controller.backing),distorted=try XCTUnwrap(controller.distorted)
+            let scale=UIScreen.main.scale
+            controller.view.setNeedsLayout();controller.view.layoutIfNeeded()
+            XCTAssertTrue(controller.backing === backing,"First matching layout replaced MAIN texture")
+            XCTAssertTrue(controller.distorted === distorted,"First matching layout replaced distortion texture")
+            // Point/layout changes need fresh UI layout, but not new textures
+            // when the rounded drawable extent remains exactly the same.
+            controller.view.bounds.size.width-=0.1/scale
+            controller.viewDidLayoutSubviews()
+            XCTAssertTrue(controller.backing === backing)
+            XCTAssertTrue(controller.distorted === distorted)
+            controller.viewDidLayoutSubviews()
+            XCTAssertTrue(controller.backing === backing)
+            controller.view.bounds.size.width+=1
+            controller.viewDidLayoutSubviews()
+            XCTAssertFalse(controller.backing === backing)
+            XCTAssertFalse(controller.distorted === distorted)
+            for texture in [controller.backing!,controller.distorted!] {
+                XCTAssertEqual(texture.width,Int(ceil(controller.view.bounds.width*scale)))
+                XCTAssertEqual(texture.height,Int(ceil(controller.view.bounds.height*scale)))
+                XCTAssertEqual(texture.pixelFormat,.rgba16Float)
+                XCTAssertEqual(texture.storageMode,.private)
+                XCTAssertEqual(texture.usage,[.shaderRead,.shaderWrite,.renderTarget])
+            }
+        }
+    }
+
     @MainActor func testResizeAndScaleKeepResourcesAndLayoutConsistent() async throws {
         let (window,_,controller)=try host(.yellowDark,0.8)
         defer {detach(controller);window.isHidden=true}

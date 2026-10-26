@@ -197,7 +197,11 @@ public final class GradientViewController:UIViewController,MTKViewDelegate {
             d.usage=[.shaderRead,.shaderWrite,.renderTarget];d.storageMode = .private
             return gpu.device.makeTexture(descriptor:d)!
         }
-        backing=texture();distorted=texture()
+        // Layout can change without changing the texture descriptor, including
+        // the first layout after viewDidLoad has already allocated this extent.
+        if backing.width != Int(pixelSize.width) || backing.height != Int(pixelSize.height) {
+            backing=texture();distorted=texture()
+        }
         captionLabel?.frame=CGRect(x:34,y:caption.minY,width:max(1,size.width-68),height:caption.height)
         counterLabel?.frame=counter;counterWrapper?.frame=view.bounds
         captionBox?.frame=CGRect(x:0,y:size.height*0.7,width:size.width,height:size.height*0.3)
