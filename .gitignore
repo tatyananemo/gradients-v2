@@ -62,3 +62,7 @@ xcuserdata/
 
 # Composed by Xcode in DERIVED_FILE_DIR; edit ShaderSources instead.
 /LiquidSpecBackground.metal
+
+# Python build/validation caches
+__pycache__/
+*.pyc

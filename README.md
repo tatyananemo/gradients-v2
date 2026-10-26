@@ -1,22 +1,29 @@
-# GradientsKit V4 — Yellow
+# GradientsKit V4 — development repository
 
-Standalone iOS 17+ UIKit + Metal component. Public themes are **Yellow Dark** and **Yellow Light**; the demo starts in Yellow Dark. Continuous swipes, progress, idle, release, reset, typography and approved visual effects are preserved.
+Один Git-проект, две части:
 
-## Build and run
+```text
+GradientsKit-V4/     самостоятельный SDK — передаётся целиком
+  Sources/GradientsKit/   Swift-компонент и Metal adapters
+  ShaderSources/         канонические Metal-модули и Shared/*.inc
+  Scripts/               composer и генератор Xcode-проекта
+  GradientsKit.xcodeproj/ framework, схема GradientsKit
+  README.md
+Development/        в поставку SDK не входит
+  UIKitDemo/        приложение, компонентные и UI-тесты
+  Validation/       неизменяемые эталоны и проверки
+  Scripts/          генератор Demo-проекта
+```
 
-Open `UIKitDemo/GradientsUIKitV4.xcodeproj` in Xcode:
+Инструкция подключения: [GradientsKit-V4/README.md](GradientsKit-V4/README.md).
 
-- **GradientsUIKitV4** builds/runs the demo (`com.local.gradients.v4.uikit`).
-- **GradientsKit** builds the reusable framework (`com.local.gradients.v4.kit`).
+Для разработки откройте `Development/UIKitDemo/GradientsUIKitV4.xcodeproj`, выберите **GradientsUIKitV4**. Demo и тесты связываются с внешним framework-target из `GradientsKit-V4/GradientsKit.xcodeproj`; собственных копий SDK у них нет. Product → Test запускает компонентные и UI-проверки.
 
-Xcode and Python 3 are required for a source build. The composer expands the canonical modules and literal `.inc` blocks into DerivedData. No generated Metal or build products belong in the source tree. Regenerate the project, if needed, with `python3 -I -B Scripts/create_uikit_project.py`.
+Восстановление проектов из корня репозитория:
 
-## Structure
+```sh
+python3 -I -B GradientsKit-V4/Scripts/create_sdk_project.py
+python3 -I -B Development/Scripts/create_demo_project.py
+```
 
-- `UIKitComponent/`: SDK only; no SwiftUI or demo dependency. See its README for host integration and limitations.
-- `ShaderSources/`: approved Yellow shaders plus required common geometry, physical fields and color/profile helpers. Blue-named common modules remain necessary for Yellow; obsolete Blue Light-only functions are removed.
-- `UIKitDemo/`: the demo and component/UI tests.
-- `Scripts/`: reproducible build tools.
-- `Validation/`: immutable oracles, source guards and numerical/behavior checks. See its README for commands and coverage.
-
-The SDK does not require V2, V3, original production or the Validation fixtures at build/runtime. Historical migration probes, capture/report tools and old measurements are no longer in the working tree; they remain recoverable from local Git history at `dc7b9da`. No remotes are configured.
+Исходники Swift, Metal, `.inc`, публичный API и поведение сохранены. Для численных проверок нужна локальная история Git; передаваемому SDK она не нужна. См. `Development/Validation/README.md`. Сгенерированный Metal и продукты сборки не хранятся в Git. Другие V2/V3/production не используются.

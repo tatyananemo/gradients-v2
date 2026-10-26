@@ -1,0 +1,360 @@
+// !$*UTF8*$!
+{
+	archiveVersion = "1";
+	classes = {
+	};
+	objectVersion = "60";
+	objects = {
+		96AC57CCE0D8E1CAF692A970 = {
+			isa = PBXFileReference;
+			path = "GradientsKit.framework";
+			lastKnownFileType = wrapper.framework;
+			sourceTree = "BUILT_PRODUCTS_DIR";
+		};
+		A5B8CFFC999A8601E3CABF2E = {
+			isa = PBXFileReference;
+			path = "Sources/GradientsKit/Core/GradientResetPresentation.swift";
+			lastKnownFileType = sourcecode.swift;
+			sourceTree = "<group>";
+		};
+		CD56021EB81B501A6CEB8337 = {
+			isa = PBXFileReference;
+			path = "Sources/GradientsKit/Core/GradientSession.swift";
+			lastKnownFileType = sourcecode.swift;
+			sourceTree = "<group>";
+		};
+		F0497F73B6AB2FCE65006F9A = {
+			isa = PBXFileReference;
+			path = "Sources/GradientsKit/GradientGPU.swift";
+			lastKnownFileType = sourcecode.swift;
+			sourceTree = "<group>";
+		};
+		A10AA1D6C2101F5A2793CE52 = {
+			isa = PBXFileReference;
+			path = "Sources/GradientsKit/GradientMaskRenderer.swift";
+			lastKnownFileType = sourcecode.swift;
+			sourceTree = "<group>";
+		};
+		BE6B3D5B4F357F6C25094873 = {
+			isa = PBXFileReference;
+			path = "Sources/GradientsKit/GradientPercentageLabel.swift";
+			lastKnownFileType = sourcecode.swift;
+			sourceTree = "<group>";
+		};
+		90E2D743C4D8BC2DCB5A7012 = {
+			isa = PBXFileReference;
+			path = "Sources/GradientsKit/GradientPerformanceMetrics.swift";
+			lastKnownFileType = sourcecode.swift;
+			sourceTree = "<group>";
+		};
+		1BFDFB36ADC0864AB6BD3C8F = {
+			isa = PBXFileReference;
+			path = "Sources/GradientsKit/GradientTheme.swift";
+			lastKnownFileType = sourcecode.swift;
+			sourceTree = "<group>";
+		};
+		DD0AE209124176B20252CEF7 = {
+			isa = PBXFileReference;
+			path = "Sources/GradientsKit/GradientViewController.swift";
+			lastKnownFileType = sourcecode.swift;
+			sourceTree = "<group>";
+		};
+		67B0F9C5FB6B600C5B3C9357 = {
+			isa = PBXFileReference;
+			path = "Sources/GradientsKit/SessionCaptionProbe.swift";
+			lastKnownFileType = sourcecode.swift;
+			sourceTree = "<group>";
+		};
+		7C289D983607252490579E13 = {
+			isa = PBXFileReference;
+			path = "GradientsUIKit.metal";
+			lastKnownFileType = sourcecode.metal;
+			sourceTree = "DERIVED_FILE_DIR";
+		};
+		55213C96F95B31A15C589043 = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = "2147483647";
+			files = (
+			);
+			inputPaths = (
+				"$(SRCROOT)/Scripts/compose_metal.py",
+				"$(SRCROOT)/Scripts/compose_uikit_metal.py",
+				"$(SRCROOT)/Sources/GradientsKit/Shaders/GradientAdapters.metal",
+				"$(SRCROOT)/ShaderSources/ApprovedBlue.metal.source",
+				"$(SRCROOT)/ShaderSources/ContactFields.metal.source",
+				"$(SRCROOT)/ShaderSources/Shared/BlueGeometryTail.inc",
+				"$(SRCROOT)/ShaderSources/Shared/InteractionHistory.inc",
+				"$(SRCROOT)/ShaderSources/Shared/PhysicalFields.inc",
+				"$(SRCROOT)/ShaderSources/V2EntryPoints.metal.source",
+				"$(SRCROOT)/ShaderSources/YellowDarkContact.metal.source",
+				"$(SRCROOT)/ShaderSources/YellowDarkMAIN.metal.source",
+				"$(SRCROOT)/ShaderSources/YellowLightContact.metal.source",
+				"$(SRCROOT)/ShaderSources/YellowLightMAIN.metal.source",
+				"$(SRCROOT)/ShaderSources/YellowShared.metal.source",
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/GradientsUIKit.metal",
+			);
+			name = "Compose approved Metal";
+			runOnlyForDeploymentPostprocessing = "0";
+			shellPath = "/bin/sh";
+			shellScript = "/usr/bin/python3 -I -B \"$SRCROOT/Scripts/compose_uikit_metal.py\" --output \"$SCRIPT_OUTPUT_FILE_0\"\n";
+		};
+		9925A0BE93F148CD70907995 = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				SDKROOT = "iphoneos";
+				IPHONEOS_DEPLOYMENT_TARGET = "17.0";
+				SWIFT_VERSION = "5.0";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				CLANG_ENABLE_MODULES = "YES";
+				CLANG_ENABLE_OBJC_ARC = "YES";
+				MTL_FAST_MATH = "YES";
+				GENERATE_INFOPLIST_FILE = "YES";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				CODE_SIGN_STYLE = "Automatic";
+				CURRENT_PROJECT_VERSION = "1";
+				MARKETING_VERSION = "4.0";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.local.gradients.v4.kit";
+				DEFINES_MODULE = "YES";
+				SKIP_INSTALL = "NO";
+				BUILD_LIBRARY_FOR_DISTRIBUTION = "YES";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				LD_DYLIB_INSTALL_NAME = "@rpath/$(EXECUTABLE_PATH)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				DEBUG_INFORMATION_FORMAT = "dwarf";
+				ENABLE_TESTABILITY = "YES";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG";
+			};
+			name = "Debug";
+		};
+		0AB9711700EFD8E3455538D4 = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				SDKROOT = "iphoneos";
+				IPHONEOS_DEPLOYMENT_TARGET = "17.0";
+				SWIFT_VERSION = "5.0";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				CLANG_ENABLE_MODULES = "YES";
+				CLANG_ENABLE_OBJC_ARC = "YES";
+				MTL_FAST_MATH = "YES";
+				GENERATE_INFOPLIST_FILE = "YES";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				CODE_SIGN_STYLE = "Automatic";
+				CURRENT_PROJECT_VERSION = "1";
+				MARKETING_VERSION = "4.0";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.local.gradients.v4.kit";
+				DEFINES_MODULE = "YES";
+				SKIP_INSTALL = "NO";
+				BUILD_LIBRARY_FOR_DISTRIBUTION = "YES";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				LD_DYLIB_INSTALL_NAME = "@rpath/$(EXECUTABLE_PATH)";
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_TESTABILITY = "NO";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "";
+			};
+			name = "Release";
+		};
+		0AC0AB9714AA8CB827043575 = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9925A0BE93F148CD70907995,
+				0AB9711700EFD8E3455538D4,
+			);
+			defaultConfigurationIsVisible = "0";
+			defaultConfigurationName = "Release";
+		};
+		F0AA68F809CBC67832470006 = {
+			isa = PBXBuildFile;
+			fileRef = A5B8CFFC999A8601E3CABF2E;
+		};
+		FBCAF746CE21F52B1A64B8FB = {
+			isa = PBXBuildFile;
+			fileRef = CD56021EB81B501A6CEB8337;
+		};
+		7F40E11B5F3707BA2A6C22E3 = {
+			isa = PBXBuildFile;
+			fileRef = F0497F73B6AB2FCE65006F9A;
+		};
+		DAD9AB35E7C48A71FF84C7D1 = {
+			isa = PBXBuildFile;
+			fileRef = A10AA1D6C2101F5A2793CE52;
+		};
+		7C819849F12A26973F483D59 = {
+			isa = PBXBuildFile;
+			fileRef = BE6B3D5B4F357F6C25094873;
+		};
+		7A7EDF9310917B63BFFE3A7C = {
+			isa = PBXBuildFile;
+			fileRef = 90E2D743C4D8BC2DCB5A7012;
+		};
+		B1A344BC4CC11283C79E6077 = {
+			isa = PBXBuildFile;
+			fileRef = 1BFDFB36ADC0864AB6BD3C8F;
+		};
+		2745DDA64832543C75688326 = {
+			isa = PBXBuildFile;
+			fileRef = DD0AE209124176B20252CEF7;
+		};
+		6AC56F2511148FED790FA49C = {
+			isa = PBXBuildFile;
+			fileRef = 67B0F9C5FB6B600C5B3C9357;
+		};
+		113246AB1D636C4B9D36DED1 = {
+			isa = PBXBuildFile;
+			fileRef = 7C289D983607252490579E13;
+		};
+		49A1BEAB1F1C299BFCFE8254 = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = "2147483647";
+			files = (
+				F0AA68F809CBC67832470006,
+				FBCAF746CE21F52B1A64B8FB,
+				7F40E11B5F3707BA2A6C22E3,
+				DAD9AB35E7C48A71FF84C7D1,
+				7C819849F12A26973F483D59,
+				7A7EDF9310917B63BFFE3A7C,
+				B1A344BC4CC11283C79E6077,
+				2745DDA64832543C75688326,
+				6AC56F2511148FED790FA49C,
+				113246AB1D636C4B9D36DED1,
+			);
+			runOnlyForDeploymentPostprocessing = "0";
+		};
+		97F26DF81492291F8905DAFC = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = "2147483647";
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = "0";
+		};
+		B30BDCC723D11C07B4697AD1 = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = "2147483647";
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = "0";
+		};
+		5A374DCD2E5EB762B527AF3A = {
+			isa = PBXNativeTarget;
+			name = "GradientsKit";
+			productName = "GradientsKit";
+			productReference = 96AC57CCE0D8E1CAF692A970;
+			productType = "com.apple.product-type.framework";
+			buildConfigurationList = 0AC0AB9714AA8CB827043575;
+			buildPhases = (
+				55213C96F95B31A15C589043,
+				49A1BEAB1F1C299BFCFE8254,
+				97F26DF81492291F8905DAFC,
+				B30BDCC723D11C07B4697AD1,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+		};
+		FBDC4F23F93125BBEEAE800C = {
+			isa = PBXGroup;
+			name = "Products";
+			children = (
+				96AC57CCE0D8E1CAF692A970,
+			);
+			sourceTree = "<group>";
+		};
+		DC76E9F0C0006E8F919E0C51 = {
+			isa = PBXGroup;
+			children = (
+				A5B8CFFC999A8601E3CABF2E,
+				CD56021EB81B501A6CEB8337,
+				F0497F73B6AB2FCE65006F9A,
+				A10AA1D6C2101F5A2793CE52,
+				BE6B3D5B4F357F6C25094873,
+				90E2D743C4D8BC2DCB5A7012,
+				1BFDFB36ADC0864AB6BD3C8F,
+				DD0AE209124176B20252CEF7,
+				67B0F9C5FB6B600C5B3C9357,
+				7C289D983607252490579E13,
+				FBDC4F23F93125BBEEAE800C,
+			);
+			sourceTree = "<group>";
+		};
+		89E1FD6268CC0F221A2BE178 = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				SDKROOT = "iphoneos";
+				IPHONEOS_DEPLOYMENT_TARGET = "17.0";
+				SWIFT_VERSION = "5.0";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				CLANG_ENABLE_MODULES = "YES";
+				CLANG_ENABLE_OBJC_ARC = "YES";
+				MTL_FAST_MATH = "YES";
+				GENERATE_INFOPLIST_FILE = "YES";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				CODE_SIGN_STYLE = "Automatic";
+				CURRENT_PROJECT_VERSION = "1";
+				MARKETING_VERSION = "4.0";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				DEBUG_INFORMATION_FORMAT = "dwarf";
+				ENABLE_TESTABILITY = "YES";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG";
+			};
+			name = "Debug";
+		};
+		E6DE6C99132752C914FEF632 = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				SDKROOT = "iphoneos";
+				IPHONEOS_DEPLOYMENT_TARGET = "17.0";
+				SWIFT_VERSION = "5.0";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				CLANG_ENABLE_MODULES = "YES";
+				CLANG_ENABLE_OBJC_ARC = "YES";
+				MTL_FAST_MATH = "YES";
+				GENERATE_INFOPLIST_FILE = "YES";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				CODE_SIGN_STYLE = "Automatic";
+				CURRENT_PROJECT_VERSION = "1";
+				MARKETING_VERSION = "4.0";
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_TESTABILITY = "NO";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "";
+			};
+			name = "Release";
+		};
+		F8C70E4123C9AE82C42562CC = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				89E1FD6268CC0F221A2BE178,
+				E6DE6C99132752C914FEF632,
+			);
+			defaultConfigurationIsVisible = "0";
+			defaultConfigurationName = "Release";
+		};
+		98F54143AB4E86B28C3AFEE0 = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = "1";
+				LastUpgradeCheck = "2630";
+			};
+			buildConfigurationList = F8C70E4123C9AE82C42562CC;
+			compatibilityVersion = "Xcode 15.0";
+			developmentRegion = "en";
+			knownRegions = (
+				"en",
+				"Base",
+			);
+			mainGroup = DC76E9F0C0006E8F919E0C51;
+			productRefGroup = FBDC4F23F93125BBEEAE800C;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				5A374DCD2E5EB762B527AF3A,
+			);
+		};
+	};
+	rootObject = 98F54143AB4E86B28C3AFEE0;
+}
