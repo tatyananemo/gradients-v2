@@ -1,5 +1,7 @@
-# Frozen V2 validation fixtures
+# Frozen SwiftUI V2 source oracle
 
-These SwiftUI files were relocated byte-for-byte from stable commit `5847060`. They are a source oracle for existing replay/GPU validation, not V4 application targets. The only supported V4 application is `UIKitDemo/GradientsUIKitV4.xcodeproj`.
+These seven Swift files are retained byte-for-byte, not built into V4. Validation reads their original input callbacks, fixed parameters, frame expressions, UI declarations and caption/mask definitions. `metal_dedup.py` verifies their accepted source identity.
 
-The source oracle intentionally retains all four historical V2 themes. Public V4 theme selection contains only Yellow Dark/Yellow Light. Do not modify these fixture bytes to make a test pass.
+The old app project and empty asset metadata were removed because no current build or numerical validator uses them. The runnable historical project remains available in Git at `dc7b9da`; do not modify these fixtures to make a candidate pass.
+
+`full-screen-baseline.json` is the immutable 88-screen baseline metadata moved from UIKitMigration/baseline.json without changing a byte. Preserve it for future visual investigations; the original capture workflow is in Git history.

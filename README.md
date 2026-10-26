@@ -1,27 +1,22 @@
 # GradientsKit V4 — Yellow
 
-Самостоятельная UIKit + Metal-версия из стабильного `5847060` (`stabilization/gradientskit-sdk`). Экспериментальные изменения не включены. В приложении и публичном API доступны только **Yellow Dark** и **Yellow Light**. При первом запуске — Yellow Dark.
+Standalone iOS 17+ UIKit + Metal component. Public themes are **Yellow Dark** and **Yellow Light**; the demo starts in Yellow Dark. Continuous swipes, progress, idle, release, reset, typography and approved visual effects are preserved.
 
-## Запуск
+## Build and run
 
-1. Откройте `UIKitDemo/GradientsUIKitV4.xcodeproj` в Xcode.
-2. Выберите scheme **GradientsUIKitV4**, конфигурацию Debug или Release и iPhone Simulator с iOS 17+.
-3. Запустите приложение **GradientsKit V4**. Для сборки только SDK выберите **GradientsKit**.
+Open `UIKitDemo/GradientsUIKitV4.xcodeproj` in Xcode:
 
-Demo bundle ID: `com.local.gradients.v4.uikit`; SDK: `com.local.gradients.v4.kit`. Они не совпадают с production, V2 или V3. Выбор Light/Dark сохраняется обычной настройкой Demo; выбора цвета нет. Управление — непрерывные свайпы, без механики тапов V3.
+- **GradientsUIKitV4** builds/runs the demo (`com.local.gradients.v4.uikit`).
+- **GradientsKit** builds the reusable framework (`com.local.gradients.v4.kit`).
 
-Формулы Metal, MAIN, CONTACT, SUBSTRATE FIX, маски, Gaussian blur, смешивание, разрешение, подпись и поведение перенесены без изменений. Общая Metal-библиотека сохранена целиком, включая вычисления в файлах `ApprovedBlue` и `ContactFields`: удаление по названию небезопасно и не относится к этой задаче. Синие темы не доступны через публичный API или Demo.
+Xcode and Python 3 are required for a source build. The composer expands the canonical modules and literal `.inc` blocks into DerivedData. No generated Metal or build products belong in the source tree. Regenerate the project, if needed, with `python3 -I -B Scripts/create_uikit_project.py`.
 
-`UIKitComponent` — SDK без SwiftUI. `Validation/ReferenceV2` — неизменённые исходники старого SwiftUI-эталона, только для регрессионных проверок; они не входят в V4 targets. Исторические материалы Validation сохранены как история, их capture/video/HTML-инструменты для V4 не запускались. Для текущей проверки используйте:
+## Structure
 
-```sh
-python3 -B Validation/validate.py --no-images --output /tmp/v4-gpu-check
-python3 -B Validation/UIKitMigration/validate_session.py
-python3 -B Validation/UIKitMigration/validate_presentation.py
-python3 -B Validation/UIKitMigration/validate_masks.py --accepted-uikit
-python3 -B Validation/Performance/validate_mask_reuse.py
-```
+- `UIKitComponent/`: SDK only; no SwiftUI or demo dependency. See its README for host integration and limitations.
+- `ShaderSources/`: approved Yellow shaders plus required common geometry, physical fields and color/profile helpers. Blue-named common modules remain necessary for Yellow; obsolete Blue Light-only functions are removed.
+- `UIKitDemo/`: the demo and component/UI tests.
+- `Scripts/`: reproducible build tools.
+- `Validation/`: immutable oracles, source guards and numerical/behavior checks. See its README for commands and coverage.
 
-Эталоны и допуски не перезаписываются. Полная каноническая библиотека проверяется всеми 216 прежними GPU-выходами, включая 108 выходов Yellow. Поведение публичного V4 API и оба режима проверяются unit/UI-тестами проекта. Удержание, release, idle, reset и скорость progress сохранены. Simulator не заменяет проверку производительности на физическом iPhone.
-
-Проект воспроизводимо генерируется `python3 -I -B Scripts/create_uikit_project.py`. Сборки и `default.metallib` создаются в DerivedData; внешние исходные папки V2/V3/refactor не требуются. Локальная Git-история включена независимо, remotes отсутствуют; ничего не опубликовано.
+The SDK does not require V2, V3, original production or the Validation fixtures at build/runtime. Historical migration probes, capture/report tools and old measurements are no longer in the working tree; they remain recoverable from local Git history at `dc7b9da`. No remotes are configured.

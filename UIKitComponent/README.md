@@ -1,6 +1,6 @@
 # GradientsKit V4 — UIKit + Metal
 
-Reusable iOS 17+ framework. Runtime dependencies: UIKit, Metal/MetalKit, CoreImage, CoreGraphics and Foundation. No SwiftUI or hosting controller. The separate demo application is in `UIKitDemo`; approved SwiftUI V2 remains in the original `Validation/ReferenceV2/GradientsV2.xcodeproj` (validation fixtures only).
+Reusable iOS 17+ framework. Runtime dependencies: UIKit, Metal/MetalKit, CoreImage, CoreGraphics and Foundation. No SwiftUI or hosting controller. The separate demo application is in `UIKitDemo`; frozen SwiftUI V2 source fixtures remain in `Validation/ReferenceV2` for numerical/behavior checks only. The old runnable project is available in Git history, not required by this framework.
 
 ## Build and integrate
 
@@ -36,7 +36,7 @@ For an externally owned behavioral session, use `init(session:dark:size:)`. Supp
 
 ## Presentation and rendering
 
-- Two exposed accepted Yellow theme paths; the unchanged common Metal library remains intact; CONTACT and SUBSTRATE FIX remain canonical.
+- Two exposed accepted Yellow theme paths; required common Metal geometry/fields remain intact. Blue Light-only functions are removed under deletion-only source guards; CONTACT and SUBSTRATE FIX remain canonical.
 - Ordinary progress writes remain unanimated as in the reference transaction. Changed digits roll during animated reset, using 0.35 s easeInOut. Presentation interpolation is separate from logical progress: resetting immediately clears progress/history and preserves release/idle behavior. This matches the reference use of [numericText](https://developer.apple.com/documentation/swiftui/contenttransition/numerictext(countsdown:)) inside an explicit animation transaction; no SwiftUI code is used at runtime.
 - Three shared input-buffer slots; a slot is reused only after its GPU command completes. No main-thread GPU wait.
 - Dark mask preparation uses bounded, pixel-aligned CG surfaces and three independent CI workers. The original full-domain Gaussian and normal/multiply/screen composition remain. CoreImage rounding differs by at most 0.000061 in the tested raw mask textures, well below an 8-bit screen color level.
@@ -51,6 +51,6 @@ The historical Blue-only adapter discrepancy is outside V4 theme selection; cano
 
 ## Stabilization status
 
-See `../Validation/Stabilization/README.md` for tested scenarios, numerical results and remaining limits. Device/library/pipeline startup failures propagate through the throwing initializer. Runtime allocation failures after initialization are not yet a complete recoverable public contract; `onError`/prepare-resize semantics require a separate integration decision. Fixed typography and the approved animations are not automatically replaced for Dynamic Type or Reduce Motion. The full TSan/Core Image/Simulator combination is intermittently unstable inside the sanitizer allocator; do not treat successful ordinary builds as proof of no races or leaks.
+See `../Validation/README.md` for current reproducible checks and their limits; historical stabilization reports remain in Git at `dc7b9da`. Device/library/pipeline startup failures propagate through the throwing initializer. Runtime allocation failures after initialization are not yet a complete recoverable public contract; `onError`/prepare-resize semantics require a separate integration decision. Fixed typography and the approved animations are not automatically replaced for Dynamic Type or Reduce Motion. The full TSan/Core Image/Simulator combination is intermittently unstable inside the sanitizer allocator; do not treat successful ordinary builds as proof of no races or leaks.
 
 V4 exposes `GradientTheme.yellowDark` and `.yellowLight` only. The default is `.yellowDark`. The public session frame builder accepts `dark` only and always supplies the approved Yellow palette. The renderer and frozen replay share the unchanged internal generic V2 builder; public V4 calls can select only Yellow. No shader, gesture, progression, release or idle optimization was applied.

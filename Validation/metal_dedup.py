@@ -89,6 +89,9 @@ def expected_sources(root=ROOT):
         expected[path] = text
         expected["ShaderSources/CompositionInputs.xcfilelist"] += "$(SRCROOT)/" + path + "\n"
     assert plan["blue_prefix"] is None, "Blue extraction requires a separately verified source mapping"
+    # V4 removes only the separately declared Blue Light-only ranges.
+    from approved_metal import remove_blue_light
+    expected[blue] = remove_blue_light(expected[blue], root)
     return expected
 
 
@@ -103,7 +106,7 @@ def verify(root=ROOT):
     # The old deletion proof remains valid on its recorded checkpoint; current Swift is still frozen.
     assert (root / "Validation/metal-deletions.json").read_bytes() == subprocess.check_output(
         ["git", "show", BASE + ":Validation/metal-deletions.json"], cwd=root)
-    return {"metal_exact_sharing_only": True, "swift_unchanged_since": "39b50ed"}
+    return {"metal_exact_sharing_and_declared_v4_deletions": True, "swift_unchanged_since": "39b50ed"}
 
 
 if __name__ == "__main__":

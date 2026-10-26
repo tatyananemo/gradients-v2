@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Compose the approved V2 library; do not rewrite shader formulas."""
+"""Compose canonical V4 Metal; do not rewrite shader formulas."""
 import argparse
 import re
 from pathlib import Path
@@ -28,8 +28,8 @@ def read_module(root, name):
     return expand_blocks(root, source)
 
 
-def compose(root=ROOT):
-    blue = read_module(root, "ApprovedBlue")
+def compose(root=ROOT, *, blue_source=None):
+    blue = read_module(root, "ApprovedBlue") if blue_source is None else expand_blocks(root, blue_source)
     entry = "[[ stitchable ]]\nhalf4 liquidSpecBackground("
     if blue.count(entry) != 1:
         raise ValueError("Expected one ApprovedBlue entry annotation")

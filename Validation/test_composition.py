@@ -7,6 +7,7 @@ import sys
 import tempfile
 import unittest
 from metal_dedup import verify as verify_metal_sharing
+from approved_metal import historical_composition, approved_blue, remove_blue_light
 
 ROOT = Path(__file__).resolve().parents[1]
 SPEC = importlib.util.spec_from_file_location("composer", ROOT / "Scripts/compose_metal.py")
@@ -28,8 +29,25 @@ class CompositionTests(unittest.TestCase):
                 (base / relative).write_bytes(subprocess.check_output(["git", "show", "39b50ed:" + relative], cwd=ROOT))
             self.assertEqual(scope["compose"](base), approved)
 
-    def test_candidate_has_only_exact_shared_implementations(self):
+    def test_candidate_has_only_approved_sharing_and_v4_deletions(self):
         verify_metal_sharing()
+
+    def test_shipping_blue_has_only_declared_deletions(self):
+        source = (ROOT / "ShaderSources/ApprovedBlue.metal.source").read_text()
+        self.assertEqual(source, remove_blue_light(approved_blue()))
+        self.assertNotIn("qaCurrentAcceptedDarkBlue", source)
+        self.assertNotIn("qaContactDarkReference", source)
+        self.assertIn("liquidSpecBackground", source)
+        self.assertNotEqual(COMPOSER.compose(), historical_composition())
+
+    def test_oracles_are_unchanged_from_v4_main(self):
+        for path in ["Validation/reference.json", "Validation/metal-dedup.json", "Validation/metal-deletions.json"]:
+            self.assertEqual((ROOT / path).read_bytes(), subprocess.check_output(
+                ["git", "show", "dc7b9da:" + path], cwd=ROOT))
+
+    def test_full_screen_baseline_metadata_is_preserved(self):
+        self.assertEqual((ROOT / "Validation/ReferenceV2/full-screen-baseline.json").read_bytes(),
+                         subprocess.check_output(["git", "show", "dc7b9da:Validation/UIKitMigration/baseline.json"], cwd=ROOT))
 
     def test_xcode_tracks_every_composition_input(self):
         declared = set((ROOT / "ShaderSources/CompositionInputs.xcfilelist").read_text().splitlines())
@@ -38,27 +56,27 @@ class CompositionTests(unittest.TestCase):
         expected.update("$(SRCROOT)/ShaderSources/" + name for name in COMPOSER.INCLUDE_BLOCKS)
         self.assertEqual(declared, expected)
 
-    def test_expanded_input_is_byte_identical_to_stable_75e1800(self):
+    def test_historical_control_is_byte_identical_to_stable_75e1800(self):
         source = subprocess.check_output(["git", "show", "75e1800:Scripts/compose_metal.py"], cwd=ROOT).decode()
         scope = {"__file__": str(ROOT / "Scripts/compose_metal.py")}
         exec(compile(source, "stable_composer", "exec"), scope)
         scope["read_module"] = lambda root, name: subprocess.check_output(
             ["git", "show", "75e1800:ShaderSources/" + name + ".metal.source"], cwd=ROOT).decode()
-        self.assertEqual(COMPOSER.compose(), scope["compose"]())
+        self.assertEqual(historical_composition(), scope["compose"]())
 
-    def test_shared_block_changes_reach_all_three_call_sites(self):
+    def test_shared_block_changes_reach_the_remaining_sdk_call_site(self):
         with tempfile.TemporaryDirectory() as folder:
             base = Path(folder)
             shutil.copytree(ROOT / "ShaderSources", base / "ShaderSources")
             include = base / "ShaderSources" / COMPOSER.INCLUDE_BLOCKS[0]
             include.write_text(include.read_text() + "// include dependency marker\n")
-            self.assertEqual(COMPOSER.compose(base).count(b"// include dependency marker"), 3)
+            self.assertEqual(COMPOSER.compose(base).count(b"// include dependency marker"), 1)
         project = (ROOT / "UIKitDemo/GradientsUIKitV4.xcodeproj/project.pbxproj").read_text()
         for name in COMPOSER.INCLUDE_BLOCKS:
             self.assertIn("$(SRCROOT)/../ShaderSources/" + name, project)
 
     def test_shared_fields_and_blue_tail_reach_only_their_original_sites(self):
-        for name, count in [("PhysicalFields.inc", 4), ("BlueGeometryTail.inc", 3)]:
+        for name, count in [("PhysicalFields.inc", 2), ("BlueGeometryTail.inc", 1)]:
             with self.subTest(name=name), tempfile.TemporaryDirectory() as folder:
                 base = Path(folder)
                 shutil.copytree(ROOT / "ShaderSources", base / "ShaderSources")

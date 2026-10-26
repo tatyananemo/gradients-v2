@@ -35,8 +35,7 @@ def main():
     state_path = data / 'Documents/renderer-state.json'
     try:
         for progress in [0.3, 0.6, 0.8]:
-            for theme, color in [('dark', 'blue'), ('dark', 'yellow'),
-                                 ('light', 'blue'), ('light', 'yellow')]:
+            for theme, color in [('dark', 'yellow'), ('light', 'yellow')]:
                 sim('terminate', UID, BUNDLE, check=False)
                 state_path.unlink(missing_ok=True)
                 env = {k: v for k, v in os.environ.items()

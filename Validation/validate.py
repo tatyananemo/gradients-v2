@@ -2,13 +2,13 @@
 """Offline baseline/replay checks. Does not install or launch an iOS app."""
 import argparse
 import hashlib
-import html
 import json
 from pathlib import Path
 import re
 import subprocess
 import sys
 from metal_dedup import verify as verify_metal_sharing
+from approved_metal import historical_composition
 
 ROOT = Path(__file__).resolve().parents[1]
 BASE = "542b89b54b9299b48d4121de7f6ee182f3e3f340"
@@ -159,89 +159,68 @@ def render_cases(parameters):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", type=Path, required=True)
-    parser.add_argument("--metal", type=Path, help="actual Xcode-generated Metal file; otherwise compose locally")
-    parser.add_argument("--record", action="store_true", help="record the approved base, never a changed candidate")
-    parser.add_argument("--no-images", action="store_true", help="numeric checks only; do not write PNG or HTML")
+    parser.add_argument("--metal", type=Path, help="composed canonical V4 Metal input")
+    parser.add_argument("--no-images", action="store_true", help="compatibility flag; checks are always numeric")
     args = parser.parse_args()
     out = args.output.resolve()
     out.mkdir(parents=True, exist_ok=False)
-    metal = args.metal or ROOT / "LiquidSpecBackground.metal"
-    if args.metal is None and not metal.exists():
-        metal = out / "LiquidSpecBackground.metal"
-        subprocess.run([sys.executable, "-I", "-B", str(ROOT / "Scripts/compose_metal.py"),
-                        "--output", str(metal)], check=True)
-    reference_path = ROOT / "Validation/reference.json"
-    tracked = subprocess.check_output(["git", "ls-tree", "-r", "--name-only", BASE], cwd=ROOT, text=True).splitlines()
-    original_files = {name: subprocess.check_output(["git", "show", f"{BASE}:{name}"], cwd=ROOT) for name in tracked}
-    source = app_source()
-    approved = original_files["GradientInstallView.swift"].decode()
-    parameters = fixed_parameters(source, approved)
-    check_render_arguments(source, approved)
-    check_preserved_ui(source, approved)
-    # The user-authorized stage permits only exact sharing from the accepted dead-code checkpoint.
-    # Keep Swift frozen at the accepted refactor checkpoint and all output hashes original.
-    verify_metal_sharing()
     import importlib.util
     spec = importlib.util.spec_from_file_location("composer", ROOT / "Scripts/compose_metal.py")
     composer = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(composer)
+    metal = args.metal or out / "V4.metal"
+    if args.metal is None:
+        metal.write_bytes(composer.compose())
     assert metal.read_bytes() == composer.compose(), "Metal does not match current canonical modules"
-    if args.record:
-        assert not reference_path.exists(), "Refusing to replace an existing baseline"
-    else:
-        reference = json.loads(reference_path.read_text())
-
+    verify_metal_sharing()
+    source = app_source()
+    approved = subprocess.check_output(["git", "show", BASE + ":GradientInstallView.swift"], cwd=ROOT).decode()
+    parameters = fixed_parameters(source, approved)
+    check_render_arguments(source, approved)
+    check_preserved_ui(source, approved)
+    reference = json.loads((ROOT / "Validation/reference.json").read_text())
     behavior = out / "behavior.swift"
     behavior.write_text(behavior_source(source))
     subprocess.run(["xcrun", "swiftc", "-O", str(behavior), "-o", str(out / "behavior")], check=True)
     subprocess.run([str(out / "behavior"), str(out / "behavior.json")], check=True)
+    assert sha((out / "behavior.json").read_bytes()) == reference["behavior_sha256"], "Behavior replay differs"
     cases = render_cases(parameters)
     (out / "cases.json").write_text(json.dumps(cases, indent=2) + "\n")
-    render_source = ROOT / "Validation/render_reference.swift"
-    if args.no_images:
-        # Keep the frozen GPU oracle untouched. Only remove PNG encoding in a
-        # temporary build copy; all rendering, raw bytes and finite checks stay.
-        text = render_source.read_text()
-        start = text.index("    let provider = CGDataProvider")
-        end = text.index("    precondition(CGImageDestinationFinalize(destination))", start)
-        end += len("    precondition(CGImageDestinationFinalize(destination))")
-        render_source = out / "render-numeric.swift"
-        render_source.write_text(text[:start] + text[end:])
-    subprocess.run(["xcrun", "swiftc", "-O", str(render_source),
-                    "-o", str(out / "render")], check=True)
-    subprocess.run([str(out / "render"), str(metal.resolve()), str(out / "cases.json"),
-                    str(out / "frames")] + (["--no-images"] if args.no_images else []), check=True)
-    data_files = sorted((out / "frames").glob("*"))
-    hashes = {p.name: sha(p.read_bytes()) for p in data_files if p.suffix in {".rgba16f", ".probe", ".distortion"}}
-    snapshot = {"base_commit": BASE, "tracked_physical_lines": {
-        "swift": sum(len(v.splitlines()) for k, v in original_files.items() if k.endswith(".swift")),
-        "metal_modules": sum(len(v.splitlines()) for k, v in original_files.items() if k.endswith(".source")),
-        "duplicated_composition": len(original_files["LiquidSpecBackground.metal"].splitlines())},
-        "source_sha256": {k: sha(v) for k, v in original_files.items()},
-        "behavior_sha256": sha((out / "behavior.json").read_bytes()),
-        "render_sha256": hashes, "case_count": len(cases),
-        "cases_sha256": sha((out / "cases.json").read_bytes()),
-        "gpu": json.loads((out / "frames/gpu.json").read_text())}
-    if args.record:
-        reference_path.write_text(json.dumps(snapshot, indent=2, sort_keys=True) + "\n")
-    else:
-        assert snapshot["behavior_sha256"] == reference["behavior_sha256"], "Behavior replay differs"
-        assert snapshot["cases_sha256"] == reference["cases_sha256"], "Validation inputs differ"
-        assert hashes == reference["render_sha256"], "GPU pixels, probe results or distortion differ"
+    assert sha((out / "cases.json").read_bytes()) == reference["cases_sha256"], "Validation inputs differ"
+    yellow_cases = [c for c in cases if c["name"].startswith("yellow-")]
+    (out / "yellow-cases.json").write_text(json.dumps(yellow_cases, indent=2) + "\n")
+    # Frozen rendering oracle is untouched. Disable only its PNG encoder in a
+    # temporary harness; all GPU calculations and raw output writes stay exact.
+    text = (ROOT / "Validation/render_reference.swift").read_text()
+    start = text.index("    let provider = CGDataProvider")
+    end = text.index("    precondition(CGImageDestinationFinalize(destination))", start)
+    end += len("    precondition(CGImageDestinationFinalize(destination))")
+    renderer = out / "render-numeric.swift"
+    renderer.write_text(text[:start] + text[end:])
+    subprocess.run(["xcrun", "swiftc", "-O", str(renderer), "-o", str(out / "render")], check=True)
+    def render(shader, inputs, folder):
+        subprocess.run([str(out / "render"), str(shader), str(inputs), str(folder), "--no-images"], check=True)
+        return {p.name: sha(p.read_bytes()) for p in folder.iterdir()
+                if p.suffix in {".rgba16f", ".probe", ".distortion"}}
+    current = render(metal, out / "yellow-cases.json", out / "frames")
+    expected = {k: v for k, v in reference["render_sha256"].items() if k.startswith("yellow-")}
+    assert current == expected, "Current V4 Yellow pixels, probe or distortion differ"
+    # Blue-only code is read from approved local Git history for the historical
+    # control, never restored to SDK or copied into maintained source files.
+    control = out / "historical-control.metal"
+    control.write_bytes(historical_composition())
+    historical = render(control, out / "cases.json", out / "historical-frames")
+    assert historical == reference["render_sha256"], "Historical 216-output control differs"
     result = {"passed": True, "base_commit": BASE, "frames": len(cases),
-              "raw_gpu_outputs_compared": len(hashes), "behavior_checkpoints": len(json.loads((out / "behavior.json").read_text())),
-              "metal_exact_sharing_only": True, "swift_unchanged_since": "39b50ed",
-              "shader_parameters_and_arguments_identical": True,
-              "gpu_byte_identical": True, "recorded_reference": args.record,
-              "scope": "Offscreen GPU + original input handlers. Not a Simulator UI screenshot/replay test."}
+              "raw_gpu_outputs_compared": len(historical),
+              "current_v4_yellow_frames": len(yellow_cases),
+              "current_v4_yellow_outputs_compared": len(current),
+              "behavior_checkpoints": len(json.loads((out / "behavior.json").read_text())),
+              "metal_exact_sharing_and_declared_v4_deletions": True,
+              "shader_parameters_and_arguments_identical": True, "gpu_byte_identical": True,
+              "recorded_reference": False,
+              "scope": "Current V4 Yellow 108 outputs plus historical 216-output control. No UI screenshots."}
     (out / "result.json").write_text(json.dumps(result, indent=2) + "\n")
-    if not args.no_images:
-        cards = "\n".join(f'<figure><img src="frames/{html.escape(c["name"])}.png"><figcaption>{html.escape(c["name"])}</figcaption></figure>' for c in cases)
-        (out / "index.html").write_text('<!doctype html><meta charset="utf-8"><title>V2 Metal baseline</title>'
-            '<style>body{background:#202020;color:white;font:14px system-ui}main{display:grid;grid-template-columns:repeat(6,1fr);gap:12px}'
-            'figure{margin:0}img{width:100%;display:block}figcaption{overflow-wrap:anywhere}</style>'
-            '<h1>Gradients V2 — actual offscreen Metal frames</h1><p>390 × 844; fixed inputs; no UI compositing. '
-            'GPU outputs, shader parameters and interaction replay match 542b89b; Swift is frozen at 39b50ed.</p><main>' + cards + '</main>')
     print(json.dumps(result, indent=2))
 
 
