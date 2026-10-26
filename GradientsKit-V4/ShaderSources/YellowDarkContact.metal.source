@@ -4,20 +4,7 @@
 // Exact accepted pose/clock/profiles. Only the restored outer term respects
 // its EXISTING completion mask, as it already does in the Light readout.
 // The immutable Blue implementation and physical CONTACT fields stay intact.
-float yellowReviewDarkMainAtPose(float2 uv,float progress,float time) {
-    if(progress<=0.76) return qaMainAtPose(uv,progress,time,true);
-    uv.y+=(102.0/844.0)*segmentEase(progress,0.85,1.0);
-    float p=qaMainPoseProgress(progress),t=qaMainPoseTime(progress,time);
-    float center,width;qaMainPoseBand(p,center,width);
-    float L=qaAcceptedLightShapeDensityImpl(uv,p,t,center,width,true,true,progress);
-    float D=qaAcceptedDarkShapeDensity(uv,p,t,center,width);
-    float transfer=segmentEase(p,.70,.76)*(1.0-segmentEase(p,.94,1.0));
-    float x=uv.x,mx=1.0-x;
-    float w=sin(x*5.7+t*.11)*.018+sin(x*10.4-t*.08+1.2)*.008;
-    float mw=sin(mx*5.7+t*.11)*.018+sin(mx*10.4-t*.08+1.2)*.008;
-    w=mix(w,(w+mw)*.5,segmentEase(p,.50,.76));
-    return qaDarkLateFade(mix(D,L,transfer),(uv.y+w-center)/width,progress);
-}
+#include "Shared/YellowDarkPose.inc"
 // Both Dark alternatives use ONE scalar exposure. Only chroma stops differ.
 // No per-channel clipping, progress-dependent toe boost or alternate density curve.
 using YellowShared::yellowReviewDarkPalette;
@@ -25,7 +12,6 @@ using YellowShared::yellowReviewTransmission;
 // Colour partition of the EXISTING idleWaveDensity profiles. Geometry is
 // copied verbatim only to recover primary / (primary+secondary+halo); W and I
 // still come from the immutable physical field, including its exact clamps.
-using YellowShared::yellowReviewPrimaryShare;
 // Light-only colour metadata from the exact existing primary/secondary/halo.
 // Keep the scalar function and all Dark calls unchanged for pixel identity.
 using YellowShared::yellowReviewWaveShares;
@@ -99,7 +85,6 @@ half4 liquidYellowReviewBackground(
     float physicalMain=physical.x;
     float W=float(half(physical.y));
     IdleContact contact=sharedIdleContact(physicalMain,W);
-    float primaryShare=yellowReviewPrimaryShare(position,size,idleTime);
     float3 transmission=yellowReviewTransmission();
     bool dark=themeStrength>0.5;
     // Query, do not rewrite, the exact accepted Blue MAIN display fields.
@@ -110,78 +95,7 @@ half4 liquidYellowReviewBackground(
     // field and 0.32 weight. Keep the production percentage/UI untouched.
     if(!dark) mainBase=mix(mainBase,float3(1.0),clamp(physical.z,0.0,1.0)*0.32);
     float3 result=mainBase;
-    float counterProtection=physical.z;
-    float darkTheme=step(0.5,themeStrength);
-    float isYellowPreset=1.0;
-    float3 white=float3(1.0),targetBlue=float3(0.10,0.55,1.0);
-    float3 referenceCyan = float3(0.380, 0.910, 1.000);
-    float3 yellowLightOrange=mix(yellowMidColor.rgb,yellowHotColor.rgb,0.25);
-    float3 blueDarkReference=clamp(float3(.10,.55,1.0)*physicalMain,0.0,1.0);
-    if (interactionFloatCount > 0) {
-        float trail = interactionLightField(uv, safeSize.x / safeSize.y, interactionSegments, interactionFloatCount);
-        float readability = 1.0 - 0.88 * counterProtection;
-        // Exposure depends on local interaction accumulation, so a first pass
-        // cannot start white merely because it crosses a bright progress band.
-        float heat = trail;
-        float brighter = 1.0 - exp(-max(heat - 0.35, 0.0) * 0.95);
-        float excessHeat = max(heat - 1.45, 0.0);
-        float exposure = 1.0 - exp(-excessHeat * excessHeat / 3.0);
-        float3 trailColor;
-        if (isYellowPreset > 0.5) {
-            // Channel-wise exponential exposure used to push R and G towards
-            // equality, leaving olive on black. Keep warm hue while light grows.
-            float3 warm = darkTheme > 0.5
-                ? mix(yellowDeepColor.rgb, min(yellowHotColor.rgb * 1.18, 1.0), brighter)
-                : mix(yellowHotColor.rgb, yellowLightAccent, 0.48 + brighter * 0.52);
-            float cream = smoothstep(0.70, 3.0, heat) * 0.75;
-            if (darkTheme < 0.5) {
-                // A broad orange interval separates yellow pigment from light,
-                // making the trail readable even over a saturated yellow base.
-                float orange = exp(-pow((heat - 0.85) / 0.90, 2.0)) *
-                    (1.0 - exp(-heat * 2.0)) * 0.75;
-                warm = mix(yellowLightAccent, yellowLightOrange, orange);
-                cream = smoothstep(1.55, 3.50, heat) * 0.75;
-                float accumulatedHeat = max(heat - 2.0, 0.0);
-                exposure = 1.0 - exp(-accumulatedHeat * accumulatedHeat / 2.8);
-            }
-            warm = mix(warm, mix(yellowHotColor.rgb, white, 0.82), cream);
-            trailColor = mix(warm, mix(yellowHotColor.rgb, white, 0.94), exposure);
-        } else {
-            // Reuse the cyan produced by the existing additive idle overlap.
-            float3 overlapCyan = clamp(targetBlue + float3(0.14, 0.48, 1.0), 0.0, 1.0);
-            float3 lightBlue = mix(targetBlue, mix(referenceCyan, overlapCyan, darkTheme), brighter);
-            trailColor = mix(lightBlue, float3(0.91, 0.98, 1.0), exposure);
-        }
-        // Protect text through coverage, not heat: the mask must not turn a
-        // hot white/cyan/cream trail into a different, muddy color at its edge.
-        float opacity = (0.78 + 0.22 * exposure) * (1.0 - exp(-trail * 0.95)) * readability;
-        if (darkTheme > 0.5) {
-            float3 backdrop = result;
-            result = 1.0 - (1.0 - result) * (1.0 - trailColor * opacity);
-            if (isYellowPreset > 0.5) {
-                // Same trail field, alpha and screen blending as Blue Dark;
-                // only reduce color energy if the warm overlap is brighter.
-                float3 blueTrail = mix(mix(float3(0.10, 0.55, 1.0),
-                    float3(0.24, 1.0, 1.0), brighter), float3(0.91, 0.98, 1.0), exposure);
-                float3 blueOverlap = 1.0 - (1.0 - blueDarkReference) * (1.0 - blueTrail * opacity);
-                // Balance only added trail light: a history buffer must never
-                // darken the untouched backdrop, even when its samples faded.
-                result = backdrop + balanceYellowDarkLight(max(result - backdrop, 0.0),
-                    max(blueOverlap - blueDarkReference, 0.0));
-            }
-        } else {
-            // Keep the old Blue Light screen-pass character, driven by local
-            // overlap rather than separate offset strokes. First passes stay colored.
-            float pigmentOpacity = opacity * (0.76 + 0.24 * exposure);
-            result = mix(result, trailColor, pigmentOpacity);
-            float3 screenLight = isYellowPreset > 0.5
-                ? mix(yellowLightAccent, white, 0.80)
-                : float3(0.80, 0.9059, 1.0); // Original Blue Light screen color.
-            result = 1.0 - (1.0 - result) * (1.0 - screenLight * exposure * opacity * 0.42);
-        }
-    }
-
-    float3 trailDelta=result-mainBase;
+#include "Shared/YellowInteraction.inc"
     if(dark) {
         if(W<=0.0)return half4(half3(result),1.0);
         // Local CONTACT colour only. Frozen MAIN and additive/gamut algebra
@@ -217,37 +131,5 @@ half4 liquidYellowReviewBackground(
         composite*=newValue/max(oldValue,.000001);
         return half4(half3(clamp(composite+trailDelta,0.0,1.0)),1.0);
     }
-    // Blue SUBSTRATE FIX algebra, colour-adapted using production Yellow only.
-    float3 LightBase=correctedLightPigment(physicalMain,3.0,transmission);
-    float3 shares=yellowReviewWaveShares(position,size,idleTime);
-    float3 waveSource=yellowReviewLightSource(shares,W);
-    // Same W/I/a response. Primary stays bright Yellow, existing secondary
-    // and halo retain their warm colour progression instead of merging.
-    float3 lightContactColor=yellowReviewLightPeak(shares);
-    float3 appearance=LightBase*(1.0-contact.idle)
-        +waveSource*(contact.idle-contact.intersection)
-        +lightContactColor*contact.intersection;
-    float a=1.0-exp(-4.0*contact.intersection);
-    appearance=mix(clamp(appearance,0.0,1.0),lightContactColor,a);
-    if(contact.intersection>0.0) {
-        // Keep the accepted Light substrate colour reference; Dark late-MAIN
-        // feathering must not propagate into this protected contact term.
-        // Exact Blue substrate channel response in Yellow channel order.
-        // Keep the SUBSTRATE FIX composition and its fields untouched.
-        float3 DarkBase=float3(LightBase.r,blueDarkReference.g,blueDarkReference.r);
-        float3 source=yellowReviewLightSource(shares,W);
-        float3 DarkContact=clamp(DarkBase+lightContactColor*contact.frontReaction+
-            idleContactLight(source,lightContactColor,contact),0.0,1.0);
-        float3 beforeDark=appearance;
-        float3 pigment=correctedLightPigment(1.0,3.0,transmission);
-        float peripheral=(1.0-contact.coverage)*(1.0-contact.coverage);
-        float3 substrateDelta=a*peripheral*max(min(beforeDark,pigment)-DarkBase,0.0);
-        appearance=mix(appearance,DarkContact,a);
-        appearance+=substrateDelta;
-    }
-    appearance+=(mainBase-LightBase)*(1.0-contact.idle)*(1.0-a);
-    if(contact.intersection>0.0)appearance=mix(appearance,yellowReviewGoldenHue(clamp(appearance,0.0,1.0),0.0),a);
-    appearance+=trailDelta;
-
-    return half4(half3(clamp(appearance,0.0,1.0)),1.0);
+#include "Shared/YellowLightSubstrate.inc"
 }

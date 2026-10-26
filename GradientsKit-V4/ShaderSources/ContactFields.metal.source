@@ -30,83 +30,6 @@ float4 yellowReferenceContactFields(
     int interactionFloatCount
 ) {
 #include "Shared/PhysicalFields.inc"
-    float3 darkSourceLightResult = lightResult;
-
-    float motionColorRestore = clamp(
-        tapTrail * 2.10 +
-        screenTrail * 2.40 +
-        secondaryTrail * 2.00 +
-        diagonalTrail * 1.85 +
-        screenRipple * 1.65 +
-        compositeWake * 1.45 +
-        frontBand * 1.55 +
-        swipeSmear * 1.95 +
-        swipeAura * 1.35 +
-        swipeGlassEdge * 1.70 +
-        abs(rippleShade) * 1.40,
-        0.0,
-        1.0
-    );
-    motionColorRestore = smootherLiquid(motionColorRestore);
-
-    float yellowColoredPresence =
-        smoothstep(0.018, 0.27, distance(lightResult, white)) *
-        (1.0 - motionColorRestore * 0.98);
-    float yellowProgressPresence = smoothstep(0.025, 0.16, progress);
-    float yellowWarmDepth = smoothstep(0.46, 1.0, uv.y);
-    float yellowTopGlow = 1.0 - smoothstep(0.16, 0.58, uv.y);
-    float yellowBottomGlow = smoothstep(0.55, 1.0, uv.y);
-
-    float3 yellowLemon = float3(1.0, 0.975, 0.035);
-    float3 yellowSoft = float3(1.0, 0.955, 0.24);
-    float3 yellowAmber = float3(1.0, 0.635, 0.060);
-    float3 yellowTarget = mix(yellowLemon, yellowAmber, smootherLiquid(yellowWarmDepth));
-    yellowTarget = mix(yellowTarget, yellowSoft, yellowTopGlow * 0.24);
-    yellowTarget = mix(yellowTarget, yellowAmber, yellowBottomGlow * 0.20);
-
-    float yellowWhiteCenterY =
-        0.515 +
-        0.020 * sin(time * 0.18 + progress * 4.2);
-
-    float yellowWhiteCenterD =
-        pow((uv.x - 0.50) / 0.73, 2.0) +
-        pow((uv.y - yellowWhiteCenterY) / 0.205, 2.0);
-
-    float yellowWhiteCenter =
-        (1.0 - smoothstep(0.58, 1.34, yellowWhiteCenterD)) *
-        yellowProgressPresence *
-        (1.0 - segmentEase(progress, 0.94, 1.0) * 0.16);
-
-    float yellowTopWash =
-        exp(-pow((uv.y - 0.145) / 0.34, 2.0)) *
-        yellowColoredPresence *
-        0.18;
-
-    float yellowBottomWash =
-        exp(-pow((uv.y - 0.955) / 0.30, 2.0)) *
-        yellowColoredPresence *
-        0.26;
-
-    lightResult = mix(
-        lightResult,
-        yellowTarget,
-        isYellowPreset * clamp(yellowColoredPresence * 0.92, 0.0, 0.92)
-    );
-
-    lightResult = mix(
-        lightResult,
-        white,
-        isYellowPreset * clamp(yellowWhiteCenter * 0.84, 0.0, 0.86)
-    );
-
-    lightResult += isYellowPreset * yellowTopWash * float3(1.0, 0.96, 0.08);
-    lightResult += isYellowPreset * yellowBottomWash * float3(1.0, 0.53, 0.03);
-    lightResult = clamp(lightResult, 0.0, 1.0);
-    lightResult = mix(
-        lightResult,
-        preThemeMotionResult,
-        isYellowPreset * motionColorRestore
-    );
 
     // Shared travelling-band timing; each light preset applies its own palette below.
     float referenceBandCenter;
@@ -143,87 +66,9 @@ float4 yellowReferenceContactFields(
     referenceBody *= referenceEntry;
     referenceCore *= referenceEntry;
 
-    float3 referenceCyan = float3(0.380, 0.910, 1.000);
-    float3 referenceBlue = float3(0.259, 0.545, 0.976); // #428BF9
-    float3 referenceBlueAccent = float3(0.000, 0.424, 1.000); // #006CFF
     // One broad pigment profile avoids the narrow accent stripe produced by
     // compositing several differently sized blue cores over one another.
     float blueLightDensity = exp(-pow(referenceDistance / (referenceBandWidth * 0.82), 2.0)) * referenceEntry;
-    float3 blueLightPigment = mix(referenceCyan, mix(referenceBlue, referenceBlueAccent, 0.36),
-        blueLightDensity * blueLightDensity * 0.85);
-    float3 referenceBlueResult = mix(white, blueLightPigment,
-        referenceOuter * (0.82 + 0.16 * blueLightDensity));
-
-    // Match Blue Light's monotonic depth profile: orange in the dense body,
-    // #FFDD2D in the shoulder, then yellow coverage dissolving into white.
-    float yellowOrangeWeight = pow(blueLightDensity, 4.0) * 0.60;
-    float3 yellowLightOrange = mix(yellowMidColor.rgb, yellowHotColor.rgb, 0.25);
-    float3 yellowLightPigment = mix(yellowLightAccent, yellowLightOrange, yellowOrangeWeight);
-    float3 referenceYellowResult = mix(white, yellowLightPigment,
-        referenceOuter * (0.82 + 0.16 * blueLightDensity));
-
-    lightResult = mix(lightResult, referenceBlueResult, isBluePreset);
-    lightResult = mix(lightResult, referenceYellowResult, isYellowPreset);
-
-    float liquidPresence = clamp(distance(darkSourceLightResult, white) * 1.38, 0.0, 1.0);
-    float glowPresence = clamp(
-        liquidPresence +
-        rimAlpha * 0.32 +
-        revealEdgeGlow * 0.50 +
-        surfaceGlow * 0.22,
-        0.0,
-        1.0
-    );
-    float finishLift = segmentEase(progress, 0.76, 1.00);
-    float bottomWeightDark = smoothstep(0.32, 1.0, uv.y);
-    float topWeightDark = 1.0 - smoothstep(0.10, 0.46, uv.y);
-    float finishTopPush =
-        finishLift *
-        (1.0 - smoothstep(0.11, 0.48, uv.y)) *
-        (0.78 + 0.22 * exp(-pow((uv.y - 0.08) / 0.17, 2.0)));
-    float sideGlowDark =
-        exp(-pow(uv.x / 0.13, 2.0)) +
-        exp(-pow((1.0 - uv.x) / 0.13, 2.0));
-
-    float darkLowerField = clamp(
-        glowPresence * (0.56 + bottomWeightDark * 0.42) +
-        keyedLowerCore * 0.92 +
-        keyedCyanBand * 0.44 +
-        liquidAlpha * bottomWeightDark * 0.54 +
-        surfaceGlow * 0.22,
-        0.0,
-        1.0
-    );
-    darkLowerField *= mix(1.0, 0.015, finishLift);
-
-    float darkTopField = clamp(
-        topPhase * (topCap * 0.80 + topCore * 0.34 + topMistBand * 0.72) +
-        topReservoir * 0.72 +
-        topReservoirCore * 0.54 +
-        topReservoirGlow * 0.80 +
-        completionMist * 0.82 +
-        trailingGlow * 0.70 +
-        completionTopGlow * 0.80 +
-        finishLift * topWeightDark * 1.04 +
-        finishTopPush * 0.42,
-        0.0,
-        1.0
-    );
-
-    // The dark palette always starts on a true black canvas. The selected color is
-    // revealed only by the progressing field, never inherited from the light result.
-    float darkColorReveal = smoothstep(0.015, 0.24, progress);
-    darkLowerField *= darkColorReveal;
-    darkTopField *= darkColorReveal;
-
-    float cyanWashDark = clamp(
-        keyedCyanBand * 0.70 +
-        keyedLensHalo * 0.30 +
-        revealEdgeGlow * 0.72 +
-        rimAlpha * 0.24,
-        0.0,
-        1.0
-    ) * darkColorReveal;
 
     // One soft, asymmetric reduction of light behind the digits; no ring or
     // constant-radius plateau. Coordinates match the existing counter region.
@@ -235,9 +80,6 @@ float4 yellowReferenceContactFields(
     float2 counterLobe = float2((uv.x - 0.57) / 0.23, (uv.y - 0.45 + counterDrift) / 0.105);
     float counterProtection = 0.76 * exp(-dot(counterDelta, counterDelta)) +
         0.24 * exp(-dot(counterLobe, counterLobe));
-    // A diffuse light pocket restores the clean light-theme counter area
-    // without the former circular stroke or stacked glass-lens masks.
-    lightResult = mix(lightResult, white, counterProtection * 0.32);
 
     float centerVoidD =
         pow((uv.x - 0.5 + sin(uv.y * 11.0 + time * 0.12) * 0.018) / 0.354, 2.0) +
@@ -248,10 +90,6 @@ float4 yellowReferenceContactFields(
         mix(0.18, 0.32, smoothstep(0.10, 0.72, progress));
     float centerReduction = clamp(centerVoid * 0.58 + centerVoidSoft * 0.18, 0.0, 0.70);
 
-    float topBlackShelf =
-        (1.0 - smoothstep(0.20, 0.52, uv.y)) *
-        (1.0 - smoothstep(0.0, 0.18, progress)) *
-        0.38;
 
     float3 darkBase = float3(0.0, 0.0, 0.0);
     float3 darkResult = darkBase;

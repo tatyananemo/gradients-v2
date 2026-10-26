@@ -66,6 +66,10 @@ ShaderSources/ContactFields.metal.source
 ShaderSources/Shared/BlueGeometryTail.inc
 ShaderSources/Shared/InteractionHistory.inc
 ShaderSources/Shared/PhysicalFields.inc
+ShaderSources/Shared/YellowDarkPose.inc
+ShaderSources/Shared/YellowInteraction.inc
+ShaderSources/Shared/YellowLightSubstrate.inc
+ShaderSources/Shared/YellowWaveProfile.inc
 ShaderSources/V2EntryPoints.metal.source
 ShaderSources/YellowDarkContact.metal.source
 ShaderSources/YellowDarkMAIN.metal.source

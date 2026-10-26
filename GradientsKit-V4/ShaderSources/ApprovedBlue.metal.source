@@ -619,15 +619,10 @@ half4 liquidSpecBackground(
         QaCommonMainShape qaCommon = qaCommonMainShape(uv, progress, time,
             referenceBandCenter, referenceWarp, centerVoidD, counterProtection, counterDrift);
         float qaMirrorX = 1.0 - uv.x;
-        float qaMirrorWarp = sin(qaMirrorX * 5.7 + time * 0.11) * 0.018 +
-            sin(qaMirrorX * 10.4 - time * 0.08 + 1.2) * 0.008;
         qaVisualDistance = qaCommon.distance;
         float qaOuter = qaDisplayMainGaussian(qaVisualDistance,referenceBandWidth,1.0) * referenceEntry;
         float qaBody = qaDisplayMainGaussian(qaVisualDistance,referenceBandWidth,0.70) * referenceEntry;
         float qaCore = qaDisplayMainGaussian(qaVisualDistance,referenceBandWidth,0.34) * referenceEntry;
-        float qaMirrorVoidD =
-            pow((qaMirrorX - 0.5 + sin(uv.y * 11.0 + time * 0.12) * 0.018) / 0.354, 2.0) +
-            pow((uv.y - 0.475 + sin(qaMirrorX * 8.0 + 0.8) * 0.014) / 0.150, 2.0);
         float qaBalancedVoidD = qaCommon.voidD;
         float qaVoid = qaDisplayCentreProfile(qaBalancedVoidD,progress) *
             mix(0.56, 0.82, smoothstep(0.02, 0.58, progress));
@@ -641,13 +636,6 @@ half4 liquidSpecBackground(
         qaVisualCompletion = segmentEase(progress, 0.58, 0.98) *
             smoothstep(0.06, 0.38, uv.y) * mix(smoothstep(0.04, 0.32, qaVisualDistance),
                 1.0, segmentEase(progress, 0.85, 0.98));
-        float2 qaMirrorCounter = float2(
-            (qaMirrorX - 0.5 + sin(uv.y * 11.0 + time * 0.12) * 0.018) / 0.29,
-            (uv.y - 0.475 + sin(qaMirrorX * 8.0 + 0.8) * 0.016 + counterDrift) / 0.090);
-        float2 qaMirrorLobe = float2((qaMirrorX - 0.57) / 0.23, (uv.y - 0.45 + counterDrift) / 0.105);
-        float qaCounter = qaCommon.counter;
-        float qaBlueDensity = exp(-pow(qaVisualDistance / (referenceBandWidth * 0.82), 2.0)) * referenceEntry;
-        float qaEndpoint = qaOuter * (0.82 + 0.16 * qaBlueDensity) * (1.0 - qaCounter * 0.32);
         // QA: reuse the approved 33% exterior attenuation in MAIN-local coordinates.
         // Original geometry, A symmetry and contact masks above are untouched.
         const float qaFadeReferenceProgress = 0.33;

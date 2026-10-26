@@ -41,3 +41,9 @@ python3 -B Development/Validation/Masks/validate_mask_reuse.py
 `--no-images` is accepted for command compatibility; validation now always writes numeric raw outputs/JSON, never PNG/HTML. `--record` was removed: the existing oracle is immutable. Exact GPU hashes require the recorded GPU/toolchain conditions. Test Debug and Release in Xcode as well, including real UI delivery, background, resize, 100% and reset. Full GPU + Thread Sanitizer in Simulator remains an unverified combination; ordinary passes do not prove absence of all races or leaks. Simulator measurements do not establish physical-iPhone FPS/latency/thermal/memory behavior.
 
 Historical reports, images/probe apps and recording/HTML tools are not required to reproduce the checks above; their prior versions remain in Git at `dc7b9da`. No baseline/tolerance has been removed or rerecorded.
+
+## Exact source cleanup after 0de5930
+
+`metal-optimization.json` pins deletion ranges and SHA-256 values against `0de5930`, plus each byte-identical shared block and all original occurrences. The deleted ContactFields readouts do not feed its returned density/contact/counter/grain fields; unused Blue leaves are independently diagnosed by the Metal compiler. Necessary declarations are retained even when an initializer is overwritten. Remaining expressions, floating-point types and evaluation order are unchanged.
+
+The source guard reconstructs the declared delta, rejects other edits and checks that literal sharing reproduces the same compiler input. The original 75e1800 input proof is retained for the pre-cleanup control, and the current control must match precisely the declared delta. GPU hashes, raw-mask comparisons and tolerances remain unchanged. No GPU-mask replacement or CI scheduling experiment is retained.

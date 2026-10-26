@@ -5,7 +5,7 @@ import re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-INCLUDE_BLOCKS = ("Shared/InteractionHistory.inc", "Shared/PhysicalFields.inc", "Shared/BlueGeometryTail.inc")
+INCLUDE_BLOCKS = ("Shared/InteractionHistory.inc", "Shared/PhysicalFields.inc", "Shared/BlueGeometryTail.inc", "Shared/YellowDarkPose.inc", "Shared/YellowInteraction.inc", "Shared/YellowLightSubstrate.inc", "Shared/YellowWaveProfile.inc")
 YELLOW_MODULES = ("YellowDarkMAIN", "YellowLightMAIN", "YellowDarkContact", "YellowLightContact")
 MODULES = ("ApprovedBlue", "ContactFields", "YellowShared", *YELLOW_MODULES, "V2EntryPoints")
 

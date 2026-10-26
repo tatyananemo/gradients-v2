@@ -35,7 +35,7 @@ def original(root=ROOT):
             for p in files if p.endswith(".swift") or p.startswith("ShaderSources/")}
 
 
-def expected_sources(root=ROOT):
+def expected_sources(root=ROOT, optimized=True):
     plan = json.loads((current_path("Validation/metal-dedup.json", root)).read_text())
     assert plan["base_commit"] == BASE
     before = original(root)
@@ -92,7 +92,54 @@ def expected_sources(root=ROOT):
     # V4 removes only the separately declared Blue Light-only ranges.
     from approved_metal import remove_blue_light
     expected[blue] = remove_blue_light(expected[blue], root)
-    return expected
+    return apply_optimization(expected, root) if optimized else expected
+
+
+def apply_optimization(expected, root=ROOT):
+    plan = json.loads(current_path("Validation/metal-optimization.json", root).read_text())
+    assert plan["base_commit"] == "0de593019c2361b85148c4521bd51e8e8b58e7dd"
+    result = dict(expected)
+    for path, records in plan["deletions"].items():
+        base = subprocess.check_output(["git", "show", plan["base_commit"] + ":GradientsKit-V4/" + path], cwd=root).decode()
+        assert base == expected[path], path
+        lines, removed = base.splitlines(keepends=True), set()
+        for record in records:
+            first, last = record["start_line"], record["end_line"]
+            assert 1 <= first <= last <= len(lines) and record["reason"]
+            indexes = set(range(first, last + 1))
+            assert not removed.intersection(indexes)
+            assert hashlib.sha256("".join(lines[first-1:last]).encode()).hexdigest() == record["sha256"]
+            removed.update(indexes)
+        result[path] = "".join(line for i, line in enumerate(lines, 1) if i not in removed)
+    for record in plan["literal_blocks"]:
+        path = record["path"]
+        assert path.startswith("ShaderSources/Shared/") and path.endswith(".inc")
+        block = current_path(path, root).read_text()
+        assert block.endswith("\n") and "#include" not in block
+        assert hashlib.sha256(block.encode()).hexdigest() == record["sha256"]
+        for module, count in record["occurrences"].items():
+            assert result[module].count(block) == count, (module, path)
+            result[module] = result[module].replace(block, '#include "' + path.removeprefix("ShaderSources/") + '"\n')
+        assert path not in result
+        result[path] = block
+        result["ShaderSources/CompositionInputs.xcfilelist"] += "$(SRCROOT)/" + path + "\n"
+    return result
+
+
+def expected_historical_composition(root=ROOT, optimized=True):
+    """Reconstruct only the declared textual delta; no oracle or math rewriting."""
+    import sys
+    from unittest.mock import patch
+    from approved_metal import approved_blue
+    sys.path.insert(0, str(root / "GradientsKit-V4/Scripts"))
+    import compose_metal
+    sources = expected_sources(root, optimized)
+    def read_module(_root, name):
+        source = sources["ShaderSources/" + name + ".metal.source"]
+        return re.sub(r'^[ \t]*#include "([^"\n]+\.inc)"[ \t]*\n',
+                      lambda m: sources["ShaderSources/" + m[1]], source, flags=re.M)
+    with patch.object(compose_metal, "read_module", read_module):
+        return compose_metal.compose(root / "GradientsKit-V4", blue_source=approved_blue(root))
 
 
 def verify(root=ROOT):

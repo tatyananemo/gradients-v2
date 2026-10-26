@@ -6,7 +6,7 @@ import subprocess
 import sys
 import tempfile
 import unittest
-from metal_dedup import verify as verify_metal_sharing
+from metal_dedup import verify as verify_metal_sharing, expected_sources, expected_historical_composition
 from approved_metal import historical_composition, approved_blue, remove_blue_light
 
 from paths import ROOT, SDK, current_path
@@ -34,7 +34,7 @@ class CompositionTests(unittest.TestCase):
 
     def test_shipping_blue_has_only_declared_deletions(self):
         source = (current_path("ShaderSources/ApprovedBlue.metal.source")).read_text()
-        self.assertEqual(source, remove_blue_light(approved_blue()))
+        self.assertEqual(source, expected_sources()["ShaderSources/ApprovedBlue.metal.source"])
         self.assertNotIn("qaCurrentAcceptedDarkBlue", source)
         self.assertNotIn("qaContactDarkReference", source)
         self.assertIn("liquidSpecBackground", source)
@@ -56,13 +56,14 @@ class CompositionTests(unittest.TestCase):
         expected.update("$(SRCROOT)/ShaderSources/" + name for name in COMPOSER.INCLUDE_BLOCKS)
         self.assertEqual(declared, expected)
 
-    def test_historical_control_is_byte_identical_to_stable_75e1800(self):
+    def test_historical_control_has_only_declared_delta_from_stable_75e1800(self):
         source = subprocess.check_output(["git", "show", "75e1800:Scripts/compose_metal.py"], cwd=ROOT).decode()
         scope = {"__file__": str(current_path("Scripts/compose_metal.py"))}
         exec(compile(source, "stable_composer", "exec"), scope)
         scope["read_module"] = lambda root, name: subprocess.check_output(
             ["git", "show", "75e1800:ShaderSources/" + name + ".metal.source"], cwd=ROOT).decode()
-        self.assertEqual(historical_composition(), scope["compose"]())
+        self.assertEqual(expected_historical_composition(optimized=False), scope["compose"]())
+        self.assertEqual(historical_composition(), expected_historical_composition())
 
     def test_shared_block_changes_reach_the_remaining_sdk_call_site(self):
         with tempfile.TemporaryDirectory() as folder:
@@ -112,8 +113,9 @@ class CompositionTests(unittest.TestCase):
         self.assertEqual(len(source_files), 22)
         for path in source_files:
             with self.subTest(path=path):
-                self.assertEqual(current_path(path).read_bytes(), subprocess.check_output(
-                    ["git", "show", "ca0222e:" + path], cwd=ROOT))
+                expected = expected_sources()[path] if path.startswith("ShaderSources/") else subprocess.check_output(
+                    ["git", "show", "ca0222e:" + path], cwd=ROOT).decode()
+                self.assertEqual(current_path(path).read_text(), expected)
 
     def test_demo_uses_external_sdk_target_without_source_copies(self):
         import json
@@ -138,6 +140,27 @@ class CompositionTests(unittest.TestCase):
             for path in v.get("inputPaths", []) + ([v["path"]] if "path" in v else []):
                 self.assertNotIn("..", path)
                 self.assertNotIn("Development/", path)
+
+    def test_sdk_project_regenerates_in_isolated_python_without_development(self):
+        with tempfile.TemporaryDirectory() as folder:
+            copied = Path(folder) / "GradientsKit-V4"
+            shutil.copytree(SDK, copied, ignore=shutil.ignore_patterns("__pycache__", "*.pyc"))
+            before = (copied / "GradientsKit.xcodeproj/project.pbxproj").read_bytes()
+            subprocess.run([sys.executable, "-I", "-B", str(copied / "Scripts/create_sdk_project.py")], cwd=folder, check=True)
+            self.assertEqual(before, (copied / "GradientsKit.xcodeproj/project.pbxproj").read_bytes())
+            self.assertFalse((Path(folder) / "Development").exists())
+
+    def test_new_shared_blocks_reach_every_original_call_site(self):
+        import json
+        plan = json.loads(current_path("Validation/metal-optimization.json").read_text())
+        for record in plan["literal_blocks"]:
+            with self.subTest(path=record["path"]), tempfile.TemporaryDirectory() as folder:
+                base = Path(folder)
+                shutil.copytree(SDK / "ShaderSources", base / "ShaderSources")
+                path = base / record["path"]
+                path.write_text(path.read_text() + "// new shared block dependency marker\n")
+                self.assertEqual(COMPOSER.compose(base).count(b"// new shared block dependency marker"),
+                                 sum(record["occurrences"].values()))
 
 
 if __name__ == "__main__":
