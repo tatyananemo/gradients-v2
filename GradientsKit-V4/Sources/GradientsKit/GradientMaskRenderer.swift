@@ -99,11 +99,13 @@ final class GradientMaskRenderer {
         if let source {ctx=source.context}
         else if let cached=context,cached.width==fullWidth,cached.height==rows {ctx=cached}
         else {
-            guard let created=CGContext(data:nil,width:fullWidth,height:rows,bitsPerComponent:8,bytesPerRow:0,space:cs,bitmapInfo:CGImageAlphaInfo.premultipliedLast.rawValue) else {safety.fail("Mask bitmap allocation");return nil}
+            guard let created=CGContext(data:nil,width:fullWidth,height:rows,bitsPerComponent:8,bytesPerRow:0,space:cs,bitmapInfo:CGImageAlphaInfo.premultipliedLast.rawValue) else {safety.resourcesUnavailable("Mask bitmap allocation");return nil}
             ctx=created
             context=ctx
         }
-        ctx.clear(CGRect(x:0,y:0,width:fullWidth,height:rows));ctx.saveGState()
+        ctx.clear(CGRect(x:0,y:0,width:fullWidth,height:rows))
+        do {
+        ctx.saveGState();defer {ctx.restoreGState()}
         ctx.translateBy(x:0,y:CGFloat(bottom));ctx.scaleBy(x:scale,y:-scale)
         ctx.translateBy(x:counter.midX,y:counter.midY-18);ctx.scaleBy(x:breath,y:breath)
         ctx.translateBy(x:ox[index],y:oy[index]);ctx.scaleBy(x:sx[index],y:sy[index])
@@ -112,10 +114,10 @@ final class GradientMaskRenderer {
         if index==2 {ctx.setFillColor(color(tint,0.22));ctx.fill(ellipse)}
         else {
             let colors:[CGColor] = index==0 ? [color(black,0.86),color(black,0.72+flow*0.10),color(tint,0.34+p*0.12),color(black,0)]:[color(tint,0.46),color(black,0.46),color(black,0)]
-            guard let gradient=CGGradient(colorsSpace:cs,colors:colors as CFArray,locations:nil) else {safety.fail("Mask gradient allocation");return nil}
+            guard let gradient=CGGradient(colorsSpace:cs,colors:colors as CFArray,locations:nil) else {safety.resourcesUnavailable("Mask gradient allocation");return nil}
             ctx.drawRadialGradient(gradient,startCenter:.zero,startRadius:index==0 ? 12:2,endCenter:.zero,endRadius:index==0 ? 136:106,options:[.drawsBeforeStartLocation,.drawsAfterEndLocation])
         }
-        ctx.restoreGState()
+        }
         if let source {
             let status=source.surface.unlock(options:[],seed:nil)
             sourceLocked=false
@@ -127,7 +129,7 @@ final class GradientMaskRenderer {
         let image:CIImage
         if let source {image=source.image}
         else {
-            guard let snapshot=ctx.makeImage() else {safety.fail("Mask snapshot allocation");return nil}
+            guard let snapshot=ctx.makeImage() else {safety.resourcesUnavailable("Mask snapshot allocation");return nil}
             image=CIImage(cgImage:snapshot)
         }
         let ci=image.transformed(by:CGAffineTransform(translationX:0,y:CGFloat(fullHeight-bottom)))
@@ -139,10 +141,10 @@ final class GradientMaskRenderer {
         let texture:MTLTexture
         if let cached=output,cached.width==fullWidth,cached.height==fullHeight {texture=cached}
         else {
-            guard let created=device.makeTexture(descriptor:desc) else {safety.fail("Mask texture allocation");return nil}
+            guard let created=device.makeTexture(descriptor:desc) else {safety.resourcesUnavailable("Mask texture allocation");return nil}
             texture=created;output=texture
         }
-        guard let command=queue.makeCommandBuffer() else {safety.fail("Mask command buffer allocation");return nil}
+        guard let command=queue.makeCommandBuffer() else {safety.resourcesUnavailable("Mask command buffer allocation");return nil}
         // CGContext/CI use a bottom-origin image; Metal's sampled row zero is top.
         // check_mask_coordinates.swift verifies 200 -> 644 before this flip.
         let oriented=blurred.transformed(by:CGAffineTransform(a:1,b:0,c:0,d:-1,tx:0,ty:fullExtent.height))

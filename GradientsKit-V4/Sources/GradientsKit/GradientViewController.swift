@@ -96,18 +96,7 @@ public final class GradientViewController:UIViewController,MTKViewDelegate {
         metal.contentScaleFactor=scale;metal.autoResizeDrawable=false
         metal.drawableSize=CGSize(width:size.width*scale,height:size.height*scale)
         view.addSubview(metal);viewMetal=metal
-        guard let textures=makeFrameTextures(width:Int(size.width*scale),height:Int(size.height*scale)) else{return}
-        var newUniforms:[MTLBuffer]=[],newHistory:[MTLBuffer]=[]
-        for _ in 0..<3 {
-            guard let u=gpu.device.makeBuffer(length:28*4,options:.storageModeShared),
-                  let h=gpu.device.makeBuffer(length:240*4,options:.storageModeShared) else {
-                renderSafety.fail("Frame input buffer allocation");return
-            }
-            newUniforms.append(u);newHistory.append(h)
-        }
-        backing=textures.0;distorted=textures.1
-        uniformSlots=newUniforms;historySlots=newHistory
-        uniformBuffer=uniformSlots[0];historyBuffer=historySlots[0]
+        _=prepareFrameResources(width:Int(size.width*scale),height:Int(size.height*scale))
         maskRenderer=GradientMaskRenderer(device:gpu.device,queue:gpu.queue,safety:renderSafety)
         masks=[gpu.clear,gpu.clear,gpu.clear]
         if !backgroundOnly {addCaption(size)}
@@ -196,15 +185,47 @@ public final class GradientViewController:UIViewController,MTKViewDelegate {
          "maskPreparationMS":maskCPUTime,"cpuPreparationMS":cpuFrameTime,"gpuMS":gpuTime]
     }
     public func pauseRendering() {explicitlyPaused=true;endInterruptedInput();updateDisplayLink()}
-    public func resumeRendering() {explicitlyPaused=false;updateDisplayLink()}
+    public func resumeRendering() {
+        explicitlyPaused=false
+        if renderSafety.retryResources(),let metal=viewMetal {
+            // One allocation attempt per explicit resume, without GPU submission.
+            // Startup UI/lifecycle setup is complete even if its allocations failed.
+            let size=hasRenderableBounds ? view.bounds.size:metal.bounds.size
+            if prepareFrameResources(width:Int(ceil(size.width*renderingScale)),height:Int(ceil(size.height*renderingScale))) {
+                _=captionProbe?.prepareResources()
+                synchronizeDrawableLayout()
+            }
+        }
+        updateDisplayLink()
+    }
     public override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews();synchronizeDrawableLayout()
+    }
+    private func prepareFrameResources(width:Int,height:Int)->Bool {
+        guard !renderSafety.isStopped else{return false}
+        if uniformSlots.count != 3 || historySlots.count != 3 {
+            var newUniforms:[MTLBuffer]=[],newHistory:[MTLBuffer]=[]
+            for _ in 0..<3 {
+                guard let u=gpu.device.makeBuffer(length:28*4,options:.storageModeShared),
+                      let h=gpu.device.makeBuffer(length:240*4,options:.storageModeShared) else {
+                    renderSafety.resourcesUnavailable("Frame input buffer allocation");return false
+                }
+                newUniforms.append(u);newHistory.append(h)
+            }
+            uniformSlots=newUniforms;historySlots=newHistory
+            uniformBuffer=uniformSlots[0];historyBuffer=historySlots[0]
+        }
+        if backing == nil || distorted == nil {
+            guard let textures=makeFrameTextures(width:width,height:height) else{return false}
+            backing=textures.0;distorted=textures.1
+        }
+        return true
     }
     private func makeFrameTextures(width:Int,height:Int)->(MTLTexture,MTLTexture)? {
         let d=MTLTextureDescriptor.texture2DDescriptor(pixelFormat:.rgba16Float,width:width,height:height,mipmapped:false)
         d.usage=[.shaderRead,.shaderWrite,.renderTarget];d.storageMode = .private
         guard let backing=gpu.device.makeTexture(descriptor:d),let distorted=gpu.device.makeTexture(descriptor:d) else {
-            renderSafety.fail("Frame texture allocation");return nil
+            renderSafety.resourcesUnavailable("Frame texture allocation");return nil
         }
         return (backing,distorted)
     }
@@ -286,7 +307,10 @@ public final class GradientViewController:UIViewController,MTKViewDelegate {
     func present(_ frame:GradientRenderFrame, activation:Double?=nil) {
         guard hasRenderableBounds,!renderSafety.isStopped else{return}
         synchronizeDrawableLayout()
-        guard !renderSafety.isStopped else{return}
+        guard !renderSafety.isStopped,
+              let backing,let distorted,
+              backing.width==Int(viewMetal.drawableSize.width),backing.height==Int(viewMetal.drawableSize.height),
+              distorted.width==backing.width,distorted.height==backing.height else{return}
         // Each in-flight frame owns its shared CPU inputs. No semaphore wait on main.
         guard let slot=availableSlots.firstIndex(of:true) else {framesSkipped+=1;return}
         activeSlot=slot;availableSlots[slot]=false
@@ -343,7 +367,7 @@ public final class GradientViewController:UIViewController,MTKViewDelegate {
         let completedSlot=activeSlot
         let drawableStart=ProcessInfo.processInfo.systemUptime
         guard let drawable=view.currentDrawable else{return}
-        guard let command=gpu.queue.makeCommandBuffer() else {renderSafety.fail("Composition command buffer allocation");return}
+        guard let command=gpu.queue.makeCommandBuffer() else {renderSafety.resourcesUnavailable("Composition command buffer allocation");return}
         performanceMetrics?.add("drawableAcquisitionMS",(ProcessInfo.processInfo.systemUptime-drawableStart)*1000)
         let maskStart=ProcessInfo.processInfo.systemUptime
         if f.dark {masks=maskRenderer.render(progress:presentationMask,elapsed:f.time-session.startTime,yellow:f.yellow,counter:counter,size:view.bounds.size,scale:renderingScale,metrics:performanceMetrics,frame:performanceFrame)}
@@ -364,11 +388,11 @@ public final class GradientViewController:UIViewController,MTKViewDelegate {
         func encode(_ texture:MTLTexture,_ pipeline:MTLRenderPipelineState,_ bind:(MTLRenderCommandEncoder)->Void)->Bool {
             let desc=MTLRenderPassDescriptor();desc.colorAttachments[0].texture=texture
             desc.colorAttachments[0].loadAction = .dontCare;desc.colorAttachments[0].storeAction = .store
-            guard let enc=command.makeRenderCommandEncoder(descriptor:desc) else {renderSafety.fail("Render encoder allocation");return false}
+            guard let enc=command.makeRenderCommandEncoder(descriptor:desc) else {renderSafety.resourcesUnavailable("Render encoder allocation");return false}
             enc.setRenderPipelineState(pipeline);bind(enc)
             enc.drawPrimitives(type:.triangle,vertexStart:0,vertexCount:3);enc.endEncoding();return true
         }
-        guard let encoder=command.makeComputeCommandEncoder() else {renderSafety.fail("Background compute encoder allocation");return}
+        guard let encoder=command.makeComputeCommandEncoder() else {renderSafety.resourcesUnavailable("Background compute encoder allocation");return}
         var backgroundScale=scale
         encoder.setComputePipelineState(gpu.background);encoder.setTexture(backing,index:0)
         encoder.setBuffer(uniformBuffer,offset:0,index:0);encoder.setBuffer(historyBuffer,offset:0,index:1)

@@ -7,25 +7,36 @@ final class SessionCaptionProbe {
  private(set) var key:String=""
  private let safety:GradientRenderSafety
  private var lastCommand:MTLCommandBuffer?
- private let device:MTLDevice?
+ private let device:MTLDevice
  private var queue:MTLCommandQueue?,pipeline:MTLComputePipelineState?
  private var uniformsBuffer:MTLBuffer?,historyBuffer:MTLBuffer?,resultBuffer:MTLBuffer?
  private var busy=false,needed=false,filteredRisk:Double=0,previousWave:Double=0
  private var lastTime:TimeInterval=0
  init(gpu:GradientGPU,safety:GradientRenderSafety=GradientRenderSafety()){
   self.safety=safety
-  device=gpu.device;pipeline=gpu.caption;queue=gpu.device.makeCommandQueue()
-  uniformsBuffer=gpu.device.makeBuffer(length:32*4,options:.storageModeShared)
-  historyBuffer=gpu.device.makeBuffer(length:512*4,options:.storageModeShared)
-  resultBuffer=gpu.device.makeBuffer(length:360*16,options:.storageModeShared)
-  if queue == nil || uniformsBuffer == nil || historyBuffer == nil || resultBuffer == nil {safety.fail("Caption resource allocation")}
+  device=gpu.device;pipeline=gpu.caption
+  _=prepareResources()
+ }
+ func prepareResources()->Bool {
+  guard !safety.isStopped else{return false}
+  if queue != nil && uniformsBuffer != nil && historyBuffer != nil && resultBuffer != nil {return true}
+  guard !busy else {safety.resourcesUnavailable("Caption resources busy");return false}
+  guard let queue=queue ?? device.makeCommandQueue(),
+        let uniforms=uniformsBuffer ?? device.makeBuffer(length:32*4,options:.storageModeShared),
+        let history=historyBuffer ?? device.makeBuffer(length:512*4,options:.storageModeShared),
+        let result=resultBuffer ?? device.makeBuffer(length:360*16,options:.storageModeShared) else {
+   safety.resourcesUnavailable("Caption resource allocation");return false
+  }
+  self.queue=queue;uniformsBuffer=uniforms;historyBuffer=history;resultBuffer=result
+  return true
  }
  func waitUntilScheduled(){GradientRenderSafety.waitUntilScheduled(lastCommand)}
  func sample(uniforms:[Float],history:[Float],frame:CGRect,key sampleKey:String,dark:Bool,yellow:Bool,metrics:GradientPerformanceMetrics?=nil){
   guard !safety.isStopped,uniforms.count==28,history.count<=240 else{return}
   // Invalidate old-theme results even while a previous GPU sample is in flight.
   if key != sampleKey {key=sampleKey;activation=0;filteredRisk=0;previousWave=0;needed=false}
-  guard !busy,let queue,let pipeline,let uniformsBuffer,let historyBuffer,let resultBuffer else{return}
+  guard !busy else{return}
+  guard let queue,let pipeline,let uniformsBuffer,let historyBuffer,let resultBuffer else {safety.resourcesUnavailable("Caption resources unavailable");return}
   let currentTime=ProcessInfo.processInfo.systemUptime
   let dt=lastTime==0 ? 1.0/60:min(max(currentTime-lastTime,1.0/240),0.1)
   lastTime=currentTime
@@ -37,7 +48,7 @@ final class SessionCaptionProbe {
   u.withUnsafeBytes{memcpy(uniformsBuffer.contents(),$0.baseAddress!,$0.count)}
   u.withUnsafeBytes{memcpy(historyBuffer.contents().advanced(by:256*4),$0.baseAddress!,$0.count)}
   if !history.isEmpty{history.withUnsafeBytes{memcpy(historyBuffer.contents(),$0.baseAddress!,$0.count)}}
-  guard let command=queue.makeCommandBuffer(),let encoder=command.makeComputeCommandEncoder() else {safety.fail("Caption command/encoder allocation");return}
+  guard let command=queue.makeCommandBuffer(),let encoder=command.makeComputeCommandEncoder() else {safety.resourcesUnavailable("Caption command/encoder allocation");return}
   busy=true
   encoder.setComputePipelineState(pipeline);encoder.setBuffer(uniformsBuffer,offset:0,index:0)
   encoder.setBuffer(historyBuffer,offset:0,index:1);encoder.setBuffer(resultBuffer,offset:0,index:2)
