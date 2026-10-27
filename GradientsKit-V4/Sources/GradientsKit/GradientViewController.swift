@@ -336,7 +336,10 @@ public final class GradientViewController:UIViewController,MTKViewDelegate {
         encoder.setComputePipelineState(gpu.background);encoder.setTexture(backing,index:0)
         encoder.setBuffer(uniformBuffer,offset:0,index:0);encoder.setBuffer(historyBuffer,offset:0,index:1)
         encoder.setBytes(&backgroundScale,length:4,index:2)
-        encoder.dispatchThreads(MTLSize(width:backing.width,height:backing.height,depth:1),threadsPerThreadgroup:MTLSize(width:16,height:16,depth:1));encoder.endEncoding()
+        // The compute adapter already returns before any access outside the texture extent.
+        let threads=MTLSize(width:16,height:16,depth:1)
+        let groups=MTLSize(width:(backing.width+threads.width-1)/threads.width,height:(backing.height+threads.height-1)/threads.height,depth:1)
+        encoder.dispatchThreadgroups(groups,threadsPerThreadgroup:threads);encoder.endEncoding()
         let strength=f.distortion
         var input=backing!
         if strength>0.002 {

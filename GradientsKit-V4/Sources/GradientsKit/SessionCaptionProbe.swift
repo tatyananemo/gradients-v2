@@ -36,7 +36,10 @@ final class SessionCaptionProbe {
   busy=true
   encoder.setComputePipelineState(pipeline);encoder.setBuffer(uniformsBuffer,offset:0,index:0)
   encoder.setBuffer(historyBuffer,offset:0,index:1);encoder.setBuffer(resultBuffer,offset:0,index:2)
-  encoder.dispatchThreads(MTLSize(width:360,height:1,depth:1),threadsPerThreadgroup:MTLSize(width:32,height:1,depth:1));encoder.endEncoding()
+  // Uniform groups also work when nonuniform dispatch is unavailable. The kernel guards id>=360.
+  let threads=MTLSize(width:32,height:1,depth:1)
+  let groups=MTLSize(width:(360+threads.width-1)/threads.width,height:1,depth:1)
+  encoder.dispatchThreadgroups(groups,threadsPerThreadgroup:threads);encoder.endEncoding()
   command.addCompletedHandler { [weak self] command in
    if command.status != .completed {metrics?.add("captionCommandErrors",1)}
    let samples=Array(UnsafeBufferPointer(start:resultBuffer.contents().assumingMemoryBound(to:SIMD4<Float>.self),count:360))
