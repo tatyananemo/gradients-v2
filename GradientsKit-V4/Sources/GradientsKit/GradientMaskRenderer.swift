@@ -9,16 +9,23 @@ import IOSurface
 /// A busy/unavailable source uses the original immutable CGImage snapshot path.
 final class GradientMaskRenderer {
     private let workers:[Surface]
-    init(device:MTLDevice,queue:MTLCommandQueue,cacheIntermediates:Bool=false) {
-        workers=(0..<3).map {_ in Surface(device:device,queue:queue,cacheIntermediates:cacheIntermediates)}
+    private let safety:GradientRenderSafety
+    init(device:MTLDevice,queue:MTLCommandQueue,cacheIntermediates:Bool=false,safety:GradientRenderSafety=GradientRenderSafety()) {
+        self.safety=safety
+        workers=(0..<3).map {_ in Surface(device:device,queue:queue,cacheIntermediates:cacheIntermediates,safety:safety)}
     }
     func render(progress:CGFloat,elapsed:Double,yellow:Bool,counter:CGRect,size:CGSize,scale:CGFloat,metrics:GradientPerformanceMetrics?=nil,frame:Int=0)->[MTLTexture] {
+        guard !safety.isStopped else{return []}
         DispatchQueue.concurrentPerform(iterations:3) { index in
             _=self.workers[index].render(index,progress:progress,elapsed:elapsed,yellow:yellow,counter:counter,size:size,scale:scale,metrics:metrics,frame:frame)
         }
-        return workers.map {$0.output!}
+        guard !safety.isStopped else{return []}
+        return workers.compactMap {$0.output}
     }
+    func waitUntilScheduled() {workers.forEach {GradientRenderSafety.waitUntilScheduled($0.lastCommand)}}
     private final class Surface {
+        let safety:GradientRenderSafety
+        var lastCommand:MTLCommandBuffer?
         let device:MTLDevice,queue:MTLCommandQueue,ci:CIContext
         var context:CGContext?
         private let cacheIntermediates:Bool
@@ -55,14 +62,16 @@ final class GradientMaskRenderer {
             return source
         }
         var output:MTLTexture?
-        init(device:MTLDevice,queue:MTLCommandQueue,cacheIntermediates:Bool) {
+        init(device:MTLDevice,queue:MTLCommandQueue,cacheIntermediates:Bool,safety:GradientRenderSafety) {
+            self.safety=safety
             self.device=device;self.queue=queue;self.cacheIntermediates=cacheIntermediates
             // Every frame changes the source, transform and blur radius. Retaining
             // rendered intermediates adds IOSurface cache/XPC work without reuse.
             // The override exists only for exact before/after validation.
             ci=CIContext(mtlDevice:device,options:[.workingColorSpace:NSNull(),.outputColorSpace:NSNull(),.cacheIntermediates:cacheIntermediates])
         }
-    func render(_ index:Int,progress p:CGFloat,elapsed:Double,yellow:Bool,counter:CGRect,size:CGSize,scale:CGFloat,metrics:GradientPerformanceMetrics?,frame:Int)->MTLTexture {
+    func render(_ index:Int,progress p:CGFloat,elapsed:Double,yellow:Bool,counter:CGRect,size:CGSize,scale:CGFloat,metrics:GradientPerformanceMetrics?,frame:Int)->MTLTexture? {
+        guard !safety.isStopped else{return nil}
         let start=ProcessInfo.processInfo.systemUptime
         let flow=0.62+p*0.30,breath=1+CGFloat(sin(elapsed*1.18+Double(p*5)))*0.025
         let dx=CGFloat(sin(elapsed*0.34+0.7))*10,dy=CGFloat(cos(elapsed*0.27+1.3))*5
@@ -84,11 +93,14 @@ final class GradientMaskRenderer {
         // Cached validation contexts keep immutable snapshots. Dynamic source pixels
         // are never reused as cached Core Image intermediates.
         let source=cacheIntermediates ? nil:acquireSource(width:fullWidth,height:rows,colorSpace:cs)
+        var sourceLocked=source != nil
+        defer {if sourceLocked {_=source?.surface.unlock(options:[],seed:nil)}}
         let ctx:CGContext
         if let source {ctx=source.context}
         else if let cached=context,cached.width==fullWidth,cached.height==rows {ctx=cached}
         else {
-            ctx=CGContext(data:nil,width:fullWidth,height:rows,bitsPerComponent:8,bytesPerRow:0,space:cs,bitmapInfo:CGImageAlphaInfo.premultipliedLast.rawValue)!
+            guard let created=CGContext(data:nil,width:fullWidth,height:rows,bitsPerComponent:8,bytesPerRow:0,space:cs,bitmapInfo:CGImageAlphaInfo.premultipliedLast.rawValue) else {safety.fail("Mask bitmap allocation");return nil}
+            ctx=created
             context=ctx
         }
         ctx.clear(CGRect(x:0,y:0,width:fullWidth,height:rows));ctx.saveGState()
@@ -100,18 +112,25 @@ final class GradientMaskRenderer {
         if index==2 {ctx.setFillColor(color(tint,0.22));ctx.fill(ellipse)}
         else {
             let colors:[CGColor] = index==0 ? [color(black,0.86),color(black,0.72+flow*0.10),color(tint,0.34+p*0.12),color(black,0)]:[color(tint,0.46),color(black,0.46),color(black,0)]
-            let gradient=CGGradient(colorsSpace:cs,colors:colors as CFArray,locations:nil)!
+            guard let gradient=CGGradient(colorsSpace:cs,colors:colors as CFArray,locations:nil) else {safety.fail("Mask gradient allocation");return nil}
             ctx.drawRadialGradient(gradient,startCenter:.zero,startRadius:index==0 ? 12:2,endCenter:.zero,endRadius:index==0 ? 136:106,options:[.drawsBeforeStartLocation,.drawsAfterEndLocation])
         }
         ctx.restoreGState()
         if let source {
             let status=source.surface.unlock(options:[],seed:nil)
-            precondition(status==KERN_SUCCESS)
+            sourceLocked=false
+            guard status==KERN_SUCCESS else {safety.fail("Mask IOSurface unlock",error:NSError(domain:NSMachErrorDomain,code:Int(status)));return nil}
         }
         let rasterEnd=ProcessInfo.processInfo.systemUptime
         metrics?.add("maskRasterCPU\(index)MS",(rasterEnd-start)*1000)
         let fullExtent=CGRect(x:0,y:0,width:fullWidth,height:fullHeight)
-        let ci=(source?.image ?? CIImage(cgImage:ctx.makeImage()!)).transformed(by:CGAffineTransform(translationX:0,y:CGFloat(fullHeight-bottom)))
+        let image:CIImage
+        if let source {image=source.image}
+        else {
+            guard let snapshot=ctx.makeImage() else {safety.fail("Mask snapshot allocation");return nil}
+            image=CIImage(cgImage:snapshot)
+        }
+        let ci=image.transformed(by:CGAffineTransform(translationX:0,y:CGFloat(fullHeight-bottom)))
             .composited(over:CIImage(color:.clear).cropped(to:fullExtent))
         let radius:CGFloat=[38,30,42][index]
         let blurred=ci.applyingFilter("CIGaussianBlur",parameters:[kCIInputRadiusKey:radius*scale*breath]).cropped(to:fullExtent)
@@ -119,8 +138,11 @@ final class GradientMaskRenderer {
         desc.usage=[.shaderRead,.shaderWrite,.renderTarget];desc.storageMode = .private
         let texture:MTLTexture
         if let cached=output,cached.width==fullWidth,cached.height==fullHeight {texture=cached}
-        else {texture=device.makeTexture(descriptor:desc)!;output=texture}
-        let command=queue.makeCommandBuffer()!
+        else {
+            guard let created=device.makeTexture(descriptor:desc) else {safety.fail("Mask texture allocation");return nil}
+            texture=created;output=texture
+        }
+        guard let command=queue.makeCommandBuffer() else {safety.fail("Mask command buffer allocation");return nil}
         // CGContext/CI use a bottom-origin image; Metal's sampled row zero is top.
         // check_mask_coordinates.swift verifies 200 -> 644 before this flip.
         let oriented=blurred.transformed(by:CGAffineTransform(a:1,b:0,c:0,d:-1,tx:0,ty:fullExtent.height))
@@ -128,12 +150,17 @@ final class GradientMaskRenderer {
         metrics?.add("maskGraphCPU\(index)MS",(encodeStart-rasterEnd)*1000)
         self.ci.render(oriented,to:texture,commandBuffer:command,bounds:fullExtent,colorSpace:cs)
         metrics?.add("maskEncodeCPU\(index)MS",(ProcessInfo.processInfo.systemUptime-encodeStart)*1000)
-        if let metrics {command.addCompletedHandler {c in
-            metrics.gpu(frame:frame,expected:4,kind:"maskGPU\(index)MS",start:c.gpuStartTime,end:c.gpuEndTime)
-            if c.status != .completed {metrics.add("maskCommandErrors",1)}
-        }}
+        let safety=self.safety
+        command.addCompletedHandler {c in
+            safety.completed(c,stage:"Mask \(index) command failed")
+            if let metrics {
+                metrics.gpu(frame:frame,expected:4,kind:"maskGPU\(index)MS",start:c.gpuStartTime,end:c.gpuEndTime)
+                if c.status != .completed {metrics.add("maskCommandErrors",1)}
+            }
+        }
+        guard !safety.isStopped else{return nil}
         source?.command=command
-        command.commit()
+        command.commit();lastCommand=command
         // A rare busy-source snapshot owns its pixels; do not retain a second bitmap.
         if source == nil {context=nil}
         return texture

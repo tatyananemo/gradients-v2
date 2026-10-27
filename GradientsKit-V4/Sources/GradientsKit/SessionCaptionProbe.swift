@@ -5,19 +5,24 @@ import Metal
 final class SessionCaptionProbe {
  private(set) var activation:Double=0
  private(set) var key:String=""
+ private let safety:GradientRenderSafety
+ private var lastCommand:MTLCommandBuffer?
  private let device:MTLDevice?
  private var queue:MTLCommandQueue?,pipeline:MTLComputePipelineState?
  private var uniformsBuffer:MTLBuffer?,historyBuffer:MTLBuffer?,resultBuffer:MTLBuffer?
  private var busy=false,needed=false,filteredRisk:Double=0,previousWave:Double=0
  private var lastTime:TimeInterval=0
- init(gpu:GradientGPU){
+ init(gpu:GradientGPU,safety:GradientRenderSafety=GradientRenderSafety()){
+  self.safety=safety
   device=gpu.device;pipeline=gpu.caption;queue=gpu.device.makeCommandQueue()
   uniformsBuffer=gpu.device.makeBuffer(length:32*4,options:.storageModeShared)
   historyBuffer=gpu.device.makeBuffer(length:512*4,options:.storageModeShared)
   resultBuffer=gpu.device.makeBuffer(length:360*16,options:.storageModeShared)
+  if queue == nil || uniformsBuffer == nil || historyBuffer == nil || resultBuffer == nil {safety.fail("Caption resource allocation")}
  }
+ func waitUntilScheduled(){GradientRenderSafety.waitUntilScheduled(lastCommand)}
  func sample(uniforms:[Float],history:[Float],frame:CGRect,key sampleKey:String,dark:Bool,yellow:Bool,metrics:GradientPerformanceMetrics?=nil){
-  guard uniforms.count==28,history.count<=240 else{return}
+  guard !safety.isStopped,uniforms.count==28,history.count<=240 else{return}
   // Invalidate old-theme results even while a previous GPU sample is in flight.
   if key != sampleKey {key=sampleKey;activation=0;filteredRisk=0;previousWave=0;needed=false}
   guard !busy,let queue,let pipeline,let uniformsBuffer,let historyBuffer,let resultBuffer else{return}
@@ -32,7 +37,7 @@ final class SessionCaptionProbe {
   u.withUnsafeBytes{memcpy(uniformsBuffer.contents(),$0.baseAddress!,$0.count)}
   u.withUnsafeBytes{memcpy(historyBuffer.contents().advanced(by:256*4),$0.baseAddress!,$0.count)}
   if !history.isEmpty{history.withUnsafeBytes{memcpy(historyBuffer.contents(),$0.baseAddress!,$0.count)}}
-  guard let command=queue.makeCommandBuffer(),let encoder=command.makeComputeCommandEncoder() else{return}
+  guard let command=queue.makeCommandBuffer(),let encoder=command.makeComputeCommandEncoder() else {safety.fail("Caption command/encoder allocation");return}
   busy=true
   encoder.setComputePipelineState(pipeline);encoder.setBuffer(uniformsBuffer,offset:0,index:0)
   encoder.setBuffer(historyBuffer,offset:0,index:1);encoder.setBuffer(resultBuffer,offset:0,index:2)
@@ -40,9 +45,11 @@ final class SessionCaptionProbe {
   let threads=MTLSize(width:32,height:1,depth:1)
   let groups=MTLSize(width:(360+threads.width-1)/threads.width,height:1,depth:1)
   encoder.dispatchThreadgroups(groups,threadsPerThreadgroup:threads);encoder.endEncoding()
+  let safety=self.safety
   command.addCompletedHandler { [weak self] command in
+   safety.completed(command,stage:"Caption command failed")
    if command.status != .completed {metrics?.add("captionCommandErrors",1)}
-   let samples=Array(UnsafeBufferPointer(start:resultBuffer.contents().assumingMemoryBound(to:SIMD4<Float>.self),count:360))
+   let samples=command.status == .completed ? Array(UnsafeBufferPointer(start:resultBuffer.contents().assumingMemoryBound(to:SIMD4<Float>.self),count:360)):[]
    DispatchQueue.main.async {
     guard let self else{return};self.busy=false
     guard command.status == .completed,self.key==sampleKey else{return}
@@ -75,6 +82,7 @@ final class SessionCaptionProbe {
     self.activation=min(max(next,0),1)
    }
   }
-  command.commit()
+  guard !safety.isStopped else {busy=false;return}
+  command.commit();lastCommand=command
  }
 }

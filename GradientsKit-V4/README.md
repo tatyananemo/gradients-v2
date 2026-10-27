@@ -82,6 +82,7 @@ Sources/GradientsKit/GradientGPU.swift
 Sources/GradientsKit/GradientMaskRenderer.swift
 Sources/GradientsKit/GradientPercentageLabel.swift
 Sources/GradientsKit/GradientPerformanceMetrics.swift
+Sources/GradientsKit/GradientRenderSafety.swift
 Sources/GradientsKit/GradientTheme.swift
 Sources/GradientsKit/GradientViewController.swift
 Sources/GradientsKit/SessionCaptionProbe.swift

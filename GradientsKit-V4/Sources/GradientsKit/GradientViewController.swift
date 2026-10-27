@@ -6,6 +6,9 @@ import CoreText
 
 public final class GradientViewController:UIViewController,MTKViewDelegate {
     static var context:GradientGPU?
+    let renderSafety=GradientRenderSafety()
+    private var lastCommand:MTLCommandBuffer?
+    private var captionActivation:Double?
     let gpu:GradientGPU
     var uniforms:[Float],history:[Float]
     var caption:CGRect,counter:CGRect
@@ -70,7 +73,8 @@ public final class GradientViewController:UIViewController,MTKViewDelegate {
     public init(session:GradientSession, dark:Bool,
                 size:CGSize=CGSize(width:390,height:844)) throws {
         if Self.context == nil {Self.context=try GradientGPU()}
-        self.gpu=Self.context!;self.session=session;self.dark=dark
+        guard let gpu=Self.context else {throw NSError(domain:"GradientsKit.MetalUnavailable",code:1)}
+        self.gpu=gpu;self.session=session;self.dark=dark
         let frame=session.frame(at:Date().timeIntervalSinceReferenceDate,size:size,dark:dark,yellow:yellow)
         f=frame;uniforms=frame.uniforms;history=frame.history
         // These are the accepted V2 full-screen layout constants. SDK layout generalization is a later milestone.
@@ -92,25 +96,30 @@ public final class GradientViewController:UIViewController,MTKViewDelegate {
         metal.contentScaleFactor=scale;metal.autoResizeDrawable=false
         metal.drawableSize=CGSize(width:size.width*scale,height:size.height*scale)
         view.addSubview(metal);viewMetal=metal
-        func texture()->MTLTexture {
-            let d=MTLTextureDescriptor.texture2DDescriptor(pixelFormat:.rgba16Float,width:Int(size.width*scale),height:Int(size.height*scale),mipmapped:false)
-            d.usage=[.shaderRead,.shaderWrite,.renderTarget];d.storageMode = .private
-            return gpu.device.makeTexture(descriptor:d)!
+        guard let textures=makeFrameTextures(width:Int(size.width*scale),height:Int(size.height*scale)) else{return}
+        var newUniforms:[MTLBuffer]=[],newHistory:[MTLBuffer]=[]
+        for _ in 0..<3 {
+            guard let u=gpu.device.makeBuffer(length:28*4,options:.storageModeShared),
+                  let h=gpu.device.makeBuffer(length:240*4,options:.storageModeShared) else {
+                renderSafety.fail("Frame input buffer allocation");return
+            }
+            newUniforms.append(u);newHistory.append(h)
         }
-        backing=texture();distorted=texture()
-        uniformSlots=(0..<3).map {_ in gpu.device.makeBuffer(length:28*4,options:.storageModeShared)!}
-        historySlots=(0..<3).map {_ in gpu.device.makeBuffer(length:240*4,options:.storageModeShared)!}
+        backing=textures.0;distorted=textures.1
+        uniformSlots=newUniforms;historySlots=newHistory
         uniformBuffer=uniformSlots[0];historyBuffer=historySlots[0]
-        maskRenderer=GradientMaskRenderer(device:gpu.device,queue:gpu.queue)
+        maskRenderer=GradientMaskRenderer(device:gpu.device,queue:gpu.queue,safety:renderSafety)
         masks=[gpu.clear,gpu.clear,gpu.clear]
         if !backgroundOnly {addCaption(size)}
         if !backgroundOnly && !captionOnly {addCounter();addButtons(size)}
-        captionProbe=SessionCaptionProbe(gpu:gpu)
+        captionProbe=SessionCaptionProbe(gpu:gpu,safety:renderSafety)
         let input=GradientInputRecognizer(target:self,action:#selector(inputChanged(_:)))
         input.cancelsTouchesInView=false;view.addGestureRecognizer(input);inputRecognizer=input
         metal.delegate=self
         let notifications=NotificationCenter.default
         notifications.addObserver(self,selector:#selector(applicationWillResignActive),name:UIApplication.willResignActiveNotification,object:nil)
+        notifications.addObserver(self,selector:#selector(applicationDidEnterBackground),name:UIApplication.didEnterBackgroundNotification,object:nil)
+        notifications.addObserver(self,selector:#selector(sceneDidEnterBackground(_:)),name:UIScene.didEnterBackgroundNotification,object:nil)
         notifications.addObserver(self,selector:#selector(applicationDidBecomeActive),name:UIApplication.didBecomeActiveNotification,object:nil)
         notifications.addObserver(self,selector:#selector(sceneWillDeactivate(_:)),name:UIScene.willDeactivateNotification,object:nil)
         notifications.addObserver(self,selector:#selector(sceneDidActivate(_:)),name:UIScene.didActivateNotification,object:nil)
@@ -129,14 +138,14 @@ public final class GradientViewController:UIViewController,MTKViewDelegate {
             link.preferredFrameRateRange=CAFrameRateRange(minimum:30,maximum:60,preferred:60)
             link.add(to:.main,forMode:.common);displayLink=link
         }
-        displayLink?.isPaused=explicitlyPaused || applicationInactive || sceneInactive
+        displayLink?.isPaused=explicitlyPaused || applicationInactive || sceneInactive || renderSafety.isStopped
     }
     private var hasRenderableBounds:Bool {
         let size=view.bounds.size
         return size.width.isFinite && size.height.isFinite && size.width*renderingScale>=1 && size.height*renderingScale>=1
     }
     private var canRender:Bool {
-        guard hasAppeared,!explicitlyPaused,!applicationInactive,!sceneInactive,
+        guard hasAppeared,!explicitlyPaused,!applicationInactive,!sceneInactive,!renderSafety.isStopped,
               let window=view.window,!window.isHidden,hasRenderableBounds else{return false}
         if let scene=window.windowScene,scene.activationState != .foregroundActive {return false}
         if UIApplication.shared.applicationState == .background {return false}
@@ -155,6 +164,22 @@ public final class GradientViewController:UIViewController,MTKViewDelegate {
     }
     @objc private func applicationWillResignActive() {
         applicationInactive=true;endInterruptedInput();updateDisplayLink()
+    }
+    private func scheduleOutstandingWorkForBackground() {
+        // Both queues: the mask workers and composition share gpu.queue;
+        // caption analysis owns a separate queue. No new buffers are submitted.
+        maskRenderer?.waitUntilScheduled()
+        GradientRenderSafety.waitUntilScheduled(lastCommand)
+        captionProbe?.waitUntilScheduled()
+    }
+    @objc private func applicationDidEnterBackground() {
+        applicationInactive=true;endInterruptedInput();updateDisplayLink()
+        scheduleOutstandingWorkForBackground()
+    }
+    @objc private func sceneDidEnterBackground(_ notice:Notification) {
+        guard let scene=notice.object as? UIScene,scene === viewIfLoaded?.window?.windowScene else{return}
+        sceneInactive=true;endInterruptedInput();updateDisplayLink()
+        scheduleOutstandingWorkForBackground()
     }
     @objc private func applicationDidBecomeActive() {applicationInactive=false;updateDisplayLink()}
     @objc private func sceneWillDeactivate(_ notice:Notification) {
@@ -175,12 +200,19 @@ public final class GradientViewController:UIViewController,MTKViewDelegate {
     public override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews();synchronizeDrawableLayout()
     }
+    private func makeFrameTextures(width:Int,height:Int)->(MTLTexture,MTLTexture)? {
+        let d=MTLTextureDescriptor.texture2DDescriptor(pixelFormat:.rgba16Float,width:width,height:height,mipmapped:false)
+        d.usage=[.shaderRead,.shaderWrite,.renderTarget];d.storageMode = .private
+        guard let backing=gpu.device.makeTexture(descriptor:d),let distorted=gpu.device.makeTexture(descriptor:d) else {
+            renderSafety.fail("Frame texture allocation");return nil
+        }
+        return (backing,distorted)
+    }
     private func synchronizeDrawableLayout() {
-        guard let metal=viewMetal,hasRenderableBounds else{return}
+        guard let metal=viewMetal,hasRenderableBounds,!renderSafety.isStopped,let backing else{return}
         let size=view.bounds.size
         let pixelSize=CGSize(width:ceil(size.width*renderingScale),height:ceil(size.height*renderingScale))
         guard currentSize != size || metal.contentScaleFactor != renderingScale || metal.drawableSize != pixelSize else{return}
-        currentSize=size
         let textHeight:CGFloat
         if abs(size.width-390)<0.01 {textHeight=63.3333333333333}
         else {
@@ -190,18 +222,15 @@ public final class GradientViewController:UIViewController,MTKViewDelegate {
         caption=CGRect(x:0,y:size.height-82-textHeight,width:size.width,height:textHeight)
         let center=(size.height+90-(82+textHeight))/2
         counter=CGRect(x:0,y:center-76.6666666666667/2,width:size.width,height:76.6666666666667)
-        metal.frame=view.bounds;metal.contentScaleFactor=renderingScale
-        metal.drawableSize=CGSize(width:ceil(size.width*renderingScale),height:ceil(size.height*renderingScale))
-        func texture()->MTLTexture {
-            let d=MTLTextureDescriptor.texture2DDescriptor(pixelFormat:.rgba16Float,width:Int(metal.drawableSize.width),height:Int(metal.drawableSize.height),mipmapped:false)
-            d.usage=[.shaderRead,.shaderWrite,.renderTarget];d.storageMode = .private
-            return gpu.device.makeTexture(descriptor:d)!
-        }
-        // Layout can change without changing the texture descriptor, including
-        // the first layout after viewDidLoad has already allocated this extent.
+        // Allocate the complete replacement before publishing a new extent.
+        // On failure keep the old textures alive and stop; never render a mixed pair.
         if backing.width != Int(pixelSize.width) || backing.height != Int(pixelSize.height) {
-            backing=texture();distorted=texture()
+            guard let textures=makeFrameTextures(width:Int(pixelSize.width),height:Int(pixelSize.height)) else {updateDisplayLink();return}
+            self.backing=textures.0;distorted=textures.1
         }
+        currentSize=size
+        metal.frame=view.bounds;metal.contentScaleFactor=renderingScale
+        metal.drawableSize=pixelSize
         captionLabel?.frame=CGRect(x:34,y:caption.minY,width:max(1,size.width-68),height:caption.height)
         counterLabel?.frame=counter;counterWrapper?.frame=view.bounds
         captionBox?.frame=CGRect(x:0,y:size.height*0.7,width:size.width,height:size.height*0.3)
@@ -245,6 +274,7 @@ public final class GradientViewController:UIViewController,MTKViewDelegate {
     @objc func settingsPressed() { onSettings?() }
     func tick() {
         guard !externallyDriven else{return}
+        guard !renderSafety.isStopped else {updateDisplayLink();return}
         guard canRender else{endInterruptedInput();return}
         // Bounds may change before UIKit's next layout pass. All textures,
         // masks and frame arguments must observe one authoritative viewport.
@@ -254,8 +284,9 @@ public final class GradientViewController:UIViewController,MTKViewDelegate {
         onFrame?(frame)
     }
     func present(_ frame:GradientRenderFrame, activation:Double?=nil) {
-        guard hasRenderableBounds else{return}
+        guard hasRenderableBounds,!renderSafety.isStopped else{return}
         synchronizeDrawableLayout()
+        guard !renderSafety.isStopped else{return}
         // Each in-flight frame owns its shared CPU inputs. No semaphore wait on main.
         guard let slot=availableSlots.firstIndex(of:true) else {framesSkipped+=1;return}
         activeSlot=slot;availableSlots[slot]=false
@@ -266,14 +297,10 @@ public final class GradientViewController:UIViewController,MTKViewDelegate {
         if resetPresentation?.values(at:f.time).finished == true {resetPresentation=nil}
         uniforms.withUnsafeBytes {memcpy(uniformBuffer.contents(),$0.baseAddress!,$0.count)}
         if !history.isEmpty {history.withUnsafeBytes {memcpy(historyBuffer.contents(),$0.baseAddress!,$0.count)}}
-        let maskStart=ProcessInfo.processInfo.systemUptime
-        if f.dark {masks=maskRenderer.render(progress:presentationMask,elapsed:f.time-session.startTime,yellow:f.yellow,counter:counter,size:view.bounds.size,scale:renderingScale,metrics:performanceMetrics,frame:performanceFrame)}
-        else {masks=[gpu.clear,gpu.clear,gpu.clear]}
-        let maskMS=(ProcessInfo.processInfo.systemUptime-maskStart)*1000
-        maskCPUTime+=maskMS;performanceMetrics?.add("maskPreparationMS",maskMS)
-        if !externallyDriven {captionProbe?.sample(uniforms:uniforms,history:history,frame:caption,key:"\(dark):\(yellow)",dark:dark,yellow:yellow,metrics:performanceMetrics)}
-        updateUI(activation:activation ?? captionProbe?.activation ?? 0)
+        captionActivation=activation
         rendered=false;finished=false;viewMetal.draw()
+        // MTKView may decline to call its delegate; no masks have been submitted then.
+        if !rendered {availableSlots[slot]=true}
         let cpuMS=(ProcessInfo.processInfo.systemUptime-cpuStart)*1000
         cpuFrameTime+=cpuMS;performanceSamples+=1;performanceMetrics?.add("cpuFrameMS",cpuMS)
     }
@@ -312,11 +339,21 @@ public final class GradientViewController:UIViewController,MTKViewDelegate {
     }
     public func mtkView(_ view:MTKView,drawableSizeWillChange size:CGSize){}
     public func draw(in view:MTKView) {
-        guard !rendered else{return}
+        guard !rendered,!renderSafety.isStopped,!availableSlots[activeSlot],let backing,let distorted else{return}
         let completedSlot=activeSlot
         let drawableStart=ProcessInfo.processInfo.systemUptime
-        guard let drawable=view.currentDrawable,let command=gpu.queue.makeCommandBuffer() else {availableSlots[completedSlot]=true;return}
+        guard let drawable=view.currentDrawable else{return}
+        guard let command=gpu.queue.makeCommandBuffer() else {renderSafety.fail("Composition command buffer allocation");return}
         performanceMetrics?.add("drawableAcquisitionMS",(ProcessInfo.processInfo.systemUptime-drawableStart)*1000)
+        let maskStart=ProcessInfo.processInfo.systemUptime
+        if f.dark {masks=maskRenderer.render(progress:presentationMask,elapsed:f.time-session.startTime,yellow:f.yellow,counter:counter,size:view.bounds.size,scale:renderingScale,metrics:performanceMetrics,frame:performanceFrame)}
+        else {masks=[gpu.clear,gpu.clear,gpu.clear]}
+        guard !renderSafety.isStopped,masks.count==3 else{return}
+        let maskMS=(ProcessInfo.processInfo.systemUptime-maskStart)*1000
+        maskCPUTime+=maskMS;performanceMetrics?.add("maskPreparationMS",maskMS)
+        if !externallyDriven {captionProbe?.sample(uniforms:uniforms,history:history,frame:caption,key:"\(dark):\(yellow)",dark:dark,yellow:yellow,metrics:performanceMetrics)}
+        updateUI(activation:captionActivation ?? captionProbe?.activation ?? 0)
+
         framesSubmitted+=1
         let metrics=performanceMetrics,frameID=performanceFrame,expected=f.dark ? 4:1
         let inputTime=metrics?.consumeInput() ?? 0
@@ -324,14 +361,14 @@ public final class GradientViewController:UIViewController,MTKViewDelegate {
         if let metrics {drawable.addPresentedHandler {shown in metrics.presented(at:shown.presentedTime,input:inputTime)}}
         #endif
         let scale=Float(renderingScale)
-        func encode(_ texture:MTLTexture,_ pipeline:MTLRenderPipelineState,_ bind:(MTLRenderCommandEncoder)->Void) {
+        func encode(_ texture:MTLTexture,_ pipeline:MTLRenderPipelineState,_ bind:(MTLRenderCommandEncoder)->Void)->Bool {
             let desc=MTLRenderPassDescriptor();desc.colorAttachments[0].texture=texture
             desc.colorAttachments[0].loadAction = .dontCare;desc.colorAttachments[0].storeAction = .store
-            let enc=command.makeRenderCommandEncoder(descriptor:desc)!
+            guard let enc=command.makeRenderCommandEncoder(descriptor:desc) else {renderSafety.fail("Render encoder allocation");return false}
             enc.setRenderPipelineState(pipeline);bind(enc)
-            enc.drawPrimitives(type:.triangle,vertexStart:0,vertexCount:3);enc.endEncoding()
+            enc.drawPrimitives(type:.triangle,vertexStart:0,vertexCount:3);enc.endEncoding();return true
         }
-        let encoder=command.makeComputeCommandEncoder()!
+        guard let encoder=command.makeComputeCommandEncoder() else {renderSafety.fail("Background compute encoder allocation");return}
         var backgroundScale=scale
         encoder.setComputePipelineState(gpu.background);encoder.setTexture(backing,index:0)
         encoder.setBuffer(uniformBuffer,offset:0,index:0);encoder.setBuffer(historyBuffer,offset:0,index:1)
@@ -341,26 +378,28 @@ public final class GradientViewController:UIViewController,MTKViewDelegate {
         let groups=MTLSize(width:(backing.width+threads.width-1)/threads.width,height:(backing.height+threads.height-1)/threads.height,depth:1)
         encoder.dispatchThreadgroups(groups,threadsPerThreadgroup:threads);encoder.endEncoding()
         let strength=f.distortion
-        var input=backing!
+        var input=backing
         if strength>0.002 {
-            encode(distorted,gpu.distortion) {enc in
+            guard encode(distorted,gpu.distortion, {enc in
                 var p=SIMD4<Float>(uniforms[0],uniforms[1],strength,scale)
                 enc.setFragmentTexture(backing,index:0);enc.setFragmentBuffer(uniformBuffer,offset:0,index:0)
                 enc.setFragmentBytes(&p,length:16,index:1)
-            }
+            }) else{return}
             input=distorted
         }
-        encode(drawable.texture,gpu.composite) {enc in
+        guard encode(drawable.texture,gpu.composite, {enc in
             var p=SIMD4<Float>(scale,(backgroundOnly || captionOnly) ? 0:1,(f.dark && !backgroundOnly) ? 1:0,0)
             enc.setFragmentTexture(input,index:0)
             for i in 0..<3 {enc.setFragmentTexture(masks[i],index:i+1)}
             enc.setFragmentBuffer(uniformBuffer,offset:0,index:0);enc.setFragmentBytes(&p,length:16,index:1)
-        }
+        }) else{return}
         let committedAt=metrics == nil ? 0:ProcessInfo.processInfo.systemUptime
         if let metrics {
             command.addScheduledHandler {_ in metrics.add("scheduledCallbackDelayMS",(ProcessInfo.processInfo.systemUptime-committedAt)*1000)}
         }
+        let safety=renderSafety
         command.addCompletedHandler { [weak self] command in
+            safety.completed(command,stage:"Composition command failed")
             let callbackTime=metrics == nil ? 0:ProcessInfo.processInfo.systemUptime
             if let metrics,command.gpuEndTime>0,callbackTime>=command.gpuEndTime {
                 metrics.add("gpuEndToCallbackMS",(callbackTime-command.gpuEndTime)*1000)
@@ -373,9 +412,14 @@ public final class GradientViewController:UIViewController,MTKViewDelegate {
             if let metrics {metrics.add("completionToMainMS",(ProcessInfo.processInfo.systemUptime-callbackTime)*1000)}
             self?.finished=command.status == .completed;self?.availableSlots[completedSlot]=true
             self?.gpuTime+=max(0,command.gpuEndTime-command.gpuStartTime)*1000
-            if command.status != .completed {self?.gpuErrors.append(String(describing:command.error));metrics?.add("compositionCommandErrors",1)}
+            if command.status != .completed {
+                if self?.gpuErrors.isEmpty == true {self?.gpuErrors.append(String(describing:safety.firstError))}
+                metrics?.add("compositionCommandErrors",1)
+            }
+            if safety.isStopped {self?.updateDisplayLink()}
         }}
-        command.present(drawable);command.commit();rendered=true
+        guard !renderSafety.isStopped else {updateDisplayLink();return}
+        command.present(drawable);command.commit();lastCommand=command;rendered=true
     }
     func addCaption(_ size:CGSize) {
         let box=UIView(frame:CGRect(x:0,y:size.height*0.7,width:size.width,height:size.height*0.3))
