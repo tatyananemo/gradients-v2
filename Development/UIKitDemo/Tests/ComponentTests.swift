@@ -105,6 +105,46 @@ final class ComponentTests:XCTestCase {
         }}
     }
 
+    @MainActor func testSharedMaskSourcesMatchSnapshotsAfterReuseAndResize() throws {
+        let device=try XCTUnwrap(MTLCreateSystemDefaultDevice()),queue=try XCTUnwrap(device.makeCommandQueue())
+        let reference=GradientMaskRenderer(device:device,queue:queue,cacheIntermediates:true)
+        let candidate=GradientMaskRenderer(device:device,queue:queue)
+        let library=try device.makeLibrary(source:"""
+        #include <metal_stdlib>
+        using namespace metal;
+        kernel void compare(texture2d<float,access::read> a [[texture(0)]],texture2d<float,access::read> b [[texture(1)]],device atomic_uint *changed [[buffer(0)]],uint2 p [[thread_position_in_grid]]) {
+            if(p.x<a.get_width()&&p.y<a.get_height()&&any(a.read(p)!=b.read(p)))atomic_fetch_add_explicit(changed,1,memory_order_relaxed);
+        }
+        """,options:nil)
+        let pipeline=try device.makeComputePipelineState(function:try XCTUnwrap(library.makeFunction(name:"compare")))
+        for batch in 0..<4 {
+            var results:[MTLBuffer]=[]
+            // Queue multiple frames before draining. If the shared source is still
+            // busy, its snapshot fallback must preserve the same output bytes.
+            for slot in 0..<3 {
+                let i=batch*3+slot,size=batch%2==0 ? CGSize(width:390,height:844):CGSize(width:321.5,height:700.5)
+                let scale:CGFloat=batch%2==0 ? 3:2
+                let counter=CGRect(x:0,y:size.height*0.43,width:size.width,height:76.6666666666667)
+                let progress:CGFloat=[0,0.3,0.6,0.8,1][i%5],elapsed=Double(i)*0.137
+                let a=reference.render(progress:progress,elapsed:elapsed,yellow:true,counter:counter,size:size,scale:scale)
+                let b=candidate.render(progress:progress,elapsed:elapsed,yellow:true,counter:counter,size:size,scale:scale)
+                let result=try XCTUnwrap(device.makeBuffer(length:4,options:.storageModeShared))
+                result.contents().storeBytes(of:UInt32(0),as:UInt32.self);results.append(result)
+                let command=try XCTUnwrap(queue.makeCommandBuffer())
+                for j in 0..<3 {
+                    XCTAssertEqual(a[j].width,b[j].width);XCTAssertEqual(a[j].height,b[j].height)
+                    let encoder=try XCTUnwrap(command.makeComputeCommandEncoder())
+                    encoder.setComputePipelineState(pipeline);encoder.setTexture(a[j],index:0);encoder.setTexture(b[j],index:1);encoder.setBuffer(result,offset:0,index:0)
+                    encoder.dispatchThreads(MTLSize(width:a[j].width,height:a[j].height,depth:1),threadsPerThreadgroup:MTLSize(width:16,height:16,depth:1));encoder.endEncoding()
+                }
+                command.commit()
+            }
+            let drain=try XCTUnwrap(queue.makeCommandBuffer());drain.commit();drain.waitUntilCompleted()
+            XCTAssertEqual(drain.status,.completed)
+            for result in results {XCTAssertEqual(result.contents().load(as:UInt32.self),0)}
+        }
+    }
+
     @MainActor func testLiveThemeChangesReusePrivateMasksWithoutGPUFailures() async throws {
         let window=UIWindow(frame:CGRect(x:0,y:0,width:390,height:844))
         let session=GradientSession(at:Date().timeIntervalSinceReferenceDate,initialProgress:0.6)

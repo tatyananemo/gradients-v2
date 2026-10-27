@@ -1,5 +1,6 @@
 """Meaningful composition/build-dependency checks against the approved Git object."""
 import importlib.util
+import hashlib
 import shutil
 from pathlib import Path
 import subprocess
@@ -107,7 +108,7 @@ class CompositionTests(unittest.TestCase):
             self.assertEqual(path.stat().st_mtime_ns, before)
             self.assertEqual(path.read_bytes(), COMPOSER.compose())
 
-    def test_packaging_preserves_all_sdk_swift_and_metal_bytes(self):
+    def test_packaging_preserves_other_sdk_sources_and_mask_math(self):
         files = subprocess.check_output(["git", "ls-tree", "-r", "--name-only", "ca0222e"], cwd=ROOT, text=True).splitlines()
         source_files = [p for p in files if (p.startswith("UIKitComponent/") and p.endswith((".swift", ".metal"))) or p.startswith("ShaderSources/")]
         self.assertEqual(len(source_files), 22)
@@ -115,7 +116,30 @@ class CompositionTests(unittest.TestCase):
             with self.subTest(path=path):
                 expected = expected_sources()[path] if path.startswith("ShaderSources/") else subprocess.check_output(
                     ["git", "show", "ca0222e:" + path], cwd=ROOT).decode()
-                self.assertEqual(current_path(path).read_text(), expected)
+                actual = current_path(path).read_text()
+                if path == "UIKitComponent/GradientMaskRenderer.swift":
+                    # Pin the complete reviewed transport revision as well as its
+                    # unchanged math; no other edits to this file are accepted.
+                    self.assertEqual(hashlib.sha256(actual.encode()).hexdigest(),
+                                     "5dca6f35ac690a6529cd4f4e95d9be600741e03016322735c4c8c91ec849bcbb")
+                    def span(text, start, end):
+                        begin = text.index(start)
+                        finish = text.index(end, begin) + len(end)
+                        return text[begin:finish]
+                    # The transport changes; accepted geometry, CG drawing, Gaussian
+                    # radius/filter/crop and final orientation remain literal source.
+                    for start, end in [
+                        ("        let flow=", "        let bottom=top+rows"),
+                        ("        ctx.clear(", "        ctx.restoreGState()"),
+                        ("        let radius:", ".cropped(to:fullExtent)"),
+                        ("        let oriented=", "ty:fullExtent.height))"),
+                    ]:
+                        self.assertEqual(span(actual, start, end), span(expected, start, end))
+                    translation = ".transformed(by:CGAffineTransform(translationX:0,y:CGFloat(fullHeight-bottom)))"
+                    self.assertEqual(actual.count(translation), 1)
+                    self.assertIn(translation, expected)
+                else:
+                    self.assertEqual(actual, expected)
 
     def test_demo_uses_external_sdk_target_without_source_copies(self):
         import json

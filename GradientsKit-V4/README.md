@@ -40,7 +40,7 @@ gradient.reset(animated: true)
 ## Границы готовности
 
 - Это исходный Xcode framework; Package.swift и готовый XCFramework не поставляются. Simulator и device требуют разных сборок.
-- UIKit, Metal/MetalKit, Core Image, Core Graphics, Foundation — системные зависимости. Внешних пакетов нет.
+- UIKit, Metal/MetalKit, Core Image, Core Graphics, IOSurface, Foundation — системные зависимости. Внешних пакетов нет.
 - Типографика, отступы, маски и анимации фиксированы утверждённым дизайном; автоматической адаптации Dynamic Type / Reduce Motion нет. Safe area и навигация принадлежат host-приложению.
 - Общая геометрия в Blue-названных файлах нужна Yellow: не удалять эти файлы.
 - Ошибки начальной Metal-инициализации передаются через `throws`; полноценный recoverable API для поздних ошибок ресурсов пока не определён.
