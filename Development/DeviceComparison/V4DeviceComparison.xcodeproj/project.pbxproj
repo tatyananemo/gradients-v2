@@ -1,0 +1,1226 @@
+// !$*UTF8*$!
+{
+	archiveVersion = "1";
+	classes = {
+	};
+	objectVersion = "60";
+	objects = {
+		BF41536EEB53083E42CD36AD = {
+			isa = PBXFileReference;
+			path = "LocalSigning.xcconfig";
+			lastKnownFileType = text.xcconfig;
+			sourceTree = "<group>";
+		};
+		96AC57CCE0D8E1CAF692A970 = {
+			isa = PBXFileReference;
+			path = "GradientsKit.framework";
+			lastKnownFileType = wrapper.framework;
+			sourceTree = "BUILT_PRODUCTS_DIR";
+		};
+		79D291BC7DC091C8086E0727 = {
+			isa = PBXFileReference;
+			path = "GradientsV4Comparison.app";
+			lastKnownFileType = wrapper.application;
+			sourceTree = "BUILT_PRODUCTS_DIR";
+		};
+		D0F9B5FA169502667D97ED71 = {
+			isa = PBXFileReference;
+			path = "GradientsV4ComparisonTests.xctest";
+			lastKnownFileType = wrapper.cfbundle;
+			sourceTree = "BUILT_PRODUCTS_DIR";
+		};
+		37BF61DF6469C45028CE8E51 = {
+			isa = PBXFileReference;
+			path = "GradientsV4ComparisonUITests.xctest";
+			lastKnownFileType = wrapper.cfbundle;
+			sourceTree = "BUILT_PRODUCTS_DIR";
+		};
+		7F16D782FD0A5292176BB0E7 = {
+			isa = PBXFileReference;
+			path = "../../GradientsKit-V4/Sources/GradientsKit/Core/GradientResetPresentation.swift";
+			lastKnownFileType = sourcecode.swift;
+			sourceTree = "<group>";
+		};
+		4887C33F0B1A13203CE851B9 = {
+			isa = PBXFileReference;
+			path = "../../GradientsKit-V4/Sources/GradientsKit/Core/GradientSession.swift";
+			lastKnownFileType = sourcecode.swift;
+			sourceTree = "<group>";
+		};
+		0DC349E50DF1963FAB279D9B = {
+			isa = PBXFileReference;
+			path = "../../GradientsKit-V4/Sources/GradientsKit/GradientMaskRenderer.swift";
+			lastKnownFileType = sourcecode.swift;
+			sourceTree = "<group>";
+		};
+		FDACB4BF9115C16D64FAF769 = {
+			isa = PBXFileReference;
+			path = "../../GradientsKit-V4/Sources/GradientsKit/GradientPercentageLabel.swift";
+			lastKnownFileType = sourcecode.swift;
+			sourceTree = "<group>";
+		};
+		A1D5EBBBDB0410FD0EA762AF = {
+			isa = PBXFileReference;
+			path = "../../GradientsKit-V4/Sources/GradientsKit/GradientPerformanceMetrics.swift";
+			lastKnownFileType = sourcecode.swift;
+			sourceTree = "<group>";
+		};
+		1DC80A5911E1CA42D222A983 = {
+			isa = PBXFileReference;
+			path = "../../GradientsKit-V4/Sources/GradientsKit/GradientRenderSafety.swift";
+			lastKnownFileType = sourcecode.swift;
+			sourceTree = "<group>";
+		};
+		90E16090AACBA06C40C20F4B = {
+			isa = PBXFileReference;
+			path = "../../GradientsKit-V4/Sources/GradientsKit/GradientTheme.swift";
+			lastKnownFileType = sourcecode.swift;
+			sourceTree = "<group>";
+		};
+		71B34E08F019D36059B9817B = {
+			isa = PBXFileReference;
+			path = "../../GradientsKit-V4/Sources/GradientsKit/SessionCaptionProbe.swift";
+			lastKnownFileType = sourcecode.swift;
+			sourceTree = "<group>";
+		};
+		7B82CD6C4BE38AB416FD8B04 = {
+			isa = PBXFileReference;
+			path = "GradientGPU.swift";
+			lastKnownFileType = sourcecode.swift;
+			sourceTree = "DERIVED_FILE_DIR";
+		};
+		360E9CA4BD7336B558536F6E = {
+			isa = PBXFileReference;
+			path = "GradientViewController.swift";
+			lastKnownFileType = sourcecode.swift;
+			sourceTree = "DERIVED_FILE_DIR";
+		};
+		F50F7B5AFFBF69C958E1A1CC = {
+			isa = PBXFileReference;
+			path = "GradientPrecalculationBuffers.swift";
+			lastKnownFileType = sourcecode.swift;
+			sourceTree = "DERIVED_FILE_DIR";
+		};
+		F38E2CADA1B01630CE7F6437 = {
+			isa = PBXFileReference;
+			path = "GradientYellowColors.swift";
+			lastKnownFileType = sourcecode.swift;
+			sourceTree = "DERIVED_FILE_DIR";
+		};
+		0A8AF3B2CBB0F9288F1AE8A3 = {
+			isa = PBXFileReference;
+			path = "GradientsUIKit.metal";
+			lastKnownFileType = sourcecode.metal;
+			sourceTree = "DERIVED_FILE_DIR";
+		};
+		537BAC49FB381519E179BE6B = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = "2147483647";
+			files = (
+			);
+			inputPaths = (
+				"$(SRCROOT)/../../GradientsKit-V4/Configuration/YellowColors.json",
+				"$(SRCROOT)/../../GradientsKit-V4/Scripts/compose_metal.py",
+				"$(SRCROOT)/../../GradientsKit-V4/Scripts/compose_uikit_metal.py",
+				"$(SRCROOT)/../../GradientsKit-V4/Scripts/create_sdk_project.py",
+				"$(SRCROOT)/../../GradientsKit-V4/Scripts/source_colors.py",
+				"$(SRCROOT)/../../GradientsKit-V4/Scripts/xcode_project.py",
+				"$(SRCROOT)/../../GradientsKit-V4/ShaderSources/ApprovedBlue.metal.source",
+				"$(SRCROOT)/../../GradientsKit-V4/ShaderSources/CompositionInputs.xcfilelist",
+				"$(SRCROOT)/../../GradientsKit-V4/ShaderSources/ContactFields.metal.source",
+				"$(SRCROOT)/../../GradientsKit-V4/ShaderSources/Shared/BlueGeometryTail.inc",
+				"$(SRCROOT)/../../GradientsKit-V4/ShaderSources/Shared/InteractionHistory.inc",
+				"$(SRCROOT)/../../GradientsKit-V4/ShaderSources/Shared/PhysicalFields.inc",
+				"$(SRCROOT)/../../GradientsKit-V4/ShaderSources/Shared/YellowDarkPose.inc",
+				"$(SRCROOT)/../../GradientsKit-V4/ShaderSources/Shared/YellowInteraction.inc",
+				"$(SRCROOT)/../../GradientsKit-V4/ShaderSources/Shared/YellowLightSubstrate.inc",
+				"$(SRCROOT)/../../GradientsKit-V4/ShaderSources/Shared/YellowWaveProfile.inc",
+				"$(SRCROOT)/../../GradientsKit-V4/ShaderSources/V2EntryPoints.metal.source",
+				"$(SRCROOT)/../../GradientsKit-V4/ShaderSources/YellowDarkContact.metal.source",
+				"$(SRCROOT)/../../GradientsKit-V4/ShaderSources/YellowDarkMAIN.metal.source",
+				"$(SRCROOT)/../../GradientsKit-V4/ShaderSources/YellowLightContact.metal.source",
+				"$(SRCROOT)/../../GradientsKit-V4/ShaderSources/YellowLightMAIN.metal.source",
+				"$(SRCROOT)/../../GradientsKit-V4/ShaderSources/YellowShared.metal.source",
+				"$(SRCROOT)/../../GradientsKit-V4/Sources/GradientsKit/Core/GradientResetPresentation.swift",
+				"$(SRCROOT)/../../GradientsKit-V4/Sources/GradientsKit/Core/GradientSession.swift",
+				"$(SRCROOT)/../../GradientsKit-V4/Sources/GradientsKit/GradientGPU.swift",
+				"$(SRCROOT)/../../GradientsKit-V4/Sources/GradientsKit/GradientMaskRenderer.swift",
+				"$(SRCROOT)/../../GradientsKit-V4/Sources/GradientsKit/GradientPercentageLabel.swift",
+				"$(SRCROOT)/../../GradientsKit-V4/Sources/GradientsKit/GradientPerformanceMetrics.swift",
+				"$(SRCROOT)/../../GradientsKit-V4/Sources/GradientsKit/GradientRenderSafety.swift",
+				"$(SRCROOT)/../../GradientsKit-V4/Sources/GradientsKit/GradientTheme.swift",
+				"$(SRCROOT)/../../GradientsKit-V4/Sources/GradientsKit/GradientViewController.swift",
+				"$(SRCROOT)/../../GradientsKit-V4/Sources/GradientsKit/SessionCaptionProbe.swift",
+				"$(SRCROOT)/../../GradientsKit-V4/Sources/GradientsKit/Shaders/GradientAdapters.metal",
+				"$(SRCROOT)/prepare_sources.py",
+				"$(SRCROOT)/precalculation_source.py",
+				"$(SRCROOT)/GradientPrecalculationBuffers.swift",
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/GradientGPU.swift",
+				"$(DERIVED_FILE_DIR)/GradientViewController.swift",
+				"$(DERIVED_FILE_DIR)/GradientPrecalculationBuffers.swift",
+				"$(DERIVED_FILE_DIR)/GradientYellowColors.swift",
+				"$(DERIVED_FILE_DIR)/GradientsUIKit.metal",
+				"$(DERIVED_FILE_DIR)/SourceManifest.json",
+			);
+			name = "Prepare isolated comparison sources";
+			runOnlyForDeploymentPostprocessing = "0";
+			shellPath = "/bin/sh";
+			shellScript = "/usr/bin/python3 -I -B \"$SRCROOT/prepare_sources.py\" --mode \"$V4_COMPARISON_MODE\" --output \"$DERIVED_FILE_DIR\"\n";
+		};
+		6CA2D723A4E3753F8C0202DB = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				SDKROOT = "iphoneos";
+				IPHONEOS_DEPLOYMENT_TARGET = "17.0";
+				SWIFT_VERSION = "5.0";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				CLANG_ENABLE_MODULES = "YES";
+				CLANG_ENABLE_OBJC_ARC = "YES";
+				MTL_FAST_MATH = "YES";
+				GENERATE_INFOPLIST_FILE = "YES";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				CODE_SIGN_STYLE = "Automatic";
+				CURRENT_PROJECT_VERSION = "1";
+				MARKETING_VERSION = "4.0";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.local.gradients.v4.kit";
+				DEFINES_MODULE = "YES";
+				SKIP_INSTALL = "NO";
+				BUILD_LIBRARY_FOR_DISTRIBUTION = "YES";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				LD_DYLIB_INSTALL_NAME = "@rpath/$(EXECUTABLE_PATH)";
+				SUPPORTED_PLATFORMS = "iphoneos";
+				SUPPORTS_MACCATALYST = "NO";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				DEBUG_INFORMATION_FORMAT = "dwarf";
+				ENABLE_TESTABILITY = "YES";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG ";
+				V4_COMPARISON_MODE = "reference";
+				ENABLE_USER_SCRIPT_SANDBOXING = "NO";
+			};
+			name = "ReferenceDebug";
+			baseConfigurationReference = BF41536EEB53083E42CD36AD;
+		};
+		30BA4A503FF75A76945316E0 = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				SDKROOT = "iphoneos";
+				IPHONEOS_DEPLOYMENT_TARGET = "17.0";
+				SWIFT_VERSION = "5.0";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				CLANG_ENABLE_MODULES = "YES";
+				CLANG_ENABLE_OBJC_ARC = "YES";
+				MTL_FAST_MATH = "YES";
+				GENERATE_INFOPLIST_FILE = "YES";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				CODE_SIGN_STYLE = "Automatic";
+				CURRENT_PROJECT_VERSION = "1";
+				MARKETING_VERSION = "4.0";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.local.gradients.v4.kit";
+				DEFINES_MODULE = "YES";
+				SKIP_INSTALL = "NO";
+				BUILD_LIBRARY_FOR_DISTRIBUTION = "YES";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				LD_DYLIB_INSTALL_NAME = "@rpath/$(EXECUTABLE_PATH)";
+				SUPPORTED_PLATFORMS = "iphoneos";
+				SUPPORTS_MACCATALYST = "NO";
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_TESTABILITY = "NO";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "";
+				V4_COMPARISON_MODE = "reference";
+				ENABLE_USER_SCRIPT_SANDBOXING = "NO";
+			};
+			name = "ReferenceRelease";
+			baseConfigurationReference = BF41536EEB53083E42CD36AD;
+		};
+		2909CD41BDEA73A3AA730DFA = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				SDKROOT = "iphoneos";
+				IPHONEOS_DEPLOYMENT_TARGET = "17.0";
+				SWIFT_VERSION = "5.0";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				CLANG_ENABLE_MODULES = "YES";
+				CLANG_ENABLE_OBJC_ARC = "YES";
+				MTL_FAST_MATH = "YES";
+				GENERATE_INFOPLIST_FILE = "YES";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				CODE_SIGN_STYLE = "Automatic";
+				CURRENT_PROJECT_VERSION = "1";
+				MARKETING_VERSION = "4.0";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.local.gradients.v4.kit";
+				DEFINES_MODULE = "YES";
+				SKIP_INSTALL = "NO";
+				BUILD_LIBRARY_FOR_DISTRIBUTION = "YES";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				LD_DYLIB_INSTALL_NAME = "@rpath/$(EXECUTABLE_PATH)";
+				SUPPORTED_PLATFORMS = "iphoneos";
+				SUPPORTS_MACCATALYST = "NO";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				DEBUG_INFORMATION_FORMAT = "dwarf";
+				ENABLE_TESTABILITY = "YES";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG PRECALC_COMPARISON";
+				V4_COMPARISON_MODE = "precalc";
+				ENABLE_USER_SCRIPT_SANDBOXING = "NO";
+			};
+			name = "PrecalcDebug";
+			baseConfigurationReference = BF41536EEB53083E42CD36AD;
+		};
+		65335F3C0BF85298CD1A4DBB = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				SDKROOT = "iphoneos";
+				IPHONEOS_DEPLOYMENT_TARGET = "17.0";
+				SWIFT_VERSION = "5.0";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				CLANG_ENABLE_MODULES = "YES";
+				CLANG_ENABLE_OBJC_ARC = "YES";
+				MTL_FAST_MATH = "YES";
+				GENERATE_INFOPLIST_FILE = "YES";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				CODE_SIGN_STYLE = "Automatic";
+				CURRENT_PROJECT_VERSION = "1";
+				MARKETING_VERSION = "4.0";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.local.gradients.v4.kit";
+				DEFINES_MODULE = "YES";
+				SKIP_INSTALL = "NO";
+				BUILD_LIBRARY_FOR_DISTRIBUTION = "YES";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				LD_DYLIB_INSTALL_NAME = "@rpath/$(EXECUTABLE_PATH)";
+				SUPPORTED_PLATFORMS = "iphoneos";
+				SUPPORTS_MACCATALYST = "NO";
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_TESTABILITY = "NO";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "PRECALC_COMPARISON";
+				V4_COMPARISON_MODE = "precalc";
+				ENABLE_USER_SCRIPT_SANDBOXING = "NO";
+			};
+			name = "PrecalcRelease";
+			baseConfigurationReference = BF41536EEB53083E42CD36AD;
+		};
+		0AC0AB9714AA8CB827043575 = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				6CA2D723A4E3753F8C0202DB,
+				30BA4A503FF75A76945316E0,
+				2909CD41BDEA73A3AA730DFA,
+				65335F3C0BF85298CD1A4DBB,
+			);
+			defaultConfigurationIsVisible = "0";
+			defaultConfigurationName = "ReferenceRelease";
+		};
+		F0AA68F809CBC67832470006 = {
+			isa = PBXBuildFile;
+			fileRef = 7F16D782FD0A5292176BB0E7;
+		};
+		FBCAF746CE21F52B1A64B8FB = {
+			isa = PBXBuildFile;
+			fileRef = 4887C33F0B1A13203CE851B9;
+		};
+		7F40E11B5F3707BA2A6C22E3 = {
+			isa = PBXBuildFile;
+			fileRef = 0DC349E50DF1963FAB279D9B;
+		};
+		DAD9AB35E7C48A71FF84C7D1 = {
+			isa = PBXBuildFile;
+			fileRef = FDACB4BF9115C16D64FAF769;
+		};
+		7C819849F12A26973F483D59 = {
+			isa = PBXBuildFile;
+			fileRef = A1D5EBBBDB0410FD0EA762AF;
+		};
+		7A7EDF9310917B63BFFE3A7C = {
+			isa = PBXBuildFile;
+			fileRef = 1DC80A5911E1CA42D222A983;
+		};
+		B1A344BC4CC11283C79E6077 = {
+			isa = PBXBuildFile;
+			fileRef = 90E16090AACBA06C40C20F4B;
+		};
+		2745DDA64832543C75688326 = {
+			isa = PBXBuildFile;
+			fileRef = 71B34E08F019D36059B9817B;
+		};
+		6AC56F2511148FED790FA49C = {
+			isa = PBXBuildFile;
+			fileRef = 7B82CD6C4BE38AB416FD8B04;
+		};
+		C219AACFC28EBFC645A6E00E = {
+			isa = PBXBuildFile;
+			fileRef = 360E9CA4BD7336B558536F6E;
+		};
+		3C05530276C5BD08508AA23D = {
+			isa = PBXBuildFile;
+			fileRef = F50F7B5AFFBF69C958E1A1CC;
+		};
+		C7EC78AAF57978DEE313EC9F = {
+			isa = PBXBuildFile;
+			fileRef = F38E2CADA1B01630CE7F6437;
+		};
+		1140CA3BA12170685762AE1D = {
+			isa = PBXBuildFile;
+			fileRef = 0A8AF3B2CBB0F9288F1AE8A3;
+		};
+		49A1BEAB1F1C299BFCFE8254 = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = "2147483647";
+			files = (
+				F0AA68F809CBC67832470006,
+				FBCAF746CE21F52B1A64B8FB,
+				7F40E11B5F3707BA2A6C22E3,
+				DAD9AB35E7C48A71FF84C7D1,
+				7C819849F12A26973F483D59,
+				7A7EDF9310917B63BFFE3A7C,
+				B1A344BC4CC11283C79E6077,
+				2745DDA64832543C75688326,
+				6AC56F2511148FED790FA49C,
+				C219AACFC28EBFC645A6E00E,
+				3C05530276C5BD08508AA23D,
+				C7EC78AAF57978DEE313EC9F,
+				1140CA3BA12170685762AE1D,
+			);
+			runOnlyForDeploymentPostprocessing = "0";
+		};
+		97F26DF81492291F8905DAFC = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = "2147483647";
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = "0";
+		};
+		B30BDCC723D11C07B4697AD1 = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = "2147483647";
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = "0";
+		};
+		5A374DCD2E5EB762B527AF3A = {
+			isa = PBXNativeTarget;
+			name = "GradientsKit";
+			productName = "GradientsKit";
+			productReference = 96AC57CCE0D8E1CAF692A970;
+			productType = "com.apple.product-type.framework";
+			buildConfigurationList = 0AC0AB9714AA8CB827043575;
+			buildPhases = (
+				537BAC49FB381519E179BE6B,
+				49A1BEAB1F1C299BFCFE8254,
+				97F26DF81492291F8905DAFC,
+				B30BDCC723D11C07B4697AD1,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+		};
+		086603E118E709AED34AA454 = {
+			isa = PBXTargetDependency;
+			target = 5A374DCD2E5EB762B527AF3A;
+		};
+		EAB7EBFBA96809A8B0C97CA5 = {
+			isa = PBXFileReference;
+			path = "../UIKitDemo/AppDelegate.swift";
+			lastKnownFileType = sourcecode.swift;
+			sourceTree = "<group>";
+		};
+		69449AE6AA18D6F9D6DD7665 = {
+			isa = PBXBuildFile;
+			fileRef = 96AC57CCE0D8E1CAF692A970;
+			settings = {
+				ATTRIBUTES = (
+					"CodeSignOnCopy",
+					"RemoveHeadersOnCopy",
+				);
+			};
+		};
+		CFFF27C96089B93150F3553B = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = "2147483647";
+			files = (
+				69449AE6AA18D6F9D6DD7665,
+			);
+			dstPath = "";
+			dstSubfolderSpec = "10";
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = "0";
+		};
+		9908FE00579E8FBAAE2F2B58 = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				SDKROOT = "iphoneos";
+				IPHONEOS_DEPLOYMENT_TARGET = "17.0";
+				SWIFT_VERSION = "5.0";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				CLANG_ENABLE_MODULES = "YES";
+				CLANG_ENABLE_OBJC_ARC = "YES";
+				MTL_FAST_MATH = "YES";
+				GENERATE_INFOPLIST_FILE = "YES";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				CODE_SIGN_STYLE = "Automatic";
+				CURRENT_PROJECT_VERSION = "1";
+				MARKETING_VERSION = "4.0";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = "YES";
+				INFOPLIST_KEY_UILaunchScreen_Generation = "YES";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				SKIP_INSTALL = "YES";
+				SUPPORTED_PLATFORMS = "iphoneos";
+				SUPPORTS_MACCATALYST = "NO";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				DEBUG_INFORMATION_FORMAT = "dwarf";
+				ENABLE_TESTABILITY = "YES";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG ";
+				V4_COMPARISON_MODE = "reference";
+				ENABLE_USER_SCRIPT_SANDBOXING = "NO";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.local.gradients.v4.compare.reference";
+				INFOPLIST_KEY_CFBundleDisplayName = "V4 Reference";
+			};
+			name = "ReferenceDebug";
+			baseConfigurationReference = BF41536EEB53083E42CD36AD;
+		};
+		C10082D379B76C8B7D2C414E = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				SDKROOT = "iphoneos";
+				IPHONEOS_DEPLOYMENT_TARGET = "17.0";
+				SWIFT_VERSION = "5.0";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				CLANG_ENABLE_MODULES = "YES";
+				CLANG_ENABLE_OBJC_ARC = "YES";
+				MTL_FAST_MATH = "YES";
+				GENERATE_INFOPLIST_FILE = "YES";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				CODE_SIGN_STYLE = "Automatic";
+				CURRENT_PROJECT_VERSION = "1";
+				MARKETING_VERSION = "4.0";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = "YES";
+				INFOPLIST_KEY_UILaunchScreen_Generation = "YES";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				SKIP_INSTALL = "YES";
+				SUPPORTED_PLATFORMS = "iphoneos";
+				SUPPORTS_MACCATALYST = "NO";
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_TESTABILITY = "NO";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "";
+				V4_COMPARISON_MODE = "reference";
+				ENABLE_USER_SCRIPT_SANDBOXING = "NO";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.local.gradients.v4.compare.reference";
+				INFOPLIST_KEY_CFBundleDisplayName = "V4 Reference";
+			};
+			name = "ReferenceRelease";
+			baseConfigurationReference = BF41536EEB53083E42CD36AD;
+		};
+		729C695918E572002B9C3852 = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				SDKROOT = "iphoneos";
+				IPHONEOS_DEPLOYMENT_TARGET = "17.0";
+				SWIFT_VERSION = "5.0";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				CLANG_ENABLE_MODULES = "YES";
+				CLANG_ENABLE_OBJC_ARC = "YES";
+				MTL_FAST_MATH = "YES";
+				GENERATE_INFOPLIST_FILE = "YES";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				CODE_SIGN_STYLE = "Automatic";
+				CURRENT_PROJECT_VERSION = "1";
+				MARKETING_VERSION = "4.0";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = "YES";
+				INFOPLIST_KEY_UILaunchScreen_Generation = "YES";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				SKIP_INSTALL = "YES";
+				SUPPORTED_PLATFORMS = "iphoneos";
+				SUPPORTS_MACCATALYST = "NO";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				DEBUG_INFORMATION_FORMAT = "dwarf";
+				ENABLE_TESTABILITY = "YES";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG PRECALC_COMPARISON";
+				V4_COMPARISON_MODE = "precalc";
+				ENABLE_USER_SCRIPT_SANDBOXING = "NO";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.local.gradients.v4.compare.precalc";
+				INFOPLIST_KEY_CFBundleDisplayName = "V4 Precalc";
+			};
+			name = "PrecalcDebug";
+			baseConfigurationReference = BF41536EEB53083E42CD36AD;
+		};
+		8E7D2EB0B3BB5E2E7997028F = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				SDKROOT = "iphoneos";
+				IPHONEOS_DEPLOYMENT_TARGET = "17.0";
+				SWIFT_VERSION = "5.0";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				CLANG_ENABLE_MODULES = "YES";
+				CLANG_ENABLE_OBJC_ARC = "YES";
+				MTL_FAST_MATH = "YES";
+				GENERATE_INFOPLIST_FILE = "YES";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				CODE_SIGN_STYLE = "Automatic";
+				CURRENT_PROJECT_VERSION = "1";
+				MARKETING_VERSION = "4.0";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = "YES";
+				INFOPLIST_KEY_UILaunchScreen_Generation = "YES";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				SKIP_INSTALL = "YES";
+				SUPPORTED_PLATFORMS = "iphoneos";
+				SUPPORTS_MACCATALYST = "NO";
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_TESTABILITY = "NO";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "PRECALC_COMPARISON";
+				V4_COMPARISON_MODE = "precalc";
+				ENABLE_USER_SCRIPT_SANDBOXING = "NO";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.local.gradients.v4.compare.precalc";
+				INFOPLIST_KEY_CFBundleDisplayName = "V4 Precalc";
+			};
+			name = "PrecalcRelease";
+			baseConfigurationReference = BF41536EEB53083E42CD36AD;
+		};
+		08350E39CB02F1A07EA15590 = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9908FE00579E8FBAAE2F2B58,
+				C10082D379B76C8B7D2C414E,
+				729C695918E572002B9C3852,
+				8E7D2EB0B3BB5E2E7997028F,
+			);
+			defaultConfigurationIsVisible = "0";
+			defaultConfigurationName = "ReferenceRelease";
+		};
+		BDCF3BADBC6155A7499D6A8B = {
+			isa = PBXBuildFile;
+			fileRef = EAB7EBFBA96809A8B0C97CA5;
+		};
+		164FD0761DD050E900E6DB96 = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = "2147483647";
+			files = (
+				BDCF3BADBC6155A7499D6A8B,
+			);
+			runOnlyForDeploymentPostprocessing = "0";
+		};
+		C285B26A6005990293BC5AFE = {
+			isa = PBXBuildFile;
+			fileRef = 96AC57CCE0D8E1CAF692A970;
+		};
+		8EBED99A71B6E649165CEC73 = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = "2147483647";
+			files = (
+				C285B26A6005990293BC5AFE,
+			);
+			runOnlyForDeploymentPostprocessing = "0";
+		};
+		C839E1F8F6C87386D2D38ED6 = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = "2147483647";
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = "0";
+		};
+		89E495E7941CF9E40E6980D1 = {
+			isa = PBXNativeTarget;
+			name = "GradientsV4Comparison";
+			productName = "GradientsV4Comparison";
+			productReference = 79D291BC7DC091C8086E0727;
+			productType = "com.apple.product-type.application";
+			buildConfigurationList = 08350E39CB02F1A07EA15590;
+			buildPhases = (
+				164FD0761DD050E900E6DB96,
+				8EBED99A71B6E649165CEC73,
+				C839E1F8F6C87386D2D38ED6,
+				CFFF27C96089B93150F3553B,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				086603E118E709AED34AA454,
+			);
+		};
+		89DDD466CE3CEB9235F68DE1 = {
+			isa = PBXFileReference;
+			path = "../UIKitDemo/Tests/ComponentTests.swift";
+			lastKnownFileType = sourcecode.swift;
+			sourceTree = "<group>";
+		};
+		C902A9720B0558A13AC779DE = {
+			isa = PBXFileReference;
+			path = "../UIKitDemo/Tests/SDKStabilityTests.swift";
+			lastKnownFileType = sourcecode.swift;
+			sourceTree = "<group>";
+		};
+		5863FC36CD64D4B10BDA5B5A = {
+			isa = PBXFileReference;
+			path = "PrecalculationTests.swift";
+			lastKnownFileType = sourcecode.swift;
+			sourceTree = "<group>";
+		};
+		7F55138BFE3ED1A30096ECC4 = {
+			isa = PBXFileReference;
+			path = "../UIKitDemo/UITests/InteractionTests.swift";
+			lastKnownFileType = sourcecode.swift;
+			sourceTree = "<group>";
+		};
+		6737B1D1A1F2DCEBA888896C = {
+			isa = PBXTargetDependency;
+			target = 89E495E7941CF9E40E6980D1;
+		};
+		0649710BC656A49C6F80E062 = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				SDKROOT = "iphoneos";
+				IPHONEOS_DEPLOYMENT_TARGET = "17.0";
+				SWIFT_VERSION = "5.0";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				CLANG_ENABLE_MODULES = "YES";
+				CLANG_ENABLE_OBJC_ARC = "YES";
+				MTL_FAST_MATH = "YES";
+				GENERATE_INFOPLIST_FILE = "YES";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				CODE_SIGN_STYLE = "Automatic";
+				CURRENT_PROJECT_VERSION = "1";
+				MARKETING_VERSION = "4.0";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.local.gradients.v4.compare.unit";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/GradientsV4Comparison.app/GradientsV4Comparison";
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				SUPPORTED_PLATFORMS = "iphoneos";
+				SUPPORTS_MACCATALYST = "NO";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				DEBUG_INFORMATION_FORMAT = "dwarf";
+				ENABLE_TESTABILITY = "YES";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG ";
+				V4_COMPARISON_MODE = "reference";
+				ENABLE_USER_SCRIPT_SANDBOXING = "NO";
+			};
+			name = "ReferenceDebug";
+			baseConfigurationReference = BF41536EEB53083E42CD36AD;
+		};
+		4B9B134CC26A8AF9732EA941 = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				SDKROOT = "iphoneos";
+				IPHONEOS_DEPLOYMENT_TARGET = "17.0";
+				SWIFT_VERSION = "5.0";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				CLANG_ENABLE_MODULES = "YES";
+				CLANG_ENABLE_OBJC_ARC = "YES";
+				MTL_FAST_MATH = "YES";
+				GENERATE_INFOPLIST_FILE = "YES";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				CODE_SIGN_STYLE = "Automatic";
+				CURRENT_PROJECT_VERSION = "1";
+				MARKETING_VERSION = "4.0";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.local.gradients.v4.compare.unit";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/GradientsV4Comparison.app/GradientsV4Comparison";
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				SUPPORTED_PLATFORMS = "iphoneos";
+				SUPPORTS_MACCATALYST = "NO";
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_TESTABILITY = "NO";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "";
+				V4_COMPARISON_MODE = "reference";
+				ENABLE_USER_SCRIPT_SANDBOXING = "NO";
+			};
+			name = "ReferenceRelease";
+			baseConfigurationReference = BF41536EEB53083E42CD36AD;
+		};
+		76E515AB1C2CBAFE4432AD9A = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				SDKROOT = "iphoneos";
+				IPHONEOS_DEPLOYMENT_TARGET = "17.0";
+				SWIFT_VERSION = "5.0";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				CLANG_ENABLE_MODULES = "YES";
+				CLANG_ENABLE_OBJC_ARC = "YES";
+				MTL_FAST_MATH = "YES";
+				GENERATE_INFOPLIST_FILE = "YES";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				CODE_SIGN_STYLE = "Automatic";
+				CURRENT_PROJECT_VERSION = "1";
+				MARKETING_VERSION = "4.0";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.local.gradients.v4.compare.unit";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/GradientsV4Comparison.app/GradientsV4Comparison";
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				SUPPORTED_PLATFORMS = "iphoneos";
+				SUPPORTS_MACCATALYST = "NO";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				DEBUG_INFORMATION_FORMAT = "dwarf";
+				ENABLE_TESTABILITY = "YES";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG PRECALC_COMPARISON";
+				V4_COMPARISON_MODE = "precalc";
+				ENABLE_USER_SCRIPT_SANDBOXING = "NO";
+			};
+			name = "PrecalcDebug";
+			baseConfigurationReference = BF41536EEB53083E42CD36AD;
+		};
+		7377A42B0667336F9B4E2B89 = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				SDKROOT = "iphoneos";
+				IPHONEOS_DEPLOYMENT_TARGET = "17.0";
+				SWIFT_VERSION = "5.0";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				CLANG_ENABLE_MODULES = "YES";
+				CLANG_ENABLE_OBJC_ARC = "YES";
+				MTL_FAST_MATH = "YES";
+				GENERATE_INFOPLIST_FILE = "YES";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				CODE_SIGN_STYLE = "Automatic";
+				CURRENT_PROJECT_VERSION = "1";
+				MARKETING_VERSION = "4.0";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.local.gradients.v4.compare.unit";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/GradientsV4Comparison.app/GradientsV4Comparison";
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				SUPPORTED_PLATFORMS = "iphoneos";
+				SUPPORTS_MACCATALYST = "NO";
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_TESTABILITY = "NO";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "PRECALC_COMPARISON";
+				V4_COMPARISON_MODE = "precalc";
+				ENABLE_USER_SCRIPT_SANDBOXING = "NO";
+			};
+			name = "PrecalcRelease";
+			baseConfigurationReference = BF41536EEB53083E42CD36AD;
+		};
+		2D367368963E15D0DD2158D3 = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				0649710BC656A49C6F80E062,
+				4B9B134CC26A8AF9732EA941,
+				76E515AB1C2CBAFE4432AD9A,
+				7377A42B0667336F9B4E2B89,
+			);
+			defaultConfigurationIsVisible = "0";
+			defaultConfigurationName = "ReferenceRelease";
+		};
+		11EE20157FDACEAEF69B3043 = {
+			isa = PBXBuildFile;
+			fileRef = 89DDD466CE3CEB9235F68DE1;
+		};
+		1FFAB534D0E2FE13E5A8661E = {
+			isa = PBXBuildFile;
+			fileRef = C902A9720B0558A13AC779DE;
+		};
+		CBE244657DD21890FFF5F289 = {
+			isa = PBXBuildFile;
+			fileRef = 5863FC36CD64D4B10BDA5B5A;
+		};
+		254997B761D4EBEC4B65DD70 = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = "2147483647";
+			files = (
+				11EE20157FDACEAEF69B3043,
+				1FFAB534D0E2FE13E5A8661E,
+				CBE244657DD21890FFF5F289,
+			);
+			runOnlyForDeploymentPostprocessing = "0";
+		};
+		32BCDB11A0222481154553D8 = {
+			isa = PBXBuildFile;
+			fileRef = 96AC57CCE0D8E1CAF692A970;
+		};
+		A0C136533CEB3FBB31D5D182 = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = "2147483647";
+			files = (
+				32BCDB11A0222481154553D8,
+			);
+			runOnlyForDeploymentPostprocessing = "0";
+		};
+		8C40F1F655563060A4AAA4CF = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = "2147483647";
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = "0";
+		};
+		0DF9EEA0BAD5A55395DB9EC2 = {
+			isa = PBXNativeTarget;
+			name = "GradientsV4ComparisonTests";
+			productName = "GradientsV4ComparisonTests";
+			productReference = D0F9B5FA169502667D97ED71;
+			productType = "com.apple.product-type.bundle.unit-test";
+			buildConfigurationList = 2D367368963E15D0DD2158D3;
+			buildPhases = (
+				254997B761D4EBEC4B65DD70,
+				A0C136533CEB3FBB31D5D182,
+				8C40F1F655563060A4AAA4CF,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				6737B1D1A1F2DCEBA888896C,
+			);
+		};
+		A6BE8AAAF53B79FD2DBEC6E5 = {
+			isa = PBXTargetDependency;
+			target = 89E495E7941CF9E40E6980D1;
+		};
+		8BC8717BC3CF36FB4A7DE261 = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				SDKROOT = "iphoneos";
+				IPHONEOS_DEPLOYMENT_TARGET = "17.0";
+				SWIFT_VERSION = "5.0";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				CLANG_ENABLE_MODULES = "YES";
+				CLANG_ENABLE_OBJC_ARC = "YES";
+				MTL_FAST_MATH = "YES";
+				GENERATE_INFOPLIST_FILE = "YES";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				CODE_SIGN_STYLE = "Automatic";
+				CURRENT_PROJECT_VERSION = "1";
+				MARKETING_VERSION = "4.0";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.local.gradients.v4.compare.ui";
+				TEST_TARGET_NAME = "GradientsV4Comparison";
+				SUPPORTED_PLATFORMS = "iphoneos";
+				SUPPORTS_MACCATALYST = "NO";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				DEBUG_INFORMATION_FORMAT = "dwarf";
+				ENABLE_TESTABILITY = "YES";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG ";
+				V4_COMPARISON_MODE = "reference";
+				ENABLE_USER_SCRIPT_SANDBOXING = "NO";
+			};
+			name = "ReferenceDebug";
+			baseConfigurationReference = BF41536EEB53083E42CD36AD;
+		};
+		50BA3B1D57076FCF01B73DD0 = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				SDKROOT = "iphoneos";
+				IPHONEOS_DEPLOYMENT_TARGET = "17.0";
+				SWIFT_VERSION = "5.0";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				CLANG_ENABLE_MODULES = "YES";
+				CLANG_ENABLE_OBJC_ARC = "YES";
+				MTL_FAST_MATH = "YES";
+				GENERATE_INFOPLIST_FILE = "YES";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				CODE_SIGN_STYLE = "Automatic";
+				CURRENT_PROJECT_VERSION = "1";
+				MARKETING_VERSION = "4.0";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.local.gradients.v4.compare.ui";
+				TEST_TARGET_NAME = "GradientsV4Comparison";
+				SUPPORTED_PLATFORMS = "iphoneos";
+				SUPPORTS_MACCATALYST = "NO";
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_TESTABILITY = "NO";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "";
+				V4_COMPARISON_MODE = "reference";
+				ENABLE_USER_SCRIPT_SANDBOXING = "NO";
+			};
+			name = "ReferenceRelease";
+			baseConfigurationReference = BF41536EEB53083E42CD36AD;
+		};
+		47F422C08698039175CD0634 = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				SDKROOT = "iphoneos";
+				IPHONEOS_DEPLOYMENT_TARGET = "17.0";
+				SWIFT_VERSION = "5.0";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				CLANG_ENABLE_MODULES = "YES";
+				CLANG_ENABLE_OBJC_ARC = "YES";
+				MTL_FAST_MATH = "YES";
+				GENERATE_INFOPLIST_FILE = "YES";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				CODE_SIGN_STYLE = "Automatic";
+				CURRENT_PROJECT_VERSION = "1";
+				MARKETING_VERSION = "4.0";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.local.gradients.v4.compare.ui";
+				TEST_TARGET_NAME = "GradientsV4Comparison";
+				SUPPORTED_PLATFORMS = "iphoneos";
+				SUPPORTS_MACCATALYST = "NO";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				DEBUG_INFORMATION_FORMAT = "dwarf";
+				ENABLE_TESTABILITY = "YES";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG PRECALC_COMPARISON";
+				V4_COMPARISON_MODE = "precalc";
+				ENABLE_USER_SCRIPT_SANDBOXING = "NO";
+			};
+			name = "PrecalcDebug";
+			baseConfigurationReference = BF41536EEB53083E42CD36AD;
+		};
+		83898CCBA70145E95E89AB66 = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				SDKROOT = "iphoneos";
+				IPHONEOS_DEPLOYMENT_TARGET = "17.0";
+				SWIFT_VERSION = "5.0";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				CLANG_ENABLE_MODULES = "YES";
+				CLANG_ENABLE_OBJC_ARC = "YES";
+				MTL_FAST_MATH = "YES";
+				GENERATE_INFOPLIST_FILE = "YES";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				CODE_SIGN_STYLE = "Automatic";
+				CURRENT_PROJECT_VERSION = "1";
+				MARKETING_VERSION = "4.0";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.local.gradients.v4.compare.ui";
+				TEST_TARGET_NAME = "GradientsV4Comparison";
+				SUPPORTED_PLATFORMS = "iphoneos";
+				SUPPORTS_MACCATALYST = "NO";
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_TESTABILITY = "NO";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "PRECALC_COMPARISON";
+				V4_COMPARISON_MODE = "precalc";
+				ENABLE_USER_SCRIPT_SANDBOXING = "NO";
+			};
+			name = "PrecalcRelease";
+			baseConfigurationReference = BF41536EEB53083E42CD36AD;
+		};
+		9438044C2E3DA8B7D373989E = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				8BC8717BC3CF36FB4A7DE261,
+				50BA3B1D57076FCF01B73DD0,
+				47F422C08698039175CD0634,
+				83898CCBA70145E95E89AB66,
+			);
+			defaultConfigurationIsVisible = "0";
+			defaultConfigurationName = "ReferenceRelease";
+		};
+		83824E371B97B1984366F105 = {
+			isa = PBXBuildFile;
+			fileRef = 7F55138BFE3ED1A30096ECC4;
+		};
+		3F0002D04A541FE103F80CF6 = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = "2147483647";
+			files = (
+				83824E371B97B1984366F105,
+			);
+			runOnlyForDeploymentPostprocessing = "0";
+		};
+		8390B7595BCD2F6FEF17F197 = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = "2147483647";
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = "0";
+		};
+		43A098B05C43B6CE676DA934 = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = "2147483647";
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = "0";
+		};
+		636117B25F17DA7E91194E09 = {
+			isa = PBXNativeTarget;
+			name = "GradientsV4ComparisonUITests";
+			productName = "GradientsV4ComparisonUITests";
+			productReference = 37BF61DF6469C45028CE8E51;
+			productType = "com.apple.product-type.bundle.ui-testing";
+			buildConfigurationList = 9438044C2E3DA8B7D373989E;
+			buildPhases = (
+				3F0002D04A541FE103F80CF6,
+				8390B7595BCD2F6FEF17F197,
+				43A098B05C43B6CE676DA934,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				A6BE8AAAF53B79FD2DBEC6E5,
+			);
+		};
+		FBDC4F23F93125BBEEAE800C = {
+			isa = PBXGroup;
+			name = "Products";
+			children = (
+				96AC57CCE0D8E1CAF692A970,
+				79D291BC7DC091C8086E0727,
+				D0F9B5FA169502667D97ED71,
+				37BF61DF6469C45028CE8E51,
+			);
+			sourceTree = "<group>";
+		};
+		DC76E9F0C0006E8F919E0C51 = {
+			isa = PBXGroup;
+			children = (
+				BF41536EEB53083E42CD36AD,
+				7F16D782FD0A5292176BB0E7,
+				4887C33F0B1A13203CE851B9,
+				0DC349E50DF1963FAB279D9B,
+				FDACB4BF9115C16D64FAF769,
+				A1D5EBBBDB0410FD0EA762AF,
+				1DC80A5911E1CA42D222A983,
+				90E16090AACBA06C40C20F4B,
+				71B34E08F019D36059B9817B,
+				7B82CD6C4BE38AB416FD8B04,
+				360E9CA4BD7336B558536F6E,
+				F50F7B5AFFBF69C958E1A1CC,
+				F38E2CADA1B01630CE7F6437,
+				0A8AF3B2CBB0F9288F1AE8A3,
+				EAB7EBFBA96809A8B0C97CA5,
+				89DDD466CE3CEB9235F68DE1,
+				C902A9720B0558A13AC779DE,
+				5863FC36CD64D4B10BDA5B5A,
+				7F55138BFE3ED1A30096ECC4,
+				FBDC4F23F93125BBEEAE800C,
+			);
+			sourceTree = "<group>";
+		};
+		946474F8415F83758B364B3C = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				SDKROOT = "iphoneos";
+				IPHONEOS_DEPLOYMENT_TARGET = "17.0";
+				SWIFT_VERSION = "5.0";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				CLANG_ENABLE_MODULES = "YES";
+				CLANG_ENABLE_OBJC_ARC = "YES";
+				MTL_FAST_MATH = "YES";
+				GENERATE_INFOPLIST_FILE = "YES";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				CODE_SIGN_STYLE = "Automatic";
+				CURRENT_PROJECT_VERSION = "1";
+				MARKETING_VERSION = "4.0";
+				SUPPORTED_PLATFORMS = "iphoneos";
+				SUPPORTS_MACCATALYST = "NO";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				DEBUG_INFORMATION_FORMAT = "dwarf";
+				ENABLE_TESTABILITY = "YES";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG ";
+				V4_COMPARISON_MODE = "reference";
+				ENABLE_USER_SCRIPT_SANDBOXING = "NO";
+			};
+			name = "ReferenceDebug";
+			baseConfigurationReference = BF41536EEB53083E42CD36AD;
+		};
+		3C20640522016FE97BC2BF69 = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				SDKROOT = "iphoneos";
+				IPHONEOS_DEPLOYMENT_TARGET = "17.0";
+				SWIFT_VERSION = "5.0";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				CLANG_ENABLE_MODULES = "YES";
+				CLANG_ENABLE_OBJC_ARC = "YES";
+				MTL_FAST_MATH = "YES";
+				GENERATE_INFOPLIST_FILE = "YES";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				CODE_SIGN_STYLE = "Automatic";
+				CURRENT_PROJECT_VERSION = "1";
+				MARKETING_VERSION = "4.0";
+				SUPPORTED_PLATFORMS = "iphoneos";
+				SUPPORTS_MACCATALYST = "NO";
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_TESTABILITY = "NO";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "";
+				V4_COMPARISON_MODE = "reference";
+				ENABLE_USER_SCRIPT_SANDBOXING = "NO";
+			};
+			name = "ReferenceRelease";
+			baseConfigurationReference = BF41536EEB53083E42CD36AD;
+		};
+		9524E7180FEF415D6584021A = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				SDKROOT = "iphoneos";
+				IPHONEOS_DEPLOYMENT_TARGET = "17.0";
+				SWIFT_VERSION = "5.0";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				CLANG_ENABLE_MODULES = "YES";
+				CLANG_ENABLE_OBJC_ARC = "YES";
+				MTL_FAST_MATH = "YES";
+				GENERATE_INFOPLIST_FILE = "YES";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				CODE_SIGN_STYLE = "Automatic";
+				CURRENT_PROJECT_VERSION = "1";
+				MARKETING_VERSION = "4.0";
+				SUPPORTED_PLATFORMS = "iphoneos";
+				SUPPORTS_MACCATALYST = "NO";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				DEBUG_INFORMATION_FORMAT = "dwarf";
+				ENABLE_TESTABILITY = "YES";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG PRECALC_COMPARISON";
+				V4_COMPARISON_MODE = "precalc";
+				ENABLE_USER_SCRIPT_SANDBOXING = "NO";
+			};
+			name = "PrecalcDebug";
+			baseConfigurationReference = BF41536EEB53083E42CD36AD;
+		};
+		ABAFB191D280FA6885D984EA = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				SDKROOT = "iphoneos";
+				IPHONEOS_DEPLOYMENT_TARGET = "17.0";
+				SWIFT_VERSION = "5.0";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				CLANG_ENABLE_MODULES = "YES";
+				CLANG_ENABLE_OBJC_ARC = "YES";
+				MTL_FAST_MATH = "YES";
+				GENERATE_INFOPLIST_FILE = "YES";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				CODE_SIGN_STYLE = "Automatic";
+				CURRENT_PROJECT_VERSION = "1";
+				MARKETING_VERSION = "4.0";
+				SUPPORTED_PLATFORMS = "iphoneos";
+				SUPPORTS_MACCATALYST = "NO";
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_TESTABILITY = "NO";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "PRECALC_COMPARISON";
+				V4_COMPARISON_MODE = "precalc";
+				ENABLE_USER_SCRIPT_SANDBOXING = "NO";
+			};
+			name = "PrecalcRelease";
+			baseConfigurationReference = BF41536EEB53083E42CD36AD;
+		};
+		F8C70E4123C9AE82C42562CC = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				946474F8415F83758B364B3C,
+				3C20640522016FE97BC2BF69,
+				9524E7180FEF415D6584021A,
+				ABAFB191D280FA6885D984EA,
+			);
+			defaultConfigurationIsVisible = "0";
+			defaultConfigurationName = "ReferenceRelease";
+		};
+		98F54143AB4E86B28C3AFEE0 = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = "1";
+				LastUpgradeCheck = "2630";
+			};
+			buildConfigurationList = F8C70E4123C9AE82C42562CC;
+			compatibilityVersion = "Xcode 15.0";
+			developmentRegion = "en";
+			knownRegions = (
+				"en",
+				"Base",
+			);
+			mainGroup = DC76E9F0C0006E8F919E0C51;
+			productRefGroup = FBDC4F23F93125BBEEAE800C;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				5A374DCD2E5EB762B527AF3A,
+				89E495E7941CF9E40E6980D1,
+				0DF9EEA0BAD5A55395DB9EC2,
+				636117B25F17DA7E91194E09,
+			);
+		};
+	};
+	rootObject = 98F54143AB4E86B28C3AFEE0;
+}

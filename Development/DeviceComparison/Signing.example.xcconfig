@@ -1,0 +1,2 @@
+// Copy to LocalSigning.xcconfig and select the same personal team for A and B.
+// DEVELOPMENT_TEAM = YOUR_TEAM_ID
