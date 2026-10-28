@@ -7,6 +7,7 @@ struct Variant:Decodable {
     let name:String,source:String
     let width:Int,height:Int,zeros:Bool
     let precalc:Int?
+    let precalcStatic:Bool?,specialize:Int?
 }
 struct Frame:Decodable {
     let name:String,uniforms:[Float],history:[Float]
@@ -15,6 +16,8 @@ struct Manifest:Decodable {
     let variants:[Variant],cases:String,oracle:String,output:String
     let rounds:Int
     let cacheFloatCount:Int?
+    let controlFrame:String?,diagnosticsOnly:Bool?
+    let traceLabels:[String]?
 }
 struct Prepared {
     let frame:Frame,u:MTLBuffer,h:MTLBuffer
@@ -24,8 +27,10 @@ let args=CommandLine.arguments
 let manifest=try JSONDecoder().decode(Manifest.self,from:Data(contentsOf:URL(fileURLWithPath:args[1])))
 guard let device=MTLCreateSystemDefaultDevice(),let queue=device.makeCommandQueue() else {throw Failure.unavailable}
 let inputs=try JSONDecoder().decode([Frame].self,from:Data(contentsOf:URL(fileURLWithPath:manifest.cases)))
-let approved=inputs.filter {$0.name.hasPrefix("yellow-")}
-guard approved.count==36 else {throw Failure.invalid("Expected 36 unchanged Yellow reference frames")}
+let allApproved=inputs.filter {$0.name.hasPrefix("yellow-")}
+guard allApproved.count==36 else {throw Failure.invalid("Expected 36 unchanged Yellow reference frames")}
+let approved=manifest.controlFrame.map {name in allApproved.filter {$0.name==name}} ?? allApproved
+guard !approved.isEmpty else {throw Failure.invalid("Missing control frame")}
 let oracleObject=try JSONSerialization.jsonObject(with:Data(contentsOf:URL(fileURLWithPath:manifest.oracle))) as! [String:Any]
 let oracle=oracleObject["render_sha256"] as! [String:String]
 let options=MTLCompileOptions();options.fastMathEnabled=true
@@ -37,12 +42,21 @@ for v in manifest.variants {
     if let mode=v.precalc {
         let values=MTLFunctionConstantValues();var flag=UInt32(mode)
         values.setConstantValue(&flag,type:.uint,index:101)
-        if mode==0 {
+        if mode==0 || v.precalcStatic==true {
             guard let f=library.makeFunction(name:"prototypeComputeBackground") else {throw Failure.unavailable}
             function=f
         } else {function=try library.makeFunction(name:"prototypeComputeBackground",constantValues:values)}
-        let prepare=try library.makeFunction(name:"prototypePrepareAxes",constantValues:values)
+        let prepare:MTLFunction
+        if v.precalcStatic==true {
+            guard let f=library.makeFunction(name:"prototypePrepareAxes") else {throw Failure.unavailable}
+            prepare=f
+        } else {prepare=try library.makeFunction(name:"prototypePrepareAxes",constantValues:values)}
         preparations.append(try device.makeComputePipelineState(function:prepare))
+    } else if let mode=v.specialize {
+        let values=MTLFunctionConstantValues();var flag=UInt32(mode)
+        values.setConstantValue(&flag,type:.uint,index:101)
+        function=try library.makeFunction(name:"prototypeComputeBackground",constantValues:values)
+        preparations.append(nil)
     } else if v.zeros {
         let values=MTLFunctionConstantValues();var enabled=true
         values.setConstantValue(&enabled,type:.bool,index:0)
@@ -58,12 +72,18 @@ for v in manifest.variants {
     pipelines.append(pipeline)
 }
 // One bounded scratch allocation; sequential test CBs retain it until completion.
-let precalcStorage=manifest.cacheFloatCount.flatMap {device.makeBuffer(length:$0*4,options:.storageModePrivate)}
+let traceCount=manifest.traceLabels == nil ? 0:52000
+if let labels=manifest.traceLabels {
+    guard manifest.controlFrame != nil,labels.count<=2000 else {throw Failure.invalid("Trace requires one control frame and at most 2000 values")}
+}
+let precalcStorage=manifest.cacheFloatCount.flatMap {device.makeBuffer(length:max($0,traceCount)*4,options:traceCount>0 ? .storageModeShared:.storageModePrivate)}
 if manifest.cacheFloatCount != nil && precalcStorage == nil {throw Failure.unavailable}
 func prepare(_ frame:Frame)throws->Prepared {
     let history=frame.history.isEmpty ? [Float(0)]:frame.history
+    var expanded=history
+    if traceCount>expanded.count {expanded += [Float](repeating:0,count:traceCount-expanded.count)}
     guard let u=device.makeBuffer(bytes:frame.uniforms,length:frame.uniforms.count*4,options:.storageModeShared),
-          let h=device.makeBuffer(bytes:history,length:history.count*4,options:.storageModeShared) else {throw Failure.unavailable}
+          let h=device.makeBuffer(bytes:expanded,length:expanded.count*4,options:.storageModeShared) else {throw Failure.unavailable}
     return Prepared(frame:frame,u:u,h:h)
 }
 func texture(scale:Int,storage:MTLStorageMode = .shared)throws->MTLTexture {
@@ -126,6 +146,11 @@ for (index,v) in manifest.variants.enumerated() {
     var firstDifference:[String:Any]=[:]
     for input in prepared {
         _=try render(index,input,small,scale:1)
+        if let labels=manifest.traceLabels {
+            let buffer=preparations[index] == nil ? input.h:precalcStorage!
+            let words=buffer.contents().bindMemory(to:UInt32.self,capacity:traceCount)
+            exact[v.name]=["trace":labels.enumerated().map {i,label in ["label":label,"bits":words[50000+i],"float":Float(bitPattern:words[50000+i])] as [String:Any]}]
+        }
         if try digest(small) != oracle[input.frame.name+".rgba16f"] {changed.append(input.frame.name)}
         if input.frame.name==prepared[0].frame.name {
             var raw=[UInt16](repeating:0,count:small.width*small.height*4)
@@ -138,14 +163,20 @@ for (index,v) in manifest.variants.enumerated() {
                 maxBits=max(maxBits,abs(Int(raw[i])-Int(firstGolden[i])))
             }
             firstDifference=["case":input.frame.name,"differentComponents":count,"maxAbsoluteDelta":maxDelta,"maxHalfBitDistance":maxBits]
+            firstDifference["sha256"]=try digest(small)
+            if let i=raw.indices.first(where:{raw[$0] != firstGolden[$0]}) {
+                firstDifference["firstPixel"]=[(i/4)%small.width,(i/4)/small.width]
+                firstDifference["firstChannel"]=i%4
+                firstDifference["referenceHalfBits"]=Int(firstGolden[i]);firstDifference["candidateHalfBits"]=Int(raw[i])
+            }
         }
     }
-    exact[v.name]=["goldens":prepared.count,"changed":changed,"firstFrameDifference":firstDifference]
+    exact[v.name,default:[:]].merge(["goldens":prepared.count,"changed":changed,"firstFrameDifference":firstDifference]) {_,new in new}
     print("Goldens \(v.name): \(prepared.count-changed.count)/\(prepared.count)")
 }
 // Full native iPhone pixel dimensions, plus cycle seams and zero/complete progress.
 var extra=approved
-for dark in [true,false] {
+for dark in manifest.controlFrame==nil ? [true,false]:[] {
     let template=approved.first {$0.name.hasPrefix(dark ? "yellow-dark":"yellow-light") && $0.uniforms[25]==1}!
     for p:Float in [0,0.3,0.6,0.8,1] {
         for t:Float in [0.001,1.2,1.65,2.1,2.999,3.001] {
@@ -167,7 +198,7 @@ for (index,v) in manifest.variants.enumerated() {
     exact[v.name]?["nativeSizeChanged"]=changed
     print("Native-size exact \(v.name): \(extended.count-changed.count)/\(extended.count)")
 }
-let bench=prepared.filter {$0.frame.uniforms[25]==1}
+let bench=manifest.diagnosticsOnly==true ? []:prepared.filter {$0.frame.uniforms[25]==1}
 let benchTexture=full // Same private storage mode as the SDK background target; no readback during timing.
 // Fixed paired workloads, alternating variant order to limit clock/order bias.
 for index in pipelines.indices {for input in bench.prefix(3) {_=try render(index,input,benchTexture,scale:3,repeats:4)}}
