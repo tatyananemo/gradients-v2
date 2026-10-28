@@ -26,7 +26,9 @@ for item in cases {
   let encoder=command.makeComputeCommandEncoder()!
   encoder.setComputePipelineState(compute);encoder.setTexture(texture,index:0)
   encoder.setBuffer(ub,offset:0,index:0);encoder.setBuffer(hb,offset:0,index:1);encoder.setBytes(&scale,length:4,index:2)
-  encoder.dispatchThreads(MTLSize(width:390,height:844,depth:1),threadsPerThreadgroup:MTLSize(width:16,height:16,depth:1));encoder.endEncoding()
+  // Match the SDK's uniform 8x8 dispatch and retained shader bounds guard.
+  let threads=MTLSize(width:8,height:8,depth:1)
+  encoder.dispatchThreadgroups(MTLSize(width:(390+7)/8,height:(844+7)/8,depth:1),threadsPerThreadgroup:threads);encoder.endEncoding()
  }else{
   let encoder=command.makeRenderCommandEncoder(descriptor:pass)!
   encoder.setRenderPipelineState(pipeline);encoder.setFragmentBuffer(ub,offset:0,index:0);encoder.setFragmentBuffer(hb,offset:0,index:1)
