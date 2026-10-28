@@ -7,7 +7,7 @@ import subprocess
 import sys
 import tempfile
 import unittest
-from metal_dedup import verify as verify_metal_sharing, expected_sources, expected_historical_composition
+from metal_dedup import verify as verify_metal_sharing, expected_sources, expected_historical_composition, undo_lazy_main
 from approved_metal import historical_composition, approved_blue, remove_blue_light
 
 from paths import ROOT, SDK, current_path
@@ -35,7 +35,7 @@ class CompositionTests(unittest.TestCase):
 
     def test_shipping_blue_has_only_declared_deletions(self):
         source = (current_path("ShaderSources/ApprovedBlue.metal.source")).read_text()
-        self.assertEqual(source, expected_sources()["ShaderSources/ApprovedBlue.metal.source"])
+        self.assertEqual(undo_lazy_main(source), expected_sources()["ShaderSources/ApprovedBlue.metal.source"])
         self.assertNotIn("qaCurrentAcceptedDarkBlue", source)
         self.assertNotIn("qaContactDarkReference", source)
         self.assertIn("liquidSpecBackground", source)
@@ -45,6 +45,25 @@ class CompositionTests(unittest.TestCase):
         for path in ["Validation/reference.json", "Validation/metal-dedup.json", "Validation/metal-deletions.json"]:
             self.assertEqual(current_path(path).read_bytes(), subprocess.check_output(
                 ["git", "show", "dc7b9da:" + path], cwd=ROOT))
+
+    def test_only_unused_light_evaluation_moves_after_dark_early_return(self):
+        source = (SDK / "ShaderSources/ApprovedBlue.metal.source").read_text()
+        baseline = subprocess.check_output(["git", "show", "54863da:GradientsKit-V4/ShaderSources/ApprovedBlue.metal.source"], cwd=ROOT).decode()
+        self.assertEqual(undo_lazy_main(source), baseline)
+        # The normalization must not conceal a formula edit.
+        with self.assertRaises(AssertionError):
+            undo_lazy_main(source.replace("if(transfer<=0.0) return D;", "if(transfer<0.1) return D;"))
+
+    def test_background_group_changes_only_scheduling_of_independent_pixels(self):
+        shader=SDK/'Sources/GradientsKit/Shaders/GradientAdapters.metal'
+        original=subprocess.check_output(['git','show','54863da:GradientsKit-V4/Sources/GradientsKit/Shaders/GradientAdapters.metal'],cwd=ROOT)
+        self.assertEqual(shader.read_bytes(),original)
+        view=(SDK/'Sources/GradientsKit/GradientViewController.swift').read_text()
+        before=subprocess.check_output(['git','show','54863da:GradientsKit-V4/Sources/GradientsKit/GradientViewController.swift'],cwd=ROOT).decode()
+        old='let threads=MTLSize(width:16,height:16,depth:1)'
+        new='let threads=MTLSize(width:8,height:8,depth:1)'
+        self.assertEqual(view.count(new),1)
+        self.assertEqual(view.replace(new,old),before)
 
     def test_full_screen_baseline_metadata_is_preserved(self):
         self.assertEqual((current_path("Validation/ReferenceV2/full-screen-baseline.json")).read_bytes(),
@@ -117,6 +136,8 @@ class CompositionTests(unittest.TestCase):
                 expected = expected_sources()[path] if path.startswith("ShaderSources/") else subprocess.check_output(
                     ["git", "show", "ca0222e:" + path], cwd=ROOT).decode()
                 actual = current_path(path).read_text()
+                if path == "ShaderSources/ApprovedBlue.metal.source":
+                    actual = undo_lazy_main(actual)
                 if path in {"UIKitComponent/GradientMaskRenderer.swift","UIKitComponent/GradientViewController.swift","UIKitComponent/SessionCaptionProbe.swift"}:
                     # 615dfe0 is the approved resource/dispatch/retry implementation.
                     # Undo only these reviewed source-color bindings; compare EVERY
@@ -125,6 +146,8 @@ class CompositionTests(unittest.TestCase):
                     if path.endswith("GradientMaskRenderer.swift"):
                         actual=actual.replace("GradientYellowColors.darkMaskTint","[0.105,0.060,0.008]").replace("yellow ? GradientYellowColors.darkMaskBase:[0,0,0]","[0,0,0]")
                     if path.endswith("GradientViewController.swift"):
+                        self.assertEqual(actual.count('let threads=MTLSize(width:8,height:8,depth:1)'),1)
+                        actual=actual.replace('let threads=MTLSize(width:8,height:8,depth:1)','let threads=MTLSize(width:16,height:16,depth:1)')
                         addition="""    private static let yellowLightCaptionTint:UIColor = {
         let c=GradientYellowColors.lightCaptionTint
         return UIColor(red:c.0,green:c.1,blue:c.2,alpha:1)
