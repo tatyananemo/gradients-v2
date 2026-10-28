@@ -30,3 +30,37 @@ SDK sources or pipeline creation. These are Mac kernel measurements, not iPhone 
 The source-preservation checker normalizes only the explicit lazy-evaluation
 diff before comparing against its old checkpoint; historical sources, numeric
 goldens, compiler flags and comparison tolerances remain unchanged.
+
+## Rejected GPU axis/frame precomputation experiment
+
+Run `validate_axis_precalculation.py --reference-run <passed-validation-folder> --output <new-temporary-folder>`.
+`--controls` checks transport-only and independently generated axis/frame bodies.
+`--prepare-only` creates trial inputs without GPU execution. These trials never
+rewrite SDK source files or participate in Xcode builds.
+
+The trial caches 10 X-only and 8 Y-only raw sin results, 12 frame-only raw sin
+results and five six-float LayerStates. Mixed-axis/warped-coordinate expressions
+are excluded. Scratch storage at 1170×2532 is 128,968 bytes. All values are GPU
+float32; no interpolation, CPU trigonometry or resolution changes are used.
+The prep kernel runs before EVERY background dispatch in the timed CB, including
+history-prefix copy. The same tracked private buffer is reused by the sequential
+native test host, and no waits/resources are added to the live SDK.
+
+Apple M3 Pro, five paired rounds, private output, Nominal thermal state:
+
+| Trial | Dark ms | Light ms | Changed approved / native-size frames |
+| --- | ---: | ---: | --- |
+| 54863da | 9.060 | 3.508 | 0/36; 0/96 |
+| 9368500 | 8.681 | 3.485 | 0/36; 0/96 |
+| X/Y precompute | 4.843 | 2.963 | 35/36; 90/96 |
+| Frame precompute | 4.979 | 3.045 | 35/36; 90/96 |
+| Both | 4.364 | 2.621 | 35/36; 90/96 |
+
+All three candidates are REJECTED. Runtime SDK remains exactly at 9368500.
+The follow-up transport-only control is exact (36/36 and 96/96), while the
+independent axis/frame source controls still differ. On the first approved Dark
+frame, the latter change respectively 14/12 half components, maximum absolute
+delta 0.0000019669533. This is one diagnostic frame, not a global error bound.
+The precise first divergent operation is not established; do not present FMA or
+rounding as a proven cause. No flags, oracles or tolerances were changed to pass.
+Retained SDK separately passes Yellow 108, historical control 216 and exact masks 168.

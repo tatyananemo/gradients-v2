@@ -6,6 +6,7 @@ import CryptoKit
 struct Variant:Decodable {
     let name:String,source:String
     let width:Int,height:Int,zeros:Bool
+    let precalc:Int?
 }
 struct Frame:Decodable {
     let name:String,uniforms:[Float],history:[Float]
@@ -13,6 +14,7 @@ struct Frame:Decodable {
 struct Manifest:Decodable {
     let variants:[Variant],cases:String,oracle:String,output:String
     let rounds:Int
+    let cacheFloatCount:Int?
 }
 struct Prepared {
     let frame:Frame,u:MTLBuffer,h:MTLBuffer
@@ -28,21 +30,36 @@ let oracleObject=try JSONSerialization.jsonObject(with:Data(contentsOf:URL(fileU
 let oracle=oracleObject["render_sha256"] as! [String:String]
 let options=MTLCompileOptions();options.fastMathEnabled=true
 var pipelines:[MTLComputePipelineState]=[]
+var preparations:[MTLComputePipelineState?]=[]
 for v in manifest.variants {
     let library=try device.makeLibrary(source:String(contentsOfFile:v.source,encoding:.utf8),options:options)
     let function:MTLFunction
-    if v.zeros {
+    if let mode=v.precalc {
+        let values=MTLFunctionConstantValues();var flag=UInt32(mode)
+        values.setConstantValue(&flag,type:.uint,index:101)
+        if mode==0 {
+            guard let f=library.makeFunction(name:"prototypeComputeBackground") else {throw Failure.unavailable}
+            function=f
+        } else {function=try library.makeFunction(name:"prototypeComputeBackground",constantValues:values)}
+        let prepare=try library.makeFunction(name:"prototypePrepareAxes",constantValues:values)
+        preparations.append(try device.makeComputePipelineState(function:prepare))
+    } else if v.zeros {
         let values=MTLFunctionConstantValues();var enabled=true
         values.setConstantValue(&enabled,type:.bool,index:0)
         function=try library.makeFunction(name:"prototypeComputeBackground",constantValues:values)
+        preparations.append(nil)
     } else {
         guard let f=library.makeFunction(name:"prototypeComputeBackground") else {throw Failure.unavailable}
         function=f
+        preparations.append(nil)
     }
     let pipeline=try device.makeComputePipelineState(function:function)
     guard v.width*v.height<=pipeline.maxTotalThreadsPerThreadgroup else {throw Failure.invalid("Unsupported group: \(v.name)")}
     pipelines.append(pipeline)
 }
+// One bounded scratch allocation; sequential test CBs retain it until completion.
+let precalcStorage=manifest.cacheFloatCount.flatMap {device.makeBuffer(length:$0*4,options:.storageModePrivate)}
+if manifest.cacheFloatCount != nil && precalcStorage == nil {throw Failure.unavailable}
 func prepare(_ frame:Frame)throws->Prepared {
     let history=frame.history.isEmpty ? [Float(0)]:frame.history
     guard let u=device.makeBuffer(bytes:frame.uniforms,length:frame.uniforms.count*4,options:.storageModeShared),
@@ -59,10 +76,21 @@ func render(_ index:Int,_ input:Prepared,_ texture:MTLTexture,scale:Float,repeat
     guard let command=queue.makeCommandBuffer() else {throw Failure.unavailable}
     let v=manifest.variants[index]
     for _ in 0..<repeats {
+        if let preparation=preparations[index] {
+            guard let storage=precalcStorage,let encoder=command.makeComputeCommandEncoder() else {throw Failure.unavailable}
+            var extent=SIMD4<UInt32>(UInt32(texture.width),UInt32(texture.height),scale.bitPattern,UInt32(input.frame.history.count))
+            encoder.setComputePipelineState(preparation)
+            encoder.setBuffer(input.u,offset:0,index:0);encoder.setBuffer(input.h,offset:0,index:1)
+            encoder.setBuffer(storage,offset:0,index:2);encoder.setBytes(&extent,length:16,index:3)
+            let count=(v.precalc! & 1) != 0 ? max(texture.width,texture.height,input.frame.history.count):max(1,input.frame.history.count)
+            encoder.dispatchThreadgroups(MTLSize(width:(count+63)/64,height:1,depth:1),threadsPerThreadgroup:MTLSize(width:64,height:1,depth:1))
+            encoder.endEncoding()
+        }
         guard let encoder=command.makeComputeCommandEncoder() else {throw Failure.unavailable}
         var factor=scale
         encoder.setComputePipelineState(pipelines[index]);encoder.setTexture(texture,index:0)
-        encoder.setBuffer(input.u,offset:0,index:0);encoder.setBuffer(input.h,offset:0,index:1)
+        encoder.setBuffer(input.u,offset:0,index:0)
+        encoder.setBuffer(preparations[index] == nil ? input.h:precalcStorage,offset:0,index:1)
         encoder.setBytes(&factor,length:4,index:2)
         let threads=MTLSize(width:v.width,height:v.height,depth:1)
         let groups=MTLSize(width:(texture.width+v.width-1)/v.width,height:(texture.height+v.height-1)/v.height,depth:1)
@@ -92,13 +120,27 @@ let small=try texture(scale:1),full=try texture(scale:3,storage:.private),fullRe
 let prepared=try approved.map(prepare)
 var exact:[String:[String:Any]]=[:]
 var baseline:[String:String]=[:]
+var firstGolden:[UInt16]=[]
 for (index,v) in manifest.variants.enumerated() {
     var changed:[String]=[]
+    var firstDifference:[String:Any]=[:]
     for input in prepared {
         _=try render(index,input,small,scale:1)
         if try digest(small) != oracle[input.frame.name+".rgba16f"] {changed.append(input.frame.name)}
+        if input.frame.name==prepared[0].frame.name {
+            var raw=[UInt16](repeating:0,count:small.width*small.height*4)
+            small.getBytes(&raw,bytesPerRow:small.width*8,from:MTLRegionMake2D(0,0,small.width,small.height),mipmapLevel:0)
+            if index==0 {firstGolden=raw}
+            var count=0,maxDelta:Float=0,maxBits=0
+            for i in raw.indices where raw[i] != firstGolden[i] {
+                count+=1
+                maxDelta=max(maxDelta,abs(Float(Float16(bitPattern:raw[i]))-Float(Float16(bitPattern:firstGolden[i]))))
+                maxBits=max(maxBits,abs(Int(raw[i])-Int(firstGolden[i])))
+            }
+            firstDifference=["case":input.frame.name,"differentComponents":count,"maxAbsoluteDelta":maxDelta,"maxHalfBitDistance":maxBits]
+        }
     }
-    exact[v.name]=["goldens":prepared.count,"changed":changed]
+    exact[v.name]=["goldens":prepared.count,"changed":changed,"firstFrameDifference":firstDifference]
     print("Goldens \(v.name): \(prepared.count-changed.count)/\(prepared.count)")
 }
 // Full native iPhone pixel dimensions, plus cycle seams and zero/complete progress.
@@ -144,7 +186,7 @@ for round in 0..<manifest.rounds {
 let pipelineInfo=zip(manifest.variants,pipelines).map {v,p in ["variant":v.name,"threadExecutionWidth":p.threadExecutionWidth,"maxThreads":p.maxTotalThreadsPerThreadgroup] as [String:Any]}
 let result:[String:Any]=["device":device.name,"resolution":[full.width,full.height],"scale":3,
     "thermalState":ProcessInfo.processInfo.thermalState.rawValue,"rounds":manifest.rounds,
-    "benchmarkSeconds":ProcessInfo.processInfo.systemUptime-benchStart,"dispatchesPerSample":4,"benchmarkStorage":"private",
+    "benchmarkSeconds":ProcessInfo.processInfo.systemUptime-benchStart,"dispatchesPerSample":4,"benchmarkStorage":"private","includesPreparationEveryDispatch":true,
     "pipelines":pipelineInfo,"exact":exact,"samples":samples]
 try JSONSerialization.data(withJSONObject:result,options:[.prettyPrinted,.sortedKeys]).write(to:URL(fileURLWithPath:manifest.output))
 print("Saved \(manifest.output)")
