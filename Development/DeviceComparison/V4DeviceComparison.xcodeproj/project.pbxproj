@@ -424,11 +424,36 @@
 			isa = PBXTargetDependency;
 			target = 5A374DCD2E5EB762B527AF3A;
 		};
-		EAB7EBFBA96809A8B0C97CA5 = {
+		BB04B626B9FDDB12213D0260 = {
 			isa = PBXFileReference;
-			path = "../UIKitDemo/AppDelegate.swift";
+			path = "AppDelegate.swift";
 			lastKnownFileType = sourcecode.swift;
-			sourceTree = "<group>";
+			sourceTree = "DERIVED_FILE_DIR";
+		};
+		6950E5B3FD9468D7C0B8AB0E = {
+			isa = PBXFileReference;
+			path = "PhysicalRunMonitor.swift";
+			lastKnownFileType = sourcecode.swift;
+			sourceTree = "DERIVED_FILE_DIR";
+		};
+		E1C3D640378A1271EAAED226 = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = "2147483647";
+			files = (
+			);
+			inputPaths = (
+				"$(SRCROOT)/../UIKitDemo/AppDelegate.swift",
+				"$(SRCROOT)/prepare_demo.py",
+				"$(SRCROOT)/PhysicalRunMonitor.swift",
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/AppDelegate.swift",
+				"$(DERIVED_FILE_DIR)/PhysicalRunMonitor.swift",
+			);
+			name = "Prepare opt-in physical-test telemetry";
+			runOnlyForDeploymentPostprocessing = "0";
+			shellPath = "/bin/sh";
+			shellScript = "/usr/bin/python3 -I -B \"$SRCROOT/prepare_demo.py\" --output \"$DERIVED_FILE_DIR\"\n";
 		};
 		69449AE6AA18D6F9D6DD7665 = {
 			isa = PBXBuildFile;
@@ -600,13 +625,18 @@
 		};
 		BDCF3BADBC6155A7499D6A8B = {
 			isa = PBXBuildFile;
-			fileRef = EAB7EBFBA96809A8B0C97CA5;
+			fileRef = BB04B626B9FDDB12213D0260;
+		};
+		19C00EE28443C7426902FF98 = {
+			isa = PBXBuildFile;
+			fileRef = 6950E5B3FD9468D7C0B8AB0E;
 		};
 		164FD0761DD050E900E6DB96 = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = "2147483647";
 			files = (
 				BDCF3BADBC6155A7499D6A8B,
+				19C00EE28443C7426902FF98,
 			);
 			runOnlyForDeploymentPostprocessing = "0";
 		};
@@ -637,6 +667,7 @@
 			productType = "com.apple.product-type.application";
 			buildConfigurationList = 08350E39CB02F1A07EA15590;
 			buildPhases = (
+				E1C3D640378A1271EAAED226,
 				164FD0761DD050E900E6DB96,
 				8EBED99A71B6E649165CEC73,
 				C839E1F8F6C87386D2D38ED6,
@@ -1069,7 +1100,8 @@
 				F50F7B5AFFBF69C958E1A1CC,
 				F38E2CADA1B01630CE7F6437,
 				0A8AF3B2CBB0F9288F1AE8A3,
-				EAB7EBFBA96809A8B0C97CA5,
+				BB04B626B9FDDB12213D0260,
+				6950E5B3FD9468D7C0B8AB0E,
 				89DDD466CE3CEB9235F68DE1,
 				C902A9720B0558A13AC779DE,
 				5863FC36CD64D4B10BDA5B5A,

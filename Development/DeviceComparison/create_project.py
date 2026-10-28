@@ -47,11 +47,17 @@ sdk=obj('sdk','PBXNativeTarget',name='GradientsKit',productName='GradientsKit',p
     buildConfigurationList=configs('sdk',{'PRODUCT_BUNDLE_IDENTIFIER':'com.local.gradients.v4.kit','DEFINES_MODULE':'YES','SKIP_INSTALL':'NO','BUILD_LIBRARY_FOR_DISTRIBUTION':'YES','INSTALL_PATH':'$(LOCAL_LIBRARY_DIR)/Frameworks','DYLIB_INSTALL_NAME_BASE':'@rpath','LD_DYLIB_INSTALL_NAME':'@rpath/$(EXECUTABLE_PATH)'}),
     buildPhases=[compose,phase('sdkSources','PBXSourcesBuildPhase',[build(s,'sdk'+str(i)) for i,s in enumerate(sources+generated)]),phase('sdkFrameworks','PBXFrameworksBuildPhase',[]),phase('sdkResources','PBXResourcesBuildPhase',[])],buildRules=[],dependencies=[])
 sdk_dep=obj('sdkDep','PBXTargetDependency',target=sdk)
-app_source=file('../UIKitDemo/AppDelegate.swift','sourcecode.swift')
+app_source=obj('generatedDemo','PBXFileReference',path='AppDelegate.swift',lastKnownFileType=raw('sourcecode.swift'),sourceTree='DERIVED_FILE_DIR')
+monitor_source=obj('generatedMonitor','PBXFileReference',path='PhysicalRunMonitor.swift',lastKnownFileType=raw('sourcecode.swift'),sourceTree='DERIVED_FILE_DIR')
+demo_compose=obj('composeDemo','PBXShellScriptBuildPhase',buildActionMask=2147483647,files=[],
+    inputPaths=['$(SRCROOT)/../UIKitDemo/AppDelegate.swift','$(SRCROOT)/prepare_demo.py','$(SRCROOT)/PhysicalRunMonitor.swift'],
+    outputPaths=['$(DERIVED_FILE_DIR)/AppDelegate.swift','$(DERIVED_FILE_DIR)/PhysicalRunMonitor.swift'],
+    name='Prepare opt-in physical-test telemetry',runOnlyForDeploymentPostprocessing=0,shellPath='/bin/sh',
+    shellScript='/usr/bin/python3 -I -B "$SRCROOT/prepare_demo.py" --output "$DERIVED_FILE_DIR"\n')
 embed=obj('embed','PBXCopyFilesBuildPhase',buildActionMask=2147483647,files=[build(product,'embed',['CodeSignOnCopy','RemoveHeadersOnCopy'])],dstPath='',dstSubfolderSpec=10,name='Embed Frameworks',runOnlyForDeploymentPostprocessing=0)
 app=obj('demo','PBXNativeTarget',name='GradientsV4Comparison',productName='GradientsV4Comparison',productReference=app_product,productType='com.apple.product-type.application',
     buildConfigurationList=configs('demo',{'INFOPLIST_KEY_UIApplicationSceneManifest_Generation':'YES','INFOPLIST_KEY_UILaunchScreen_Generation':'YES','INFOPLIST_KEY_UISupportedInterfaceOrientations':'UIInterfaceOrientationPortrait','LD_RUNPATH_SEARCH_PATHS':'$(inherited) @executable_path/Frameworks','SKIP_INSTALL':'YES'}),
-    buildPhases=[phase('demoSources','PBXSourcesBuildPhase',[build(app_source,'app')]),phase('demoFrameworks','PBXFrameworksBuildPhase',[build(product,'appLink')]),phase('demoResources','PBXResourcesBuildPhase',[]),embed],buildRules=[],dependencies=[sdk_dep])
+    buildPhases=[demo_compose,phase('demoSources','PBXSourcesBuildPhase',[build(app_source,'app'),build(monitor_source,'monitor')]),phase('demoFrameworks','PBXFrameworksBuildPhase',[build(product,'appLink')]),phase('demoResources','PBXResourcesBuildPhase',[]),embed],buildRules=[],dependencies=[sdk_dep])
 unit_sources=[file('../UIKitDemo/Tests/'+p.name,'sourcecode.swift') for p in sorted((ROOT/'Development/UIKitDemo/Tests').glob('*.swift'))]
 unit_sources.append(file('PrecalculationTests.swift','sourcecode.swift'))
 ui_source=file('../UIKitDemo/UITests/InteractionTests.swift','sourcecode.swift')
@@ -60,7 +66,7 @@ for name,title,kind,prod,refs,extra in [('unit','GradientsV4ComparisonTests','un
     obj(name,'PBXNativeTarget',name=title,productName=title,productReference=prod,productType='com.apple.product-type.bundle.'+kind,
         buildConfigurationList=configs(name,{'PRODUCT_BUNDLE_IDENTIFIER':'com.local.gradients.v4.compare.'+name,**extra}),
         buildPhases=[phase(name+'Sources','PBXSourcesBuildPhase',[build(s,name+str(i)) for i,s in enumerate(refs)]),phase(name+'Frameworks','PBXFrameworksBuildPhase',[build(product,name+'link')] if name=='unit' else []),phase(name+'Resources','PBXResourcesBuildPhase',[])],buildRules=[],dependencies=[dep])
-xp.write_project(project,[signing,*sources,*generated,app_source,*unit_sources,ui_source],[product,app_product,unit_product,ui_product],[sdk,app,raw(ident('unit')),raw(ident('ui'))])
+xp.write_project(project,[signing,*sources,*generated,app_source,monitor_source,*unit_sources,ui_source],[product,app_product,unit_product,ui_product],[sdk,app,raw(ident('unit')),raw(ident('ui'))])
 entry=reference('demo','GradientsV4Comparison.app','GradientsV4Comparison',project.name)
 sdk_entry=reference('sdk','GradientsKit.framework','GradientsKit',project.name)
 tests=''.join('<TestableReference skipped="NO">'+reference(n,'GradientsV4ComparisonTests.xctest' if n=='unit' else 'GradientsV4ComparisonUITests.xctest','GradientsV4ComparisonTests' if n=='unit' else 'GradientsV4ComparisonUITests',project.name)+'</TestableReference>' for n in ['unit','ui'])
