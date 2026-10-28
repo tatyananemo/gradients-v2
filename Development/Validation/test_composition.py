@@ -117,29 +117,24 @@ class CompositionTests(unittest.TestCase):
                 expected = expected_sources()[path] if path.startswith("ShaderSources/") else subprocess.check_output(
                     ["git", "show", "ca0222e:" + path], cwd=ROOT).decode()
                 actual = current_path(path).read_text()
-                if path == "UIKitComponent/GradientMaskRenderer.swift":
-                    # Pin the complete reviewed transport revision as well as its
-                    # unchanged math; no other edits to this file are accepted.
-                    self.assertEqual(hashlib.sha256(actual.encode()).hexdigest(),
-                                     "5dca6f35ac690a6529cd4f4e95d9be600741e03016322735c4c8c91ec849bcbb")
-                    def span(text, start, end):
-                        begin = text.index(start)
-                        finish = text.index(end, begin) + len(end)
-                        return text[begin:finish]
-                    # The transport changes; accepted geometry, CG drawing, Gaussian
-                    # radius/filter/crop and final orientation remain literal source.
-                    for start, end in [
-                        ("        let flow=", "        let bottom=top+rows"),
-                        ("        ctx.clear(", "        ctx.restoreGState()"),
-                        ("        let radius:", ".cropped(to:fullExtent)"),
-                        ("        let oriented=", "ty:fullExtent.height))"),
-                    ]:
-                        self.assertEqual(span(actual, start, end), span(expected, start, end))
-                    translation = ".transformed(by:CGAffineTransform(translationX:0,y:CGFloat(fullHeight-bottom)))"
-                    self.assertEqual(actual.count(translation), 1)
-                    self.assertIn(translation, expected)
-                else:
-                    self.assertEqual(actual, expected)
+                if path in {"UIKitComponent/GradientMaskRenderer.swift","UIKitComponent/GradientViewController.swift","UIKitComponent/SessionCaptionProbe.swift"}:
+                    # 615dfe0 is the approved resource/dispatch/retry implementation.
+                    # Undo only these reviewed source-color bindings; compare EVERY
+                    # remaining byte, rather than pinning a self-reported new hash.
+                    expected=subprocess.check_output(["git","show","615dfe0:GradientsKit-V4/Sources/GradientsKit/"+Path(path).name],cwd=ROOT).decode()
+                    if path.endswith("GradientMaskRenderer.swift"):
+                        actual=actual.replace("GradientYellowColors.darkMaskTint","[0.105,0.060,0.008]").replace("yellow ? GradientYellowColors.darkMaskBase:[0,0,0]","[0,0,0]")
+                    if path.endswith("GradientViewController.swift"):
+                        addition="""    private static let yellowLightCaptionTint:UIColor = {
+        let c=GradientYellowColors.lightCaptionTint
+        return UIColor(red:c.0,green:c.1,blue:c.2,alpha:1)
+    }()
+"""
+                        self.assertEqual(actual.count(addition),1)
+                        actual=actual.replace(addition,"").replace("Self.yellowLightCaptionTint","UIColor(red:1,green:1,blue:0.3,alpha:1)")
+                self.assertEqual(actual,expected)
+        safety=SDK/"Sources/GradientsKit/GradientRenderSafety.swift"
+        self.assertEqual(safety.read_bytes(),subprocess.check_output(["git","show","615dfe0:GradientsKit-V4/Sources/GradientsKit/GradientRenderSafety.swift"],cwd=ROOT))
 
     def test_demo_uses_external_sdk_target_without_source_copies(self):
         import json

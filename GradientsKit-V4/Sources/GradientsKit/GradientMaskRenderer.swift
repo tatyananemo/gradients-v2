@@ -79,10 +79,10 @@ final class GradientMaskRenderer {
         let sx:[CGFloat]=[1.04+CGFloat(sin(elapsed*0.22))*0.055,0.98+CGFloat(cos(elapsed*0.25+2.2))*0.05,1.06+CGFloat(cos(elapsed*0.18+0.4))*0.06]
         let sy:[CGFloat]=[0.94+CGFloat(cos(elapsed*0.19+0.8))*0.045,1.02+CGFloat(sin(elapsed*0.21+1.8))*0.05,0.82+CGFloat(sin(elapsed*0.24+2.7))*0.04]
         let ox:[CGFloat]=[dx,-dx*0.62,dx*0.34],oy:[CGFloat]=[dy,dy*0.48,-4+dy*0.34]
-        let tint:[CGFloat]=yellow ? [0.105,0.060,0.008]:[0.008,0.036,0.115]
+        let tint:[CGFloat]=yellow ? GradientYellowColors.darkMaskTint:[0.008,0.036,0.115]
         let cs=CGColorSpace(name:CGColorSpace.sRGB)!
         func color(_ rgb:[CGFloat],_ alpha:CGFloat)->CGColor {CGColor(colorSpace:cs,components:rgb+[alpha])!}
-        let black:[CGFloat]=[0,0,0]
+        let black:[CGFloat]=yellow ? GradientYellowColors.darkMaskBase:[0,0,0]
         let fullWidth=Int(ceil(size.width*scale)),fullHeight=Int(ceil(size.height*scale))
         // The clipped ellipse is identically transparent outside this slice.
         // Keep integer pixel origins and the original transform/CG rasterization.

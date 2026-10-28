@@ -73,7 +73,9 @@ precondition(worst<=0.0001,"Mask change can be visible")
 '''
 if accepted:
  main=main.replace('precondition(worst<=0.0001,"Mask change can be visible")','precondition(changed==0,"Raw Float16 bytes differ from accepted UIKit")')
+sys.path.insert(0,str(root/"GradientsKit-V4/Scripts"))
+from source_colors import load,swift_source
 with tempfile.TemporaryDirectory() as folder:
- folder=Path(folder);(folder/'main.swift').write_text(header+'\n'.join(classes)+main)
- subprocess.run(['xcrun','swiftc','-O',str(root/'GradientsKit-V4/Sources/GradientsKit/Core/GradientSession.swift'),str(root/'GradientsKit-V4/Sources/GradientsKit/GradientMaskRenderer.swift'),str(root/'GradientsKit-V4/Sources/GradientsKit/GradientPerformanceMetrics.swift'),str(folder/'main.swift'),'-o',str(folder/'masks')],check=True)
+ folder=Path(folder);(folder/'colors.swift').write_text(swift_source(load(root/'GradientsKit-V4')));(folder/'main.swift').write_text(header+'\n'.join(classes)+main)
+ subprocess.run(['xcrun','swiftc',('-Onone' if '--debug' in sys.argv else '-O'),str(root/'GradientsKit-V4/Sources/GradientsKit/Core/GradientSession.swift'),str(folder/'colors.swift'),str(root/'GradientsKit-V4/Sources/GradientsKit/GradientRenderSafety.swift'),str(root/'GradientsKit-V4/Sources/GradientsKit/GradientMaskRenderer.swift'),str(root/'GradientsKit-V4/Sources/GradientsKit/GradientPerformanceMetrics.swift'),str(folder/'main.swift'),'-o',str(folder/'masks')],check=True)
  subprocess.run([str(folder/'masks')],check=True)

@@ -4,7 +4,7 @@
 
 ## Передача и сборка
 
-Передавайте **всю эту папку**: `Sources/`, `ShaderSources/` (включая `Shared/*.inc` и `CompositionInputs.xcfilelist`), `Scripts/`, `GradientsKit.xcodeproj`, `.gitignore` и этот README. Вложенный Git-репозиторий не создаётся.
+Передавайте **всю эту папку**: `Configuration/`, `Sources/`, `ShaderSources/` (включая `Shared/*.inc` и `CompositionInputs.xcfilelist`), `Scripts/`, `GradientsKit.xcodeproj`, `.gitignore` и этот README. Вложенный Git-репозиторий не создаётся.
 
 Требуются Xcode с iOS SDK и `/usr/bin/python3` (Xcode Command Line Tools). Откройте `GradientsKit.xcodeproj`, выберите схему **GradientsKit** и нужный iOS Simulator или iOS device, выполните Build. Из командной строки:
 
@@ -13,6 +13,25 @@ xcodebuild -project GradientsKit.xcodeproj -scheme GradientsKit -configuration R
 ```
 
 При необходимости проект воспроизводимо восстанавливается командой `python3 -I -B Scripts/create_sdk_project.py`. Генераторы не читают Development или Git. Metal composer раскрывает утверждённые модули и `.inc` в DerivedData; не редактируйте полученный файл. `default.metallib` компилируется в bundle самого framework и загружается оттуда, а не из приложения.
+
+## Внутренние цвета Yellow — один файл, затем пересборка
+
+Редактируйте только `Configuration/YellowColors.json`: секции `dark` и `light` независимы. Это настройки исходников SDK, не публичный API. Приложение не читает JSON и не меняет pipeline во время работы. Например, замените только `dark.contactCore` на `["1.0", "220.0 / 255.0", "45.0 / 255.0"]`, затем пересоберите SDK. Light останется прежней. Для проверки другого оттенка Light меняйте соответствующее поле в `light`.
+
+Компоненты — строки с исходными decimal-выражениями sRGB в 0...1, например `"221.0 / 255.0"`. Не округляйте их до HEX/коротких десятичных дробей. Генератор проверяет поля и диапазоны, передаёт выражения компилятору Metal/Swift в исходной точности; JSON не попадает в bundle. Дефолтный Metal compiler input побайтово совпадает с `615dfe0`. Цвета масок становятся внутренними `static let` CGFloat, tint подписи создаётся один раз.
+
+Назначения полей:
+
+- `mainDeep/Mid/Hot/Accent` — цветовые опоры MAIN и связанной передачи света; это разные роли, не общий RGB-фильтр.
+- `contactArc/Core` — свободная оранжевая дуга и жёлтый контакт. Dark `contactHueBright/Shade` — ранее скрытые опоры оттенка `(1,.82,0)` и `(1,.72,0)`; `contactDiffuseSource/Peak` — сохранённые цветовые опоры общего readout. Не все эти роли участвуют в каждом состоянии.
+- Light `primarySource/Peak`, `haloWarm/White`, `transmissionRed` — существующие спектральные опоры Light. Коэффициенты смешивания и яркости не являются параметрами.
+- `trailDeep/Mid/Hot/Accent/White` — собственные цвета следа свайпа. Они независимы от одноимённых MAIN-опор.
+- `counterTint` — существующий белый цвет мягкой защиты в Yellow readout, с прежней геометрией/альфой.
+- Dark `maskTint/Base` — RGB источников трёх CG/CI-масок; Light `captionTint` — RGB нижней UI-подложки. Blur, прозрачность и активация не меняются.
+
+Формулы HSV/OKLab, gamma, luminance weights, диапазоны, матрицы, опорные Blue-цвета, чёрный canvas и чёрная Metal-подложка не редактируются. Последняя задана исходным умножением RGB на оставшуюся альфу, без отдельного RGB-параметра: её перекраска потребовала бы изменения формулы и сюда не включена. Цвета текста/кнопок не являются палитрой градиента.
+
+Общие цветовые helpers при необходимости получают отдельную привязку констант для каждой темы с прежними сигнатурами и арифметикой. Геометрия остаётся общей. При дефолтах такие дополнительные привязки не создаются. Новый оттенок закономерно меняет результат существующих нелинейных цветовых формул: после редактирования проверяйте визуал, не меняйте эталоны под него. Сгенерированные файлы в DerivedData не редактируйте.
 
 ## Подключение к UIKit-приложению
 
@@ -53,12 +72,14 @@ gradient.reset(animated: true)
 
 ```text
 .gitignore
+Configuration/YellowColors.json
 GradientsKit.xcodeproj/project.pbxproj
 GradientsKit.xcodeproj/xcshareddata/xcschemes/GradientsKit.xcscheme
 README.md
 Scripts/compose_metal.py
 Scripts/compose_uikit_metal.py
 Scripts/create_sdk_project.py
+Scripts/source_colors.py
 Scripts/xcode_project.py
 ShaderSources/ApprovedBlue.metal.source
 ShaderSources/CompositionInputs.xcfilelist

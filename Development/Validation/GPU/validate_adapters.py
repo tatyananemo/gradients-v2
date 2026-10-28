@@ -9,7 +9,7 @@ import sys
 
 ROOT = Path(__file__).resolve().parents[3]
 sys.path.insert(0, str(ROOT / "GradientsKit-V4/Scripts"))
-from compose_metal import compose
+from compose_uikit_metal import compose_sdk
 
 parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument("--reference-run", type=Path, required=True)
@@ -25,7 +25,7 @@ out = args.output.resolve()
 out.mkdir(parents=True, exist_ok=False)
 inputs = out / "cases.json"
 inputs.write_text(json.dumps(cases))
-source = compose().replace(b"[[ stitchable ]]", b"") + b"\n" + (ROOT / "GradientsKit-V4/Sources/GradientsKit/Shaders/GradientAdapters.metal").read_bytes()
+source = compose_sdk()
 if args.metal:
     assert args.metal.read_bytes() == source, "Xcode SDK compiler input differs from maintained sources"
 shader = out / "SDK.metal"

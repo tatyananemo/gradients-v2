@@ -3,7 +3,7 @@
 Three frames are queued before waiting to verify CG image snapshot lifetimes.
 No PNG, screenshot, video or HTML is generated. Never wait in the live renderer.
 """
-import subprocess,tempfile
+import subprocess,tempfile,sys
 from pathlib import Path
 root=Path(__file__).resolve().parents[3]
 reference=subprocess.check_output(['git','show','9d4bd08:UIKitComponent/GradientMaskRenderer.swift'],cwd=root,text=True).replace('GradientMaskRenderer','ReferenceMaskRenderer')
@@ -56,9 +56,11 @@ for batch in 0..<12 {
 print("Reused sources, 36 frames / 108 masks, 3 in flight: different components=\(total), max delta=\(worst)")
 precondition(total==0,"Shared source content or synchronization differs from accepted masks")
 '''
+sys.path.insert(0,str(root/"GradientsKit-V4/Scripts"))
+from source_colors import load,swift_source
 with tempfile.TemporaryDirectory() as folder:
- folder=Path(folder);(folder/'reference.swift').write_text(reference);(folder/'main.swift').write_text(main)
+ folder=Path(folder);(folder/'colors.swift').write_text(swift_source(load(root/'GradientsKit-V4')));(folder/'reference.swift').write_text(reference);(folder/'main.swift').write_text(main)
  for variant,flags in [('uncached-original-gaussian',[])]:
   print(variant,flush=True)
-  subprocess.run(['xcrun','swiftc','-O',*flags,str(folder/'reference.swift'),str(root/'GradientsKit-V4/Sources/GradientsKit/GradientMaskRenderer.swift'),str(root/'GradientsKit-V4/Sources/GradientsKit/GradientPerformanceMetrics.swift'),str(folder/'main.swift'),'-o',str(folder/'check')],check=True)
+  subprocess.run(['xcrun','swiftc',('-Onone' if '--debug' in sys.argv else '-O'),*flags,str(folder/'reference.swift'),str(folder/'colors.swift'),str(root/'GradientsKit-V4/Sources/GradientsKit/GradientRenderSafety.swift'),str(root/'GradientsKit-V4/Sources/GradientsKit/GradientMaskRenderer.swift'),str(root/'GradientsKit-V4/Sources/GradientsKit/GradientPerformanceMetrics.swift'),str(folder/'main.swift'),'-o',str(folder/'check')],check=True)
   subprocess.run([str(folder/'check')],check=True)

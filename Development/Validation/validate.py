@@ -168,10 +168,13 @@ def main():
     spec = importlib.util.spec_from_file_location("composer", current_path("Scripts/compose_metal.py"))
     composer = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(composer)
+    sys.path.insert(0,str(SDK/"Scripts"))
+    from source_colors import bind_metal
+    configured=bind_metal(composer.compose().decode(),SDK).encode()
     metal = args.metal or out / "V4.metal"
     if args.metal is None:
-        metal.write_bytes(composer.compose())
-    assert metal.read_bytes() == composer.compose(), "Metal does not match current canonical modules"
+        metal.write_bytes(configured)
+    assert metal.read_bytes() == configured, "Metal does not match current source color configuration"
     verify_metal_sharing()
     source = app_source()
     approved = subprocess.check_output(["git", "show", BASE + ":GradientInstallView.swift"], cwd=ROOT).decode()

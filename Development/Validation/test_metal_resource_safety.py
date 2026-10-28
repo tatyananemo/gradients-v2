@@ -8,6 +8,9 @@ from pathlib import Path
 import subprocess
 import tempfile
 import unittest
+import sys
+sys.path.insert(0,str(Path(__file__).resolve().parents[2]/"GradientsKit-V4/Scripts"))
+from source_colors import load,swift_source
 
 ROOT = Path(__file__).resolve().parents[2]
 SDK = ROOT / 'GradientsKit-V4/Sources/GradientsKit'
@@ -226,7 +229,7 @@ print("Resource recovery: fatal/temporary separation, concurrent first error, ex
         with tempfile.TemporaryDirectory(prefix='v4-resource-safety-') as folder:
             folder = Path(folder)
             source = folder / 'main.swift'
-            source.write_text(mocks + safety + harness + checks)
+            source.write_text(mocks + swift_source(load(ROOT/"GradientsKit-V4")) + safety + harness + checks)
             for mode, flags in [('Debug', ['-Onone']), ('Release', ['-O'])]:
                 binary = folder / mode
                 subprocess.run(['xcrun', 'swiftc', '-module-cache-path', str(folder / 'ModuleCache'), *flags, str(source), '-o', str(binary)], check=True)

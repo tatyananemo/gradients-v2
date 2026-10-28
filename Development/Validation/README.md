@@ -53,3 +53,21 @@ The source guard reconstructs the declared delta, rejects other edits and checks
 The experimental IOSurface source keeps accepted CG rasterization, full-frame Gaussian radius/filter/crop, and final orientation. The source uses premultiplied BGRA byte layout and the native IOSurface/CGImage orientation (without the extra flip required by a raw Metal texture view); raw mask tests still require zero changed components. Each worker owns at most two surfaces, reuses one only after its last command completes, and falls back to the original immutable snapshot when busy or unavailable. Cached-context diagnostic mode keeps snapshots. No GPU wait or source completion callback is introduced.
 
 The source composition guard still checks all other Swift/Metal bytes, pins the complete reviewed mask-source revision by SHA-256, and separately compares its geometry, drawing, Gaussian and orientation expressions with the historical source. `testSharedMaskSourcesMatchSnapshotsAfterReuseAndResize` adds Simulator checks for queued frames, fractional resize and multiple scales; existing GPU/mask oracles and tolerances are unchanged.
+
+## Source-only Yellow colors after 615dfe0
+
+`Configuration/YellowColors.json` is consumed at SDK build time. `test_source_colors.py` checks byte-identical default compiler input, exact CGFloat values, strict schema/build dependencies and independent consumption of every Dark/Light role. The existing immutable reference hashes and comparison tolerances are unchanged.
+
+The full source guard now compares the accepted resource-handling implementation at `615dfe0`, undoing only the three explicit CPU color bindings and the private cached UIColor. It checks every other Swift byte, including `GradientRenderSafety`, rather than accepting a new self-recorded hash. `validate.py` and `GPU/validate_adapters.py` consume the configured shipping source; the historical 216-output control stays frozen. Original ShaderSources and Blue are not edited.
+
+Additional checks, all without Simulator or launching an iOS app:
+
+```sh
+python3 -B Development/Validation/test_source_colors.py
+python3 -B Development/Validation/test_metal_resource_safety.py
+python3 -B Development/Validation/GPU/validate_color_isolation.py --reference-run /tmp/v4-gpu-check --output /tmp/v4-color-isolation
+python3 -B Development/Validation/Masks/validate_masks.py --accepted-uikit --debug
+python3 -B Development/Validation/Masks/validate_mask_reuse.py --debug
+```
+
+The isolation check changes all color roles in memory for one theme at a time and checks the opposite theme against its original exact GPU hashes in both fragment and compute. It never edits the configuration or oracles. Source color edits intentionally change their target theme: the unchanged default goldens are not an approval of a new shade. Full UIKit UI/gesture delivery and physical-iPhone performance still require a separately authorized device/Simulator run.

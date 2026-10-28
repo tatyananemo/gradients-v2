@@ -6,6 +6,10 @@ import CoreText
 
 public final class GradientViewController:UIViewController,MTKViewDelegate {
     static var context:GradientGPU?
+    private static let yellowLightCaptionTint:UIColor = {
+        let c=GradientYellowColors.lightCaptionTint
+        return UIColor(red:c.0,green:c.1,blue:c.2,alpha:1)
+    }()
     let renderSafety=GradientRenderSafety()
     private var lastCommand:MTLCommandBuffer?
     private var captionActivation:Double?
@@ -348,7 +352,7 @@ public final class GradientViewController:UIViewController,MTKViewDelegate {
             }
         }
         if lastCaptionStyle != style || lastCaptionActivation != activation {
-            let tint=f.yellow ? UIColor(red:1,green:1,blue:0.3,alpha:1):UIColor.white
+            let tint=f.yellow ? Self.yellowLightCaptionTint:UIColor.white
             CATransaction.begin();CATransaction.setDisableActions(true)
             captionGradient?.colors=(0...16).map {i in let v=Double(i)/16;return tint.withAlphaComponent(0.3*(1-pow(1-v,3))*activation).cgColor}
             captionGradient?.isHidden=f.dark
@@ -450,7 +454,7 @@ public final class GradientViewController:UIViewController,MTKViewDelegate {
         let gradient=CAGradientLayer();gradient.frame=box.bounds;gradient.startPoint=CGPoint(x:0.5,y:0);gradient.endPoint=CGPoint(x:0.5,y:1)
         if f.dark {gradient.colors=[UIColor.black.withAlphaComponent(0).cgColor,UIColor.black.withAlphaComponent(0.3).cgColor]}
         else {
-            let tint=f.yellow ? UIColor(red:1,green:1,blue:0.3,alpha:1):UIColor.white
+            let tint=f.yellow ? Self.yellowLightCaptionTint:UIColor.white
             gradient.colors=(0...16).map {i in let v=Double(i)/16;return tint.withAlphaComponent(0.3*(1-pow(1-v,3))*0).cgColor}
             gradient.locations=(0...16).map {NSNumber(value:Double($0)/16)}
         }

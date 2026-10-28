@@ -77,12 +77,20 @@
 			lastKnownFileType = sourcecode.metal;
 			sourceTree = "DERIVED_FILE_DIR";
 		};
+		AA80BE7943FAB141892F5031 = {
+			isa = PBXFileReference;
+			path = "GradientYellowColors.swift";
+			lastKnownFileType = sourcecode.swift;
+			sourceTree = "DERIVED_FILE_DIR";
+		};
 		55213C96F95B31A15C589043 = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = "2147483647";
 			files = (
 			);
 			inputPaths = (
+				"$(SRCROOT)/Configuration/YellowColors.json",
+				"$(SRCROOT)/Scripts/source_colors.py",
 				"$(SRCROOT)/Scripts/compose_metal.py",
 				"$(SRCROOT)/Scripts/compose_uikit_metal.py",
 				"$(SRCROOT)/Sources/GradientsKit/Shaders/GradientAdapters.metal",
@@ -104,11 +112,12 @@
 			);
 			outputPaths = (
 				"$(DERIVED_FILE_DIR)/GradientsUIKit.metal",
+				"$(DERIVED_FILE_DIR)/GradientYellowColors.swift",
 			);
 			name = "Compose approved Metal";
 			runOnlyForDeploymentPostprocessing = "0";
 			shellPath = "/bin/sh";
-			shellScript = "/usr/bin/python3 -I -B \"$SRCROOT/Scripts/compose_uikit_metal.py\" --output \"$SCRIPT_OUTPUT_FILE_0\"\n";
+			shellScript = "/usr/bin/python3 -I -B \"$SRCROOT/Scripts/compose_uikit_metal.py\" --output \"$SCRIPT_OUTPUT_FILE_0\" --swift-output \"$SCRIPT_OUTPUT_FILE_1\"\n";
 		};
 		9925A0BE93F148CD70907995 = {
 			isa = XCBuildConfiguration;
@@ -221,6 +230,10 @@
 			isa = PBXBuildFile;
 			fileRef = 7C289D983607252490579E13;
 		};
+		54884C16512E3060FB2F00CE = {
+			isa = PBXBuildFile;
+			fileRef = AA80BE7943FAB141892F5031;
+		};
 		49A1BEAB1F1C299BFCFE8254 = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = "2147483647";
@@ -236,6 +249,7 @@
 				6AC56F2511148FED790FA49C,
 				C219AACFC28EBFC645A6E00E,
 				113246AB1D636C4B9D36DED1,
+				54884C16512E3060FB2F00CE,
 			);
 			runOnlyForDeploymentPostprocessing = "0";
 		};
@@ -293,6 +307,7 @@
 				DD0AE209124176B20252CEF7,
 				67B0F9C5FB6B600C5B3C9357,
 				7C289D983607252490579E13,
+				AA80BE7943FAB141892F5031,
 				FBDC4F23F93125BBEEAE800C,
 			);
 			sourceTree = "<group>";
