@@ -88,7 +88,10 @@ xcodebuild -project Development/DeviceComparison/V4DeviceComparison.xcodeproj \
 ```
 
 Это **пример**, в поставке остаётся `221.0 / 255.0`. После изменения пересоберите SDK и согласуйте
-новый визуал. JSON читается только сборкой. Нет runtime-палитры, setPalette, новых passes или per-frame uploads.
+новый визуал. Проверки Tools/verify_delivery.py и Tools/build_release.py намеренно фиксируют
+исходные defaults 2f12367: после согласованной смены цвета они сообщат о расхождении.
+Для новой палитры используйте приведённую прямую команду xcodebuild; не перезаписывайте
+эталоны или manifest, чтобы скрыть изменение. JSON читается только сборкой. Нет runtime-палитры, setPalette, новых passes или per-frame uploads.
 Не меняйте Blue reference, gamma, маски, яркость или геометрию вместо цветовых ролей. Полный список ролей — в DESIGN.md.
 
 ## Использование
