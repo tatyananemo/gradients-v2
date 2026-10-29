@@ -1,5 +1,5 @@
 {
-  "sourceCommit": "2f123671b49d6dd139a3dc3cb7b72caa7f6d772a",
+  "sourceCommit": "1b3c287138157a7779a2f578fbb973575920dcc6",
   "countMethod": "Physical Swift/Metal source lines including blank/comment lines; .inc once; Demo/tests/scripts/config/generated excluded. Python overlays contain additional algorithm code excluded by this rule.",
   "sourceFiles": [
     {
@@ -12,7 +12,7 @@
       "path": "GradientsKit-V4/Sources/GradientsKit/Core/GradientSession.swift",
       "language": "Swift",
       "lines": 279,
-      "sha256": "60a818106f760da919804cfa1bcd60f8065bee18ab6be50f2036d1da9557d6b3"
+      "sha256": "0358f300c56a58b94357a25382ae22b9e77233d1ec8ff226f34d03050194b69d"
     },
     {
       "path": "GradientsKit-V4/Sources/GradientsKit/GradientGPU.swift",
@@ -161,8 +161,8 @@
     {
       "path": "GradientsKit-V4/Sources/GradientsKit/Shaders/GradientAdapters.metal",
       "language": "Metal",
-      "lines": 42,
-      "sha256": "0bbda4e5c19b6e4201d496496d92ddc9a80615d559dd00ea65bc14efc94c3291"
+      "lines": 38,
+      "sha256": "ad946a8ef39c637bdc0883b038561ca9d6da1acdc9e31812cbee940b72ffea17"
     }
   ],
   "totals": {
@@ -172,17 +172,17 @@
     },
     "Metal": {
       "files": 16,
-      "lines": 3958
+      "lines": 3954
     }
   },
   "unchangedAlgorithmInputs": {
     "Development/DeviceComparison/GradientPrecalculationBuffers.swift": "834b6fcbb1eb1f565f05c029ea8957ec12564b7b8a8d9a568804b4e1f92a1ae4",
     "Development/DeviceComparison/PhysicalRunMonitor.swift": "01307a6cd83047127956a7a49d86997c8b7f551a5330ae67e0e2ce937730c099",
     "Development/DeviceComparison/idle_zero_source.py": "f2ed4a9b9cdd3567b14f8a688469398f26d323fa3984495a61244574f7f2386a",
-    "Development/DeviceComparison/mask_window_source.py": "df1c83853d680a438209b8fc2947ffb23816121af6c072200882408bfef7d5d4",
+    "Development/DeviceComparison/mask_window_source.py": "70aa003eb3567c7471831297daa7a29edcd23ffea375717c193919b979c40189",
     "Development/DeviceComparison/precalculation_source.py": "bcb8963988c1ba43a185d9a82705be3cbd9af4585a2033b2e612f4b3365c35e6",
     "Development/DeviceComparison/prepare_demo.py": "7b50cca60a2d71ed378e0721e10f70379652f918a634cfd0b6c21bbc64353bae",
-    "Development/DeviceComparison/prepare_sources.py": "5d34829ca01d35e632f4bbd750b3936238c503ec7083bb78f25e698ea830c8f4",
+    "Development/DeviceComparison/prepare_sources.py": "9199a809da54c52afccea975a0e5fb57c2d82d64df77b70066f0bb0396c57bec",
     "Development/DeviceComparison/shared_background_source.py": "ff2377be6cc0869ebf54a9849c503372a6c02fc849028603267928a17a75d9a2",
     "Development/DeviceComparison/swipe_optimization_source.py": "ecf3776ae70b71b7c05de4b01011930e10a093d692719b1ee4388d9fd5c9d0f5",
     "Development/UIKitDemo/AppDelegate.swift": "2f8252243efe559e6a7646bfe5e65bfd67232f98d1548de1a64bc3ad1fb8c7d9",
@@ -208,7 +208,7 @@
     "GradientsKit-V4/ShaderSources/YellowLightMAIN.metal.source": "71a01236aafe953d541772e9beff25b4e6b22f3aff6057c9865d1597dfad1849",
     "GradientsKit-V4/ShaderSources/YellowShared.metal.source": "5a01757a7575a56e65e46d94c3a87cbbd3ad5bf633528c4a68a890f2aa472896",
     "GradientsKit-V4/Sources/GradientsKit/Core/GradientResetPresentation.swift": "a93f864e8bb774cddc9e0104a8f648be989f3e030ce8da2192ddf458a3536013",
-    "GradientsKit-V4/Sources/GradientsKit/Core/GradientSession.swift": "60a818106f760da919804cfa1bcd60f8065bee18ab6be50f2036d1da9557d6b3",
+    "GradientsKit-V4/Sources/GradientsKit/Core/GradientSession.swift": "0358f300c56a58b94357a25382ae22b9e77233d1ec8ff226f34d03050194b69d",
     "GradientsKit-V4/Sources/GradientsKit/GradientGPU.swift": "5df1642a41dcef9727eefceb0bec1d7de1dd75a058454f5a81d9aa624a23018d",
     "GradientsKit-V4/Sources/GradientsKit/GradientMaskRenderer.swift": "a54c1f0d73ade16314ab485ee696ff42337b4684df34233d3f8eaadbe529ae48",
     "GradientsKit-V4/Sources/GradientsKit/GradientPercentageLabel.swift": "9dd110d5a1fa49e228d0d3f95b98f2727cd4c8e70b87f3179dd989349f27a2b3",
@@ -217,7 +217,12 @@
     "GradientsKit-V4/Sources/GradientsKit/GradientTheme.swift": "9662b349cdddd70dc46a309e7f6af00b03dbf25092c6ace27dde152775ae70d6",
     "GradientsKit-V4/Sources/GradientsKit/GradientViewController.swift": "86b7f989295e3f8de2999b4117ef86a46947ebb8ddb39223814d214201c4f8cf",
     "GradientsKit-V4/Sources/GradientsKit/SessionCaptionProbe.swift": "783cb98de2dd291caefcf689f5693adacc80ff1559cf995d053dfac416f5d566",
-    "GradientsKit-V4/Sources/GradientsKit/Shaders/GradientAdapters.metal": "0bbda4e5c19b6e4201d496496d92ddc9a80615d559dd00ea65bc14efc94c3291"
+    "GradientsKit-V4/Sources/GradientsKit/Shaders/GradientAdapters.metal": "ad946a8ef39c637bdc0883b038561ca9d6da1acdc9e31812cbee940b72ffea17",
+    "Development/DeviceComparison/dark_route_source.py": "ea97103873b6a401d0c17aa30371c33d66d822b310909ad95f1c7e47013eb832",
+    "Development/DeviceComparison/create_project.py": "4b493e6e31619ceae3e102b496bbb5f8bb379615501c4428e838842b996b401a",
+    "Development/DeviceComparison/V4DeviceComparison.xcodeproj/project.pbxproj": "774ed6782ee1eaf810b52bbf269d510133f683a171408a178d22667cf56ff647",
+    "Development/DeviceComparison/Signing.xcconfig": "6aafbe1cb4271829d1e279ecd097f974843f672317f117cd4b68be6bccf7cfc1",
+    "Development/DeviceComparison/V4DeviceComparison.xcodeproj/xcshareddata/xcschemes/V4 Optimized.xcscheme": "986c4e6c199060873a3a694e1b3fb44ea668c43f871ce470d99779ad368b8b33"
   },
   "expectedGeneratedManifest": {
     "mode": "precalc",
@@ -227,18 +232,19 @@
     "swipe_optimization": true,
     "mask_roi": true,
     "files": {
-      "GradientsUIKit.metal": "44e3c3e4e2bacb53eac00dea216cc3d9f70e6013a746abe7f1bc0a12851385d5",
+      "GradientsUIKit.metal": "9e7dd30613372bf3fcc542814d22024e3322671f9d256775a8dcab5cf3417354",
       "GradientYellowColors.swift": "ebefc1c8428a9cc37616df20fdab3bd5e6b69a4f18afd06e05f9a0123ad3d9a5",
-      "GradientGPU.swift": "96e5cbf61faaad87b982fe1667142916c14cc23e4d690b625944fa1fcca6f92b",
-      "GradientViewController.swift": "c801684a38d5a21ccef75ce6dfba07fae99b0f02952cdef5b3a94bdb7de366d5",
-      "GradientMaskRenderer.swift": "08eee9f68e87297bcc09c187213017e7ee2d4a8f3b016db7f46e63117c6faad3",
+      "GradientGPU.swift": "643104c1fda9a24011c2f94cc9bf103613d4ef1a6c4bf9607e22c5c774e6f72d",
+      "GradientViewController.swift": "44c0fc251bc9ef246593b893988810a104dd716889cbec9a41c78a8c5ecd42a2",
+      "GradientMaskRenderer.swift": "c78f0979c4f51fa017d60009ba7b848a5fcf6b0c7c1350871728b94f63e60fd1",
       "GradientPrecalculationBuffers.swift": "bc75f12bc0859a113a0c493a4986223551fca501560c0a514514fb7dabe1e037"
     }
   },
   "releaseMetallib": {
-    "bytes": 491804,
+    "bytes": 346508,
     "limitBytes": 500000,
-    "sha256": "5b3bd187c9f3ad66a51764185c073cb23b417d37b3a83ebfbea439827b5dd37c",
+    "sha256": "2493188c43b3dfdfa8d3555bb6aeb59cff0035e6db0aad3567eaf18682637207",
     "toolchain": "Xcode 26.3 (17C529); arm64 iphoneos"
-  }
+  },
+  "packageRoot": "V4-Optimized"
 }

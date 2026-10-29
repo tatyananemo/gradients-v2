@@ -1,3 +1,7 @@
+> Исторический материал: относится к указанному ниже этапу/исходникам, а не к новой проверке `1b3c287`.
+> Текущий статус V4-Optimized, границы точности масок/кадров, FPS и заполнение 9–10 с — в [RESULTS.md](../../../Documentation/RESULTS.md).
+> Старые source guards могут намеренно отвергать поздние согласованные изменения; это не инструкция сборки optimized SDK.
+
 # Yellow Dark critical-path experiment — 29 October 2026
 
 Branch: `experiment/v4-dark-critical-path`. Main, the maintained SDK, source colors,

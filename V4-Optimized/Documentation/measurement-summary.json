@@ -1,71 +1,153 @@
 {
-  "codeCommit": "2f12367",
-  "baselineCommit": "0efba7a",
-  "device": "physical iPhone 14 / A15",
-  "scenario": "6s auto-swipe after 3s warmup; start percentage, natural progress growth; same brightness 0.35, low-power off; 45s stopped cooldown; no Instruments",
-  "baselineDark63FPS": 43.126433525467334,
-  "runs": [
-    {
-      "runID": "2f12367-swipe-dark-63",
-      "FPS": 45.158649124901565,
-      "p95MS": 33.35141667048447,
-      "p99MS": 33.3731249847915,
-      "commandBufferMeanMS": 25.54310631164887,
-      "maskPreparationMS": 7.2507337619540255,
-      "drawableAcquisitionMS": 10.365512102426317,
-      "thermalStates": [
-        0
-      ],
-      "MetalErrors": {}
-    },
-    {
-      "runID": "2f12367-swipe-dark-80",
-      "FPS": 45.45568828003254,
-      "p95MS": 33.392333338269964,
-      "p99MS": 33.39795832289383,
-      "commandBufferMeanMS": 25.570726733468643,
-      "maskPreparationMS": 7.193536497652531,
-      "drawableAcquisitionMS": 10.618928680323867,
-      "thermalStates": [
-        0
-      ],
-      "MetalErrors": {}
-    },
-    {
-      "runID": "2f12367-swipe-dark-63-repeat",
-      "FPS": 45.48954182792254,
-      "p95MS": 33.352250000461936,
-      "p99MS": 33.3872499759309,
-      "commandBufferMeanMS": 25.30660386119517,
-      "maskPreparationMS": 7.243384883197765,
-      "drawableAcquisitionMS": 10.514389142524927,
-      "thermalStates": [
-        0
-      ],
-      "MetalErrors": {}
-    },
-    {
-      "runID": "2f12367-swipe-light-63",
-      "FPS": 57.94997415605778,
-      "p95MS": 16.708041657693684,
-      "p99MS": 33.3800416556187,
-      "commandBufferMeanMS": 21.87591343405576,
-      "maskPreparationMS": 0.0022004313142060293,
-      "drawableAcquisitionMS": 13.780529214983844,
-      "thermalStates": [
-        0
-      ],
-      "MetalErrors": {}
-    }
-  ],
-  "allProcessesStopped": true,
-  "longThermalRetest": false,
-  "temperatureMeasured": false,
-  "MacValidation": {
-    "RGBA8FramesExact": 724,
-    "rawMasksExact": 168,
-    "CPUContractsPassed": 12,
-    "DebugRelease": "passed"
+  "codeCommit": "1b3c287138157a7779a2f578fbb973575920dcc6",
+  "newTestsRunForThisPublication": false,
+  "physicalMeasurementCodeCommit": "a28aff5",
+  "physicalMeasurements": "../Development/Validation/DarkRoute/light-repeat.json",
+  "physicalTestPerformedOn1b3c287": false,
+  "latestDarkControl": {
+    "run": "dark-check",
+    "version": "a28aff5",
+    "theme": "Dark",
+    "FPS": 59.97044075348766,
+    "durationSeconds": 5.986282500001835,
+    "intervalCount": 359,
+    "frameMeanMS": 16.674881615603997,
+    "p95MS": 16.700666659744456,
+    "p99MS": 16.704083333024755,
+    "maskPreparationMS": 5.94314016117197,
+    "commandElapsedMS": 12.836564930492184,
+    "thermalStates": [
+      0
+    ],
+    "brightness": 0.3499999940395355,
+    "lowPower": false
   },
-  "SDKMainUnchanged": true
+  "LightPooled": {
+    "c72a140": {
+      "FPS": 57.76184418645654,
+      "meanFrameMS": 17.312466630600944,
+      "rangeFPS": [
+        57.67547459280813,
+        57.84822282304962
+      ]
+    },
+    "a28aff5": {
+      "FPS": 57.58735388365867,
+      "meanFrameMS": 17.364923591041503,
+      "rangeFPS": [
+        57.34568157608166,
+        57.829661149939575
+      ]
+    }
+  },
+  "LightRelativeChangePercent": -0.3020857544551614,
+  "progressReplay": {
+    "codeCommit": "9eb2ecc",
+    "DebugAndReleasePassed": true,
+    "inputHz": [
+      30,
+      40,
+      60,
+      120
+    ],
+    "targetSecondsRange": [
+      9.4,
+      9.5
+    ],
+    "fullyInterpolatedSecondsRange": [
+      9.883333333333333,
+      9.966666666666667
+    ],
+    "idleAndStationaryHoldDoNotAdvanceTarget": true,
+    "physicalFillTimeTested": false
+  },
+  "releaseMetallib": {
+    "bytes": 346508,
+    "limitBytes": 500000,
+    "sha256": "2493188c43b3dfdfa8d3555bb6aeb59cff0035e6db0aad3567eaf18682637207",
+    "toolchain": "Xcode 26.3 (17C529); arm64 iphoneos"
+  },
+  "runtimeSourceLines": {
+    "Swift": {
+      "files": 11,
+      "lines": 1433
+    },
+    "Metal": {
+      "files": 16,
+      "lines": 3954
+    }
+  },
+  "longThermalTestOfCurrentCandidate": false,
+  "temperatureMeasured": false,
+  "historical2f12367Only": {
+    "codeCommit": "2f12367",
+    "baselineCommit": "0efba7a",
+    "device": "physical iPhone 14 / A15",
+    "scenario": "6s auto-swipe after 3s warmup; start percentage, natural progress growth; same brightness 0.35, low-power off; 45s stopped cooldown; no Instruments",
+    "baselineDark63FPS": 43.126433525467334,
+    "runs": [
+      {
+        "runID": "2f12367-swipe-dark-63",
+        "FPS": 45.158649124901565,
+        "p95MS": 33.35141667048447,
+        "p99MS": 33.3731249847915,
+        "commandBufferMeanMS": 25.54310631164887,
+        "maskPreparationMS": 7.2507337619540255,
+        "drawableAcquisitionMS": 10.365512102426317,
+        "thermalStates": [
+          0
+        ],
+        "MetalErrors": {}
+      },
+      {
+        "runID": "2f12367-swipe-dark-80",
+        "FPS": 45.45568828003254,
+        "p95MS": 33.392333338269964,
+        "p99MS": 33.39795832289383,
+        "commandBufferMeanMS": 25.570726733468643,
+        "maskPreparationMS": 7.193536497652531,
+        "drawableAcquisitionMS": 10.618928680323867,
+        "thermalStates": [
+          0
+        ],
+        "MetalErrors": {}
+      },
+      {
+        "runID": "2f12367-swipe-dark-63-repeat",
+        "FPS": 45.48954182792254,
+        "p95MS": 33.352250000461936,
+        "p99MS": 33.3872499759309,
+        "commandBufferMeanMS": 25.30660386119517,
+        "maskPreparationMS": 7.243384883197765,
+        "drawableAcquisitionMS": 10.514389142524927,
+        "thermalStates": [
+          0
+        ],
+        "MetalErrors": {}
+      },
+      {
+        "runID": "2f12367-swipe-light-63",
+        "FPS": 57.94997415605778,
+        "p95MS": 16.708041657693684,
+        "p99MS": 33.3800416556187,
+        "commandBufferMeanMS": 21.87591343405576,
+        "maskPreparationMS": 0.0022004313142060293,
+        "drawableAcquisitionMS": 13.780529214983844,
+        "thermalStates": [
+          0
+        ],
+        "MetalErrors": {}
+      }
+    ],
+    "allProcessesStopped": true,
+    "longThermalRetest": false,
+    "temperatureMeasured": false,
+    "MacValidation": {
+      "RGBA8FramesExact": 724,
+      "rawMasksExact": 168,
+      "CPUContractsPassed": 12,
+      "DebugRelease": "passed"
+    },
+    "SDKMainUnchanged": true
+  }
 }

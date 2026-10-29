@@ -1,6 +1,8 @@
 # Актуальная финальная V4 — схема V4 Optimized
 
-Исходный commit алгоритмов `2f12367`; все принятые overlays оставлены без изменения.
+Текущий исходный кандидат `1b3c287`: оба ускорения (индивидуальные mask ROI, Dark route),
+заполнение 9–10 с из `9eb2ecc`, source colors и прежние оптимизации сохранены.
+Соседний `../../GradientsKit-V4` находится внутри V4-Optimized, не в старой V4 из корня Git.
 Открывайте `V4DeviceComparison.xcodeproj`, выбирайте V4 Optimized / OptimizedRelease.
 V4 Reference, V4 Precalc и V4 Combined — прежние контрольные варианты, не текущая передача.
 

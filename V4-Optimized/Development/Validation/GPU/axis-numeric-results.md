@@ -1,3 +1,7 @@
+> Исторический материал: относится к указанному ниже этапу/исходникам, а не к новой проверке `1b3c287`.
+> Текущий статус V4-Optimized, границы точности масок/кадров, FPS и заполнение 9–10 с — в [RESULTS.md](../../../Documentation/RESULTS.md).
+> Старые source guards могут намеренно отвергать поздние согласованные изменения; это не инструкция сборки optimized SDK.
+
 # Axis/frame precalculation: bounded numerical diagnosis (2026-10-28)
 
 Decision: reject the render change; keep SDK 9368500 unchanged. Only native-macOS

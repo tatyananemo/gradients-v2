@@ -1,4 +1,4 @@
-# GradientsKit V4 — техническая передача `2f12367`
+# GradientsKit V4 — техническая передача `1b3c287`
 
 ## 1. Границы ответственности
 
@@ -8,9 +8,11 @@
 progress/result; нынешний `GradientSession` воспроизводит утверждённую демологику свайпов.
 Публичного метода `setProgress`, binding к КриптоПро и runtime-палитры **нет**.
 
-Основа — `2f12367`, включая source colors `54863da`, первоначальные GPU-правки `9368500`,
+Текущий исходный кандидат — `1b3c287`; предшествующая поставка — `c72a140`/`2f12367`. Включены source colors `54863da`, первоначальные GPU-правки `9368500`,
 предрасчёт/специализацию, IOSurface, исправления resource failures из `615dfe0`, shared background,
-idle-zero, tile culling, fused distortion и conservative mask ROI. Отклонённые GPU-маски,
+idle-zero, tile culling, fused distortion, индивидуальные mask ROI (`3b72d08`) и Dark MAIN/CONTACT
+специализация (`a28aff5`). `9eb2ecc` меняет только накопление progress; `1b3c287` убирает
+тестовый fragment-вход из shipping metallib, оставляя его в GPU harness. Отклонённые GPU-маски,
 autoreleasepool/direct-bitmap и приблизительные формы не входят в активный путь.
 
 ## 2. Действующая архитектура
@@ -72,7 +74,8 @@ build phase вызывает `prepare_sources.py`, который читает �
 - `idle_zero_source.py`: специализация существующих нулевых входов с fallback исходного пути.
 - `swipe_optimization_source.py`: консервативный per-tile список возможных сегментов, исходная per-pixel проверка
   и ascending accumulation; distortion перенесён в существующий compositor с прежним half4 rounding.
-- `mask_window_source.py`: консервативное неизменно размерное окно маски, sampleOrigins; при выходе поддержки — full fallback.
+- `mask_window_source.py`: отдельные source/output окна трёх workers, sampleOrigins, неизменный Gaussian; при выходе поддержки — full fallback.
+- `dark_route_source.py`: function constant 102 для Dark MAIN/CONTACT, фабрика двух cached pipelines и выбор маршрута без нового GPU-прохода.
 - `prepare_sources.py`: точный порядок комбинации и fail-fast проверки ожидаемого исходного текста.
 - `prepare_demo.py`, `PhysicalRunMonitor.swift`: исходный Demo с **opt-in** физическими измерениями, не часть алгоритма SDK.
 
@@ -89,7 +92,10 @@ Prep — 64 threads/group. Caption — 32 threads/group, 12 групп для 36
 Не возвращать неподдерживаемый nonuniform dispatch, ранее выявленный Metal API Validation.
 
 Function constant **101 = 3** у `prototypePrepareAxes` / `prototypeComputeBackground`;
-**101 = 0** у `prototypeComposite` / `v2CaptionProbe`. Vertex/distortion constant не требуют.
+**101 = 0** у `prototypeComposite` / `v2CaptionProbe`. **102 = 1** у Dark MAIN, **102 = 2**
+у Dark CONTACT; default 0 сохраняет исходный маршрут, в том числе Light/смешанные состояния.
+Vertex/distortion эти constants не требуют. `prototypeBackground` — тестовый fragment только
+в `Development/Validation/GPU/check_adapter.swift`; приложение использует compute-вход.
 Проверка создания compositor/probe pipeline с неправильным отсутствующим constant прежде выявляла
 ошибку — нельзя просто взять optimized metallib и старую фабрику pipelines.
 
@@ -111,12 +117,18 @@ stride 256. CPU lock/clear/raster/unlock; повторное использов�
 fallback. Gaussian выполняет Core Image с прежним color space, blur radius и transforms.
 `cacheIntermediates=false` — принятое поведение динамической маски.
 
-Источник — полоса 180 pt без обрезания существующей эллиптической геометрии. Финальное окно
-вывода включает max blur, breath/drift и запас; при проверенном viewport 1170×2532 три output
-маски стали 1170×1368. Это **не уменьшение разрешения или blur**: вне окна маска тождественно
-прозрачна; compositor смещает координату по origin и не читает вне покрытия. При resize window
-пересчитывается, небезопасная поддержка переводит в full-size fallback. Сэкономлено 32 685 120 байт
-логического payload трёх FP16 textures; это не прямое обещание такого же снижения RSS/footprint.
+Текущий overlay задаёт каждому worker собственную высоту CG/IOSurface-источника:
+`ceil([126*1.025*0.985, 98*1.025*1.07, 83*1.025*0.86][index]*scale)+4`,
+с ограничением по fullHeight. Output ROI строится по поддержке CI Gaussian, максимальному
+breath, drift ±8 pt и guard 2 px, привязан к layout; при недостаточном покрытии — full-size
+fallback. Compositor использует отдельный origin/height каждой маски. Scale/разрешение,
+формулы рисования, радиусы Gaussian и порядок normal/multiply/screen сохранены.
+
+Числа 180 pt и 1170×1368 для всех трёх output textures относятся к старому общему окну
+`2f12367`, а не к текущему overlay. Индивидуальные окна меняют численную raster/CI-разбивку:
+сравнение 168 масок дало max FP16 delta 0,0029296875, итоговый Dark — максимум 1/255
+относительно `c72a140`; Light в том сравнении точен. Это принятое направление оптимизации,
+а не заявление о побайтовой идентичности масок исходной V4; детали и движение — RESULTS.md.
 
 Сохраняются и другие ранее созданные pipeline/ресурсы базового пути, даже если fused distortion
 обходится без отдельного draw. Финальная передача не удаляет их и не оптимизирует заново.
@@ -141,6 +153,10 @@ Display link preferred 60 (range 30…60); MTKView isPaused=true и рисует
 idle подавлен при активном пальце/settings, возобновляется через 0,42 с после release/settings.
 Release delay/fade 0,30/0,82 с, history life 1,8 с; детали целевого поведения — DESIGN.md.
 Progress increments каждый имеют easing 0,48 с; reset presentation 0,35 с. Нет tap-only V3.
+Накопление: первый touch credit 0,013, прежний movement gain умножен на 4, cap = 0,105/с.
+Движение остаётся условием роста; неподвижный hold, release и idle не добавляют target progress.
+CPU replay показывает target 9,40–9,50 с, полное rendered заполнение 9,88–9,97 с;
+очень медленное движение/паузы могут дать более долгое заполнение.
 
 `GradientRenderFrame` даёт UI: `progress` (target, 0…1), `time`, `dark`, `yellow`,
 `uniforms`, `history`, `distortion`. `uniforms[2]` — интерполированный rendered progress;
@@ -224,7 +240,8 @@ blur — `GradientMaskRenderer`, exclusion масок — `v2ReadabilityMask`. �
 
 См. команды README. Один repo, без submodules и внешних пакетов. Файлы обязательного compiler input
 перечислены в source-manifest.json. Build не читает Git, старые проекты, результаты тестов или /tmp.
-Все входы package-relative. Полный чистый экспорт комплекта проверяется unsigned для generic iOS.
+Все входы package-relative, внутри `V4-Optimized`. В этой документационной публикации
+использованы существующие Debug/Release-результаты `1b3c287`, новая сборка экспорта не запускалась.
 Конфигурация OptimizedRelease нужна и SDK, и Demo; смена scheme на базовый проект теряет оптимизации.
 
 Для host: добавить текущий DeviceComparison project в workspace, target GradientsKit в зависимости,
@@ -242,10 +259,11 @@ credential-free `Signing.xcconfig` опционально включает иг�
 ## 10. Проверки и известные границы
 
 Доказательства предыдущих прогонов и их границы — RESULTS.md. Не обновлять эталоны под этот пакет.
-724 финальных кадра и 168 масок проверены против предыдущего optimized кандидата; это не 724
-полных UIKit screenshot и не новое доказательство исходной SwiftUI byte identity.
-Текущая подготовка повторяет только compiler-input identity и сборку перенесённого комплекта;
-FPS/thermal/GPU сценарии не запускаются заново, если бинарный shader/Swift inputs совпадают.
+724 кадра/168 точных масок — историческая проверка `2f12367`, не новая проверка текущих
+индивидуальных окон. Для `1b3c287` ранее точно совпали 494 итоговых кадра с `9eb2ecc`,
+72 исходных adapter-эталона; Debug/Release и public Swift interface проверены. Сами 168 масок
+индивидуальных окон не pixel-exact относительно c72a140. В этой публикации выполнено только
+сравнение файлов, готовых compiler manifests и существующих отчётов, без новых прогонов.
 
 Работа на физическом iPhone, performance по всем размерам, длительный нагрев, дальнейшая привязка
 КриптоПро, accessibility/Reduce Motion/Dynamic Type, privacy manifest/required-reason API и лицензия
@@ -268,8 +286,9 @@ Gaussian radius [38,30,42]*scale*breath. Не заменять CI Gaussian на 
     c.rgb = b.rgb*c.rgb + c.rgb*(1-b.a)
     c.rgb = d.rgb + c.rgb - d.rgb*c.rgb
 
-Это normal → multiply → screen при существующем premultiplied соглашении. Mask ROI меняет только
-координаты и гарантированно нулевое покрытие, а не формулы. Перестановка операций меняет картинку.
+Это normal → multiply → screen при существующем premultiplied соглашении. Mask ROI сохраняет
+эти формулы, но изменение областей CI даёт малые измеренные численные отличия (RESULTS.md).
+Перестановка операций меняет картинку и не разрешена.
 
 Общий CONTACT: coverage=clamp(mainDensity,0,1), intersection=coverage*idleDensity,
 frontReaction=intersection*(1-coverage). sharedIdleContact сохраняет исходное разбиение плотности.

@@ -1,4 +1,4 @@
-> Финальная оптимизированная V4: см. [корневой README](../../README.md) и схему V4 Optimized
+> Актуальная оптимизированная V4 `1b3c287`: см. [корневой README](../../README.md) и схему V4 Optimized
 > в соседнем DeviceComparison. Ниже — инструкция сохранённого базового Demo, не финальной сборки.
 
 # GradientsKit V4 UIKit Demo

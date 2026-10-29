@@ -24,12 +24,12 @@ def verify():
             '--swipe-optimization','--mask-roi','--output',folder],check=True)
         actual=json.loads((Path(folder)/'SourceManifest.json').read_text())
         if actual!=manifest['expectedGeneratedManifest']:
-            raise SystemExit('Final generated compiler input differs from 2f12367')
+            raise SystemExit('Final generated compiler input differs from '+manifest['sourceCommit'])
     refs=ROOT/'Documentation/References'
     for item in json.loads((refs/'manifest.json').read_text())['images']:
         if hashlib.sha256((refs/item['file']).read_bytes()).hexdigest()!=item['sha256']:
             raise SystemExit('Changed reference: '+item['file'])
-    print('PASS: frozen Swift/Metal/overlay inputs, 5391 source lines, final compiler inputs and reference images')
+    print('PASS: frozen Swift/Metal/overlay inputs, '+str(sum(v['lines'] for v in manifest['totals'].values()))+' source lines, final compiler inputs and reference images')
     return manifest
 
 if __name__=='__main__':verify()

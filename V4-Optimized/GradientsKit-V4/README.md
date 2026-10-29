@@ -1,24 +1,26 @@
-# GradientsKit V4
+# Канонические входы SDK внутри V4-Optimized
 
-Самостоятельный исходный UIKit + Metal SDK для iOS 17+. Две темы: `yellowDark` и `yellowLight`. SwiftUI, Demo, Development, Git и другие версии приложения для сборки не нужны.
+Текущий optimized кандидат — `1b3c287`. Эта вложенная папка содержит общие исходники,
+цвета и базовый framework project. **Она отдельно не воспроизводит optimized SDK**:
+нужны соседние `Development/DeviceComparison` overlays/cache и их проект.
+Передавайте всю внешнюю папку `V4-Optimized`, не старую V4 из корня репозитория.
 
-## Передача и сборка
+## Сборка и подключение актуальной версии
 
-Передавайте **всю эту папку**: `Configuration/`, `Sources/`, `ShaderSources/` (включая `Shared/*.inc` и `CompositionInputs.xcfilelist`), `Scripts/`, `GradientsKit.xcodeproj`, `.gitignore` и этот README. Вложенный Git-репозиторий не создаётся.
-
-Требуются Xcode с iOS SDK и `/usr/bin/python3` (Xcode Command Line Tools). Откройте `GradientsKit.xcodeproj`, выберите схему **GradientsKit** и нужный iOS Simulator или iOS device, выполните Build. Из командной строки:
-
-```sh
-xcodebuild -project GradientsKit.xcodeproj -scheme GradientsKit -configuration Release -sdk iphonesimulator CODE_SIGNING_ALLOWED=NO build
-```
-
-При необходимости проект воспроизводимо восстанавливается командой `python3 -I -B Scripts/create_sdk_project.py`. Генераторы не читают Development или Git. Metal composer раскрывает утверждённые модули и `.inc` в DerivedData; не редактируйте полученный файл. `default.metallib` компилируется в bundle самого framework и загружается оттуда, а не из приложения.
+Из корня `V4-Optimized` откройте `Development/DeviceComparison/V4DeviceComparison.xcodeproj`,
+схема **V4 Optimized**, SDK и Demo в **OptimizedRelease** / **OptimizedDebug**.
+Для host добавьте этот project и target GradientsKit в workspace/dependencies, framework
+в Embed & Sign; конфигурация зависимости также OptimizedRelease/OptimizedDebug.
+Базовый `GradientsKit.xcodeproj` оставлен для исторического пути и не является этой поставкой.
+Команды unsigned build и требования Xcode/Metal/Python — в [README](../README.md).
+Файл colors остаётся `Configuration/YellowColors.json`, не публичным/runtime API.
 
 ## Внутренние цвета Yellow — один файл, затем пересборка
 
 Редактируйте только `Configuration/YellowColors.json`: секции `dark` и `light` независимы. Это настройки исходников SDK, не публичный API. Приложение не читает JSON и не меняет pipeline во время работы. Например, замените только `dark.contactCore` на `["1.0", "220.0 / 255.0", "45.0 / 255.0"]`, затем пересоберите SDK. Light останется прежней. Для проверки другого оттенка Light меняйте соответствующее поле в `light`.
 
-Компоненты — строки с исходными decimal-выражениями sRGB в 0...1, например `"221.0 / 255.0"`. Не округляйте их до HEX/коротких десятичных дробей. Генератор проверяет поля и диапазоны, передаёт выражения компилятору Metal/Swift в исходной точности; JSON не попадает в bundle. Дефолтный Metal compiler input побайтово совпадает с `615dfe0`. Цвета масок становятся внутренними `static let` CGFloat, tint подписи создаётся один раз.
+Компоненты — строки с исходными decimal-выражениями sRGB в 0...1, например `"221.0 / 255.0"`. Не округляйте их до HEX/коротких десятичных дробей. Генератор проверяет поля и диапазоны, передаёт выражения компилятору Metal/Swift в исходной точности; JSON не попадает в bundle. Исходные цветовые выражения сохранены; compiler input всей optimized сборки фиксируется
+по `1b3c287` во внешнем Documentation/source-manifest.json, а не по старому `615dfe0`. Цвета масок становятся внутренними `static let` CGFloat, tint подписи создаётся один раз.
 
 Назначения полей:
 
@@ -35,7 +37,8 @@ xcodebuild -project GradientsKit.xcodeproj -scheme GradientsKit -configuration R
 
 ## Подключение к UIKit-приложению
 
-Добавьте `GradientsKit.xcodeproj` в проект или workspace приложения. В target приложения добавьте `GradientsKit.framework` в **Frameworks, Libraries, and Embedded Content → Embed & Sign**, а SDK — в зависимости сборки. Настройте подпись и Team приложения и framework для реального устройства. Все пути SDK относительные.
+Добавьте `../Development/DeviceComparison/V4DeviceComparison.xcodeproj` в workspace приложения
+и используйте OptimizedRelease/OptimizedDebug (относительно этой папки). В target приложения добавьте `GradientsKit.framework` в **Frameworks, Libraries, and Embedded Content → Embed & Sign**, а SDK — в зависимости сборки. Настройте подпись и Team приложения и framework для реального устройства. Все пути SDK относительные.
 
 ```swift
 import UIKit
@@ -66,12 +69,12 @@ gradient.reset(animated: true)
 - До публикации приложения разработчики должны проверить privacy manifest / required-reason API (`systemUptime`), лицензионные условия распространения, подпись и работу на реальном iPhone. Privacy manifest в этой поставке ещё не добавлен; Simulator не подтверждает производительность устройства.
 - Полный GPU + Thread Sanitizer в Simulator остаётся непроверенным сценарием. Эталоны и тесты находятся отдельно в Development и требуют истории исходного репозитория.
 
-## Полный список передаваемых файлов
+## Состав канонической подпапки
 
-Передавайте эти файлы с сохранением относительных путей:
+Ниже только её входы. Полный optimized комплект включает также соседние Development,
+Tools и Documentation; передаётся вся V4-Optimized. Вложенного .gitignore в этой подпапке нет:
 
 ```text
-.gitignore
 Configuration/YellowColors.json
 GradientsKit.xcodeproj/project.pbxproj
 GradientsKit.xcodeproj/xcshareddata/xcschemes/GradientsKit.xcscheme

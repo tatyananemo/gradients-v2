@@ -1,3 +1,7 @@
+> Исторический материал: относится к указанному ниже этапу/исходникам, а не к новой проверке `1b3c287`.
+> Текущий статус V4-Optimized, границы точности масок/кадров, FPS и заполнение 9–10 с — в [RESULTS.md](../../Documentation/RESULTS.md).
+> Старые source guards могут намеренно отвергать поздние согласованные изменения; это не инструкция сборки optimized SDK.
+
 # V4 validation — numerical oracles and behavior
 
 These tools never record or replace the accepted oracles. Use a full local Git clone: approved Git objects `542b89b`, `39b50ed`, `12e1b51`, `75e1800`, `db3064b`, `9d4bd08` and `dc7b9da` are test dependencies. A binary/source SDK consumer does not need this history; the SDK build does not read Validation.
@@ -13,7 +17,7 @@ These tools never record or replace the accepted oracles. Use a full local Git c
 - `test_composition.py`: source/include/build-input and immutable-oracle checks.
 - `Behavior/`: core and reset-presentation equivalence with SwiftUI V2.
 - `Masks/`: 60 exact accepted UIKit masks, 108 reuse/in-flight comparisons, coordinate-system diagnostic.
-- `GPU/`: checks the actual maintained SDK fragment/compute adapters, without a duplicate prototype adapter.
+- `GPU/`: checks the actual maintained SDK fragment/compute adapters, with its fragment reference now kept only in check_adapter.swift (not in shipping metallib).
 - `Performance/`: optional V4-only numeric Simulator profile and repeated-launch heartbeat tools.
 
 ## GPU coverage after Blue removal

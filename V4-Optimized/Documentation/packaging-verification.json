@@ -1,29 +1,62 @@
 {
-  "sourceCommit": "2f12367",
-  "cleanExport": true,
+  "sourceCommit": "1b3c287138157a7779a2f578fbb973575920dcc6",
+  "snapshotCopiedIntoV4Optimized": {
+    "files": 179,
+    "treeMatchesCandidateBeforeDocumentationEdits": true
+  },
+  "currentAction": "file/metadata comparison only; no new build, tests, profiling or device launch",
+  "runtimeCodeResourcesAndBuildProjectsMatchCandidate": true,
+  "buildPaths": "all active Xcode/build inputs remain package-relative inside V4-Optimized; historical Git references are oracle provenance, not runtime/build dependencies",
+  "existingCandidateChecks": {
+    "OptimizedDebug": "BUILD SUCCEEDED",
+    "OptimizedRelease": "BUILD SUCCEEDED",
+    "finalFramesExactAgainst9eb2ecc": 494,
+    "originalAdapterGoldensExact": 72,
+    "affectedPreparationTests": 3,
+    "publicSwiftInterfaceIdenticalToPriorCandidate": true,
+    "basis": "existing build logs, saved numerical outputs and 1b3c287 commit message; not repeated"
+  },
   "release": {
-    "configuration": "OptimizedRelease",
-    "shaderBytes": 491804,
-    "shaderSHA256": "5b3bd187c9f3ad66a51764185c073cb23b417d37b3a83ebfbea439827b5dd37c",
-    "embeddedIdentical": true,
-    "deviceOrSimulatorLaunched": false
+    "bytes": 346508,
+    "limitBytes": 500000,
+    "sha256": "2493188c43b3dfdfa8d3555bb6aeb59cff0035e6db0aad3567eaf18682637207",
+    "toolchain": "Xcode 26.3 (17C529); arm64 iphoneos"
   },
-  "interfacesIdenticalToExistingRelease": {
-    "arm64-apple-ios.swiftinterface": true,
-    "arm64-apple-ios.private.swiftinterface": true
-  },
-  "compilerFlagSetsUnchanged": 40,
-  "deviceTestsRepeated": false,
-  "visualTestsRepeated": false,
-  "onlyBuildConfigChange": "Credential-free Signing.xcconfig with optional local Team include; no personal project settings copied",
-  "debug": {
-    "configuration": "OptimizedDebug",
-    "shaderBytes": 491804,
-    "shaderSHA256": "5b3bd187c9f3ad66a51764185c073cb23b417d37b3a83ebfbea439827b5dd37c",
-    "embeddedIdentical": true,
-    "deviceOrSimulatorLaunched": false
-  },
-  "releaseExecutableSectionsIdenticalToExistingRelease": true,
-  "releaseExecutableTextBytes": 119852,
-  "note": "All file-backed Mach-O sections compared equal, including __TEXT,__text and constants. Whole unsigned framework file hash differs from prior signed file; signing/link metadata is not a rendering algorithm change."
+  "standaloneCleanExportRebuiltNow": false,
+  "intentionalDifferencesFromCandidate": [
+    "Markdown documentation",
+    "Documentation/source-manifest.json",
+    "Documentation/measurement-summary.json",
+    "Documentation/packaging-verification.json",
+    "Tools/verify_delivery.py: two stale messages only"
+  ],
+  "historical2f12367VerificationOnly": {
+    "sourceCommit": "2f12367",
+    "cleanExport": true,
+    "release": {
+      "configuration": "OptimizedRelease",
+      "shaderBytes": 491804,
+      "shaderSHA256": "5b3bd187c9f3ad66a51764185c073cb23b417d37b3a83ebfbea439827b5dd37c",
+      "embeddedIdentical": true,
+      "deviceOrSimulatorLaunched": false
+    },
+    "interfacesIdenticalToExistingRelease": {
+      "arm64-apple-ios.swiftinterface": true,
+      "arm64-apple-ios.private.swiftinterface": true
+    },
+    "compilerFlagSetsUnchanged": 40,
+    "deviceTestsRepeated": false,
+    "visualTestsRepeated": false,
+    "onlyBuildConfigChange": "Credential-free Signing.xcconfig with optional local Team include; no personal project settings copied",
+    "debug": {
+      "configuration": "OptimizedDebug",
+      "shaderBytes": 491804,
+      "shaderSHA256": "5b3bd187c9f3ad66a51764185c073cb23b417d37b3a83ebfbea439827b5dd37c",
+      "embeddedIdentical": true,
+      "deviceOrSimulatorLaunched": false
+    },
+    "releaseExecutableSectionsIdenticalToExistingRelease": true,
+    "releaseExecutableTextBytes": 119852,
+    "note": "All file-backed Mach-O sections compared equal, including __TEXT,__text and constants. Whole unsigned framework file hash differs from prior signed file; signing/link metadata is not a rendering algorithm change."
+  }
 }
