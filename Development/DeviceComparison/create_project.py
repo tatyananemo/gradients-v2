@@ -13,7 +13,7 @@ if not (HERE/'LocalSigning.xcconfig').exists():(HERE/'LocalSigning.xcconfig').wr
 
 def configs(name,extra):
     refs=[]
-    for variant in ['Reference','Precalc','Combined']:
+    for variant in ['Reference','Precalc','Combined','Optimized']:
         for mode in ['Debug','Release']:
             title=variant+mode
             settings={**xp.BASE,**extra,'SUPPORTED_PLATFORMS':'iphoneos','SUPPORTS_MACCATALYST':'NO',
@@ -22,9 +22,9 @@ def configs(name,extra):
                 'ENABLE_TESTABILITY':'YES' if mode=='Debug' else 'NO',
                 'SWIFT_ACTIVE_COMPILATION_CONDITIONS':('DEBUG ' if mode=='Debug' else '')+('PRECALC_COMPARISON' if variant!='Reference' else ''),
                 'V4_COMPARISON_MODE':'reference' if variant=='Reference' else 'precalc',
-                'V4_MASK_DOMAIN':'1' if variant=='Combined' else '0','V4_SHARED_BACKGROUND':'1' if variant=='Combined' else '0','V4_IDLE_ZERO_WORK':'1' if variant=='Combined' else '0','ENABLE_USER_SCRIPT_SANDBOXING':'NO'}
+                'V4_MASK_DOMAIN':'1' if variant in ('Combined','Optimized') else '0','V4_SHARED_BACKGROUND':'1' if variant in ('Combined','Optimized') else '0','V4_IDLE_ZERO_WORK':'1' if variant in ('Combined','Optimized') else '0','ENABLE_USER_SCRIPT_SANDBOXING':'NO'}
             if name=='demo':
-                settings['PRODUCT_BUNDLE_IDENTIFIER']='com.local.gradients.v4.compare.'+variant.lower()
+                settings['PRODUCT_BUNDLE_IDENTIFIER']='com.local.gradients.v4.compare.'+('precalc' if variant=='Optimized' else variant.lower())
                 settings['INFOPLIST_KEY_CFBundleDisplayName']='V4 '+variant
             refs.append(obj(name+title,'XCBuildConfiguration',buildSettings=settings,name=title,baseConfigurationReference=signing))
     return obj(name+'config','XCConfigurationList',buildConfigurations=refs,defaultConfigurationIsVisible=0,defaultConfigurationName='ReferenceRelease')
@@ -71,7 +71,7 @@ xp.write_project(project,[signing,*sources,*generated,app_source,monitor_source,
 entry=reference('demo','GradientsV4Comparison.app','GradientsV4Comparison',project.name)
 sdk_entry=reference('sdk','GradientsKit.framework','GradientsKit',project.name)
 tests=''.join('<TestableReference skipped="NO">'+reference(n,'GradientsV4ComparisonTests.xctest' if n=='unit' else 'GradientsV4ComparisonUITests.xctest','GradientsV4ComparisonTests' if n=='unit' else 'GradientsV4ComparisonUITests',project.name)+'</TestableReference>' for n in ['unit','ui'])
-for variant in ['Reference','Precalc','Combined']:
+for variant in ['Reference','Precalc','Combined','Optimized']:
     name='V4 '+variant
     xp.write_scheme(project,name,entry,tests,sdk_entry)
     path=project/'xcshareddata/xcschemes'/f'{name}.xcscheme';s=path.read_text()
