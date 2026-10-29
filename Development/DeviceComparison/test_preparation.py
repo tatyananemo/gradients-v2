@@ -110,6 +110,20 @@ class PreparationTests(unittest.TestCase):
         self.assertEqual(b['GradientsUIKit.metal'].count(b'[[function_constant('),1)
         with self.assertRaises(ValueError):outputs('precalc',swipe_optimization=True)
 
+    def test_mask_window_keeps_raster_blur_pool_and_public_api(self):
+        a,b=outputs('precalc',True,True,True,True),outputs('precalc',True,True,True,True,True)
+        self.assertEqual({n for n in a if a[n]!=b[n]}, {'GradientMaskRenderer.swift','GradientsUIKit.metal','GradientViewController.swift'})
+        old,new=a['GradientMaskRenderer.swift'],b['GradientMaskRenderer.swift']
+        self.assertEqual(old[:old.index(b'    func waitUntilScheduled')].split(b'    var sampleOrigins')[0],new[:new.index(b'    var sampleOrigins')])
+        for marker in [b'let radius:CGFloat=[38,30,42][index]',b'radius*scale*breath',b'CIContext(mtlDevice:device',b'ctx.clear(',b'source?.command=command',b'sources.count<2',b'guard status==KERN_SUCCESS']:
+            self.assertIn(marker,new)
+        self.assertEqual(old[old.index(b'        let start=ProcessInfo'):old.index(b'        let radius:CGFloat')],new[new.index(b'        let start=ProcessInfo'):new.index(b'        let radius:CGFloat')])
+        public=lambda s:[l.strip() for l in s.decode().splitlines() if re.search(r'\bpublic\b',l)]
+        self.assertEqual(public(a['GradientViewController.swift']),public(b['GradientViewController.swift']))
+        self.assertIn(b'fixedRegion=fullExtent',new)
+        self.assertIn(b'enc.setFragmentBytes(&origins,length:16,index:2)',b['GradientViewController.swift'])
+        with self.assertRaises(ValueError):outputs('precalc',mask_roi=True)
+
     def test_swipe_resource_logic_with_mocks_debug_release(self):
         self.check_resource_logic(True)
 

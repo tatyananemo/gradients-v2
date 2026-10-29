@@ -157,6 +157,7 @@
 				"$(SRCROOT)/shared_background_source.py",
 				"$(SRCROOT)/idle_zero_source.py",
 				"$(SRCROOT)/swipe_optimization_source.py",
+				"$(SRCROOT)/mask_window_source.py",
 				"$(SRCROOT)/GradientPrecalculationBuffers.swift",
 			);
 			outputPaths = (
@@ -171,7 +172,7 @@
 			name = "Prepare isolated comparison sources";
 			runOnlyForDeploymentPostprocessing = "0";
 			shellPath = "/bin/sh";
-			shellScript = "set -- --mode \"$V4_COMPARISON_MODE\" --output \"$DERIVED_FILE_DIR\"\nif [ \"$V4_MASK_DOMAIN\" = \"1\" ]; then set -- \"$@\" --mask-domain; fi\nif [ \"$V4_SHARED_BACKGROUND\" = \"1\" ]; then set -- \"$@\" --shared-background; fi\nif [ \"$V4_IDLE_ZERO_WORK\" = \"1\" ]; then set -- \"$@\" --idle-zero-work; fi\nif [ \"$V4_SWIPE_OPTIMIZATION\" = \"1\" ]; then set -- \"$@\" --swipe-optimization; fi\n/usr/bin/python3 -I -B \"$SRCROOT/prepare_sources.py\" \"$@\"\n";
+			shellScript = "set -- --mode \"$V4_COMPARISON_MODE\" --output \"$DERIVED_FILE_DIR\"\nif [ \"$V4_MASK_DOMAIN\" = \"1\" ]; then set -- \"$@\" --mask-domain; fi\nif [ \"$V4_SHARED_BACKGROUND\" = \"1\" ]; then set -- \"$@\" --shared-background; fi\nif [ \"$V4_IDLE_ZERO_WORK\" = \"1\" ]; then set -- \"$@\" --idle-zero-work; fi\nif [ \"$V4_SWIPE_OPTIMIZATION\" = \"1\" ]; then set -- \"$@\" --swipe-optimization; fi\nif [ \"$V4_MASK_ROI\" = \"1\" ]; then set -- \"$@\" --mask-roi; fi\n/usr/bin/python3 -I -B \"$SRCROOT/prepare_sources.py\" \"$@\"\n";
 		};
 		6CA2D723A4E3753F8C0202DB = {
 			isa = XCBuildConfiguration;
@@ -206,6 +207,7 @@
 				V4_SHARED_BACKGROUND = "0";
 				V4_IDLE_ZERO_WORK = "0";
 				V4_SWIPE_OPTIMIZATION = "0";
+				V4_MASK_ROI = "0";
 				ENABLE_USER_SCRIPT_SANDBOXING = "NO";
 			};
 			name = "ReferenceDebug";
@@ -244,6 +246,7 @@
 				V4_SHARED_BACKGROUND = "0";
 				V4_IDLE_ZERO_WORK = "0";
 				V4_SWIPE_OPTIMIZATION = "0";
+				V4_MASK_ROI = "0";
 				ENABLE_USER_SCRIPT_SANDBOXING = "NO";
 			};
 			name = "ReferenceRelease";
@@ -282,6 +285,7 @@
 				V4_SHARED_BACKGROUND = "0";
 				V4_IDLE_ZERO_WORK = "0";
 				V4_SWIPE_OPTIMIZATION = "0";
+				V4_MASK_ROI = "0";
 				ENABLE_USER_SCRIPT_SANDBOXING = "NO";
 			};
 			name = "PrecalcDebug";
@@ -320,6 +324,7 @@
 				V4_SHARED_BACKGROUND = "0";
 				V4_IDLE_ZERO_WORK = "0";
 				V4_SWIPE_OPTIMIZATION = "0";
+				V4_MASK_ROI = "0";
 				ENABLE_USER_SCRIPT_SANDBOXING = "NO";
 			};
 			name = "PrecalcRelease";
@@ -358,6 +363,7 @@
 				V4_SHARED_BACKGROUND = "1";
 				V4_IDLE_ZERO_WORK = "1";
 				V4_SWIPE_OPTIMIZATION = "0";
+				V4_MASK_ROI = "0";
 				ENABLE_USER_SCRIPT_SANDBOXING = "NO";
 			};
 			name = "CombinedDebug";
@@ -396,6 +402,7 @@
 				V4_SHARED_BACKGROUND = "1";
 				V4_IDLE_ZERO_WORK = "1";
 				V4_SWIPE_OPTIMIZATION = "0";
+				V4_MASK_ROI = "0";
 				ENABLE_USER_SCRIPT_SANDBOXING = "NO";
 			};
 			name = "CombinedRelease";
@@ -434,6 +441,7 @@
 				V4_SHARED_BACKGROUND = "1";
 				V4_IDLE_ZERO_WORK = "1";
 				V4_SWIPE_OPTIMIZATION = "1";
+				V4_MASK_ROI = "1";
 				ENABLE_USER_SCRIPT_SANDBOXING = "NO";
 			};
 			name = "OptimizedDebug";
@@ -472,6 +480,7 @@
 				V4_SHARED_BACKGROUND = "1";
 				V4_IDLE_ZERO_WORK = "1";
 				V4_SWIPE_OPTIMIZATION = "1";
+				V4_MASK_ROI = "1";
 				ENABLE_USER_SCRIPT_SANDBOXING = "NO";
 			};
 			name = "OptimizedRelease";
@@ -683,6 +692,7 @@
 				V4_SHARED_BACKGROUND = "0";
 				V4_IDLE_ZERO_WORK = "0";
 				V4_SWIPE_OPTIMIZATION = "0";
+				V4_MASK_ROI = "0";
 				ENABLE_USER_SCRIPT_SANDBOXING = "NO";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.local.gradients.v4.compare.reference";
 				INFOPLIST_KEY_CFBundleDisplayName = "V4 Reference";
@@ -721,6 +731,7 @@
 				V4_SHARED_BACKGROUND = "0";
 				V4_IDLE_ZERO_WORK = "0";
 				V4_SWIPE_OPTIMIZATION = "0";
+				V4_MASK_ROI = "0";
 				ENABLE_USER_SCRIPT_SANDBOXING = "NO";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.local.gradients.v4.compare.reference";
 				INFOPLIST_KEY_CFBundleDisplayName = "V4 Reference";
@@ -759,6 +770,7 @@
 				V4_SHARED_BACKGROUND = "0";
 				V4_IDLE_ZERO_WORK = "0";
 				V4_SWIPE_OPTIMIZATION = "0";
+				V4_MASK_ROI = "0";
 				ENABLE_USER_SCRIPT_SANDBOXING = "NO";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.local.gradients.v4.compare.precalc";
 				INFOPLIST_KEY_CFBundleDisplayName = "V4 Precalc";
@@ -797,6 +809,7 @@
 				V4_SHARED_BACKGROUND = "0";
 				V4_IDLE_ZERO_WORK = "0";
 				V4_SWIPE_OPTIMIZATION = "0";
+				V4_MASK_ROI = "0";
 				ENABLE_USER_SCRIPT_SANDBOXING = "NO";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.local.gradients.v4.compare.precalc";
 				INFOPLIST_KEY_CFBundleDisplayName = "V4 Precalc";
@@ -835,6 +848,7 @@
 				V4_SHARED_BACKGROUND = "1";
 				V4_IDLE_ZERO_WORK = "1";
 				V4_SWIPE_OPTIMIZATION = "0";
+				V4_MASK_ROI = "0";
 				ENABLE_USER_SCRIPT_SANDBOXING = "NO";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.local.gradients.v4.compare.combined";
 				INFOPLIST_KEY_CFBundleDisplayName = "V4 Combined";
@@ -873,6 +887,7 @@
 				V4_SHARED_BACKGROUND = "1";
 				V4_IDLE_ZERO_WORK = "1";
 				V4_SWIPE_OPTIMIZATION = "0";
+				V4_MASK_ROI = "0";
 				ENABLE_USER_SCRIPT_SANDBOXING = "NO";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.local.gradients.v4.compare.combined";
 				INFOPLIST_KEY_CFBundleDisplayName = "V4 Combined";
@@ -911,6 +926,7 @@
 				V4_SHARED_BACKGROUND = "1";
 				V4_IDLE_ZERO_WORK = "1";
 				V4_SWIPE_OPTIMIZATION = "1";
+				V4_MASK_ROI = "1";
 				ENABLE_USER_SCRIPT_SANDBOXING = "NO";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.local.gradients.v4.compare.precalc";
 				INFOPLIST_KEY_CFBundleDisplayName = "V4 Optimized";
@@ -949,6 +965,7 @@
 				V4_SHARED_BACKGROUND = "1";
 				V4_IDLE_ZERO_WORK = "1";
 				V4_SWIPE_OPTIMIZATION = "1";
+				V4_MASK_ROI = "1";
 				ENABLE_USER_SCRIPT_SANDBOXING = "NO";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.local.gradients.v4.compare.precalc";
 				INFOPLIST_KEY_CFBundleDisplayName = "V4 Optimized";
@@ -1084,6 +1101,7 @@
 				V4_SHARED_BACKGROUND = "0";
 				V4_IDLE_ZERO_WORK = "0";
 				V4_SWIPE_OPTIMIZATION = "0";
+				V4_MASK_ROI = "0";
 				ENABLE_USER_SCRIPT_SANDBOXING = "NO";
 			};
 			name = "ReferenceDebug";
@@ -1118,6 +1136,7 @@
 				V4_SHARED_BACKGROUND = "0";
 				V4_IDLE_ZERO_WORK = "0";
 				V4_SWIPE_OPTIMIZATION = "0";
+				V4_MASK_ROI = "0";
 				ENABLE_USER_SCRIPT_SANDBOXING = "NO";
 			};
 			name = "ReferenceRelease";
@@ -1152,6 +1171,7 @@
 				V4_SHARED_BACKGROUND = "0";
 				V4_IDLE_ZERO_WORK = "0";
 				V4_SWIPE_OPTIMIZATION = "0";
+				V4_MASK_ROI = "0";
 				ENABLE_USER_SCRIPT_SANDBOXING = "NO";
 			};
 			name = "PrecalcDebug";
@@ -1186,6 +1206,7 @@
 				V4_SHARED_BACKGROUND = "0";
 				V4_IDLE_ZERO_WORK = "0";
 				V4_SWIPE_OPTIMIZATION = "0";
+				V4_MASK_ROI = "0";
 				ENABLE_USER_SCRIPT_SANDBOXING = "NO";
 			};
 			name = "PrecalcRelease";
@@ -1220,6 +1241,7 @@
 				V4_SHARED_BACKGROUND = "1";
 				V4_IDLE_ZERO_WORK = "1";
 				V4_SWIPE_OPTIMIZATION = "0";
+				V4_MASK_ROI = "0";
 				ENABLE_USER_SCRIPT_SANDBOXING = "NO";
 			};
 			name = "CombinedDebug";
@@ -1254,6 +1276,7 @@
 				V4_SHARED_BACKGROUND = "1";
 				V4_IDLE_ZERO_WORK = "1";
 				V4_SWIPE_OPTIMIZATION = "0";
+				V4_MASK_ROI = "0";
 				ENABLE_USER_SCRIPT_SANDBOXING = "NO";
 			};
 			name = "CombinedRelease";
@@ -1288,6 +1311,7 @@
 				V4_SHARED_BACKGROUND = "1";
 				V4_IDLE_ZERO_WORK = "1";
 				V4_SWIPE_OPTIMIZATION = "1";
+				V4_MASK_ROI = "1";
 				ENABLE_USER_SCRIPT_SANDBOXING = "NO";
 			};
 			name = "OptimizedDebug";
@@ -1322,6 +1346,7 @@
 				V4_SHARED_BACKGROUND = "1";
 				V4_IDLE_ZERO_WORK = "1";
 				V4_SWIPE_OPTIMIZATION = "1";
+				V4_MASK_ROI = "1";
 				ENABLE_USER_SCRIPT_SANDBOXING = "NO";
 			};
 			name = "OptimizedRelease";
@@ -1433,6 +1458,7 @@
 				V4_SHARED_BACKGROUND = "0";
 				V4_IDLE_ZERO_WORK = "0";
 				V4_SWIPE_OPTIMIZATION = "0";
+				V4_MASK_ROI = "0";
 				ENABLE_USER_SCRIPT_SANDBOXING = "NO";
 			};
 			name = "ReferenceDebug";
@@ -1466,6 +1492,7 @@
 				V4_SHARED_BACKGROUND = "0";
 				V4_IDLE_ZERO_WORK = "0";
 				V4_SWIPE_OPTIMIZATION = "0";
+				V4_MASK_ROI = "0";
 				ENABLE_USER_SCRIPT_SANDBOXING = "NO";
 			};
 			name = "ReferenceRelease";
@@ -1499,6 +1526,7 @@
 				V4_SHARED_BACKGROUND = "0";
 				V4_IDLE_ZERO_WORK = "0";
 				V4_SWIPE_OPTIMIZATION = "0";
+				V4_MASK_ROI = "0";
 				ENABLE_USER_SCRIPT_SANDBOXING = "NO";
 			};
 			name = "PrecalcDebug";
@@ -1532,6 +1560,7 @@
 				V4_SHARED_BACKGROUND = "0";
 				V4_IDLE_ZERO_WORK = "0";
 				V4_SWIPE_OPTIMIZATION = "0";
+				V4_MASK_ROI = "0";
 				ENABLE_USER_SCRIPT_SANDBOXING = "NO";
 			};
 			name = "PrecalcRelease";
@@ -1565,6 +1594,7 @@
 				V4_SHARED_BACKGROUND = "1";
 				V4_IDLE_ZERO_WORK = "1";
 				V4_SWIPE_OPTIMIZATION = "0";
+				V4_MASK_ROI = "0";
 				ENABLE_USER_SCRIPT_SANDBOXING = "NO";
 			};
 			name = "CombinedDebug";
@@ -1598,6 +1628,7 @@
 				V4_SHARED_BACKGROUND = "1";
 				V4_IDLE_ZERO_WORK = "1";
 				V4_SWIPE_OPTIMIZATION = "0";
+				V4_MASK_ROI = "0";
 				ENABLE_USER_SCRIPT_SANDBOXING = "NO";
 			};
 			name = "CombinedRelease";
@@ -1631,6 +1662,7 @@
 				V4_SHARED_BACKGROUND = "1";
 				V4_IDLE_ZERO_WORK = "1";
 				V4_SWIPE_OPTIMIZATION = "1";
+				V4_MASK_ROI = "1";
 				ENABLE_USER_SCRIPT_SANDBOXING = "NO";
 			};
 			name = "OptimizedDebug";
@@ -1664,6 +1696,7 @@
 				V4_SHARED_BACKGROUND = "1";
 				V4_IDLE_ZERO_WORK = "1";
 				V4_SWIPE_OPTIMIZATION = "1";
+				V4_MASK_ROI = "1";
 				ENABLE_USER_SCRIPT_SANDBOXING = "NO";
 			};
 			name = "OptimizedRelease";
@@ -1792,6 +1825,7 @@
 				V4_SHARED_BACKGROUND = "0";
 				V4_IDLE_ZERO_WORK = "0";
 				V4_SWIPE_OPTIMIZATION = "0";
+				V4_MASK_ROI = "0";
 				ENABLE_USER_SCRIPT_SANDBOXING = "NO";
 			};
 			name = "ReferenceDebug";
@@ -1823,6 +1857,7 @@
 				V4_SHARED_BACKGROUND = "0";
 				V4_IDLE_ZERO_WORK = "0";
 				V4_SWIPE_OPTIMIZATION = "0";
+				V4_MASK_ROI = "0";
 				ENABLE_USER_SCRIPT_SANDBOXING = "NO";
 			};
 			name = "ReferenceRelease";
@@ -1854,6 +1889,7 @@
 				V4_SHARED_BACKGROUND = "0";
 				V4_IDLE_ZERO_WORK = "0";
 				V4_SWIPE_OPTIMIZATION = "0";
+				V4_MASK_ROI = "0";
 				ENABLE_USER_SCRIPT_SANDBOXING = "NO";
 			};
 			name = "PrecalcDebug";
@@ -1885,6 +1921,7 @@
 				V4_SHARED_BACKGROUND = "0";
 				V4_IDLE_ZERO_WORK = "0";
 				V4_SWIPE_OPTIMIZATION = "0";
+				V4_MASK_ROI = "0";
 				ENABLE_USER_SCRIPT_SANDBOXING = "NO";
 			};
 			name = "PrecalcRelease";
@@ -1916,6 +1953,7 @@
 				V4_SHARED_BACKGROUND = "1";
 				V4_IDLE_ZERO_WORK = "1";
 				V4_SWIPE_OPTIMIZATION = "0";
+				V4_MASK_ROI = "0";
 				ENABLE_USER_SCRIPT_SANDBOXING = "NO";
 			};
 			name = "CombinedDebug";
@@ -1947,6 +1985,7 @@
 				V4_SHARED_BACKGROUND = "1";
 				V4_IDLE_ZERO_WORK = "1";
 				V4_SWIPE_OPTIMIZATION = "0";
+				V4_MASK_ROI = "0";
 				ENABLE_USER_SCRIPT_SANDBOXING = "NO";
 			};
 			name = "CombinedRelease";
@@ -1978,6 +2017,7 @@
 				V4_SHARED_BACKGROUND = "1";
 				V4_IDLE_ZERO_WORK = "1";
 				V4_SWIPE_OPTIMIZATION = "1";
+				V4_MASK_ROI = "1";
 				ENABLE_USER_SCRIPT_SANDBOXING = "NO";
 			};
 			name = "OptimizedDebug";
@@ -2009,6 +2049,7 @@
 				V4_SHARED_BACKGROUND = "1";
 				V4_IDLE_ZERO_WORK = "1";
 				V4_SWIPE_OPTIMIZATION = "1";
+				V4_MASK_ROI = "1";
 				ENABLE_USER_SCRIPT_SANDBOXING = "NO";
 			};
 			name = "OptimizedRelease";

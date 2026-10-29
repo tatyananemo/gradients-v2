@@ -17,6 +17,7 @@ from precalculation_source import compose_candidate
 from shared_background_source import compose_candidate as compose_shared_candidate
 from idle_zero_source import specialize
 import swipe_optimization_source as swipe
+import mask_window_source as mask_window
 
 def replace(source,old,new,count=1):
     if source.count(old)!=count:
@@ -74,13 +75,14 @@ def mask_source(reduce_domain=False):
         source=source.replace(expansion,b'')
     return source
 
-def outputs(mode,mask_domain=False,shared_background=False,idle_zero_work=False,swipe_optimization=False):
+def outputs(mode,mask_domain=False,shared_background=False,idle_zero_work=False,swipe_optimization=False,mask_roi=False):
     optimized=mode=='precalc'
     if (mask_domain or shared_background) and not optimized:
         raise ValueError('Reference must retain the approved mask graph')
     if idle_zero_work and not (optimized and shared_background):
         raise ValueError('Zero-input specialization requires Combined background')
     if swipe_optimization and not idle_zero_work:raise ValueError('Swipe optimization requires reviewed zero-input background')
+    if mask_roi and not (mask_domain and swipe_optimization):raise ValueError('Mask ROI requires the reviewed finite-domain swipe candidate')
     shader=compose_shared_candidate(ROOT) if shared_background else compose_candidate(ROOT) if optimized else compose_sdk()
     if idle_zero_work:shader=specialize(shader)
     generated={
@@ -95,6 +97,10 @@ def outputs(mode,mask_domain=False,shared_background=False,idle_zero_work=False,
         generated['GradientsUIKit.metal']=swipe.shader(generated['GradientsUIKit.metal'])
         generated['GradientPrecalculationBuffers.swift']=swipe.buffers(generated['GradientPrecalculationBuffers.swift'])
         generated['GradientViewController.swift']=swipe.controller(generated['GradientViewController.swift'])
+    if mask_roi:
+        generated['GradientMaskRenderer.swift']=mask_window.renderer(generated['GradientMaskRenderer.swift'])
+        generated['GradientsUIKit.metal']=mask_window.shader(generated['GradientsUIKit.metal'])
+        generated['GradientViewController.swift']=mask_window.controller(generated['GradientViewController.swift'])
     return generated
 
 if __name__=='__main__':
@@ -103,12 +109,13 @@ if __name__=='__main__':
     p.add_argument('--shared-background',action='store_true',help='Experimental single geometry/MAIN readout')
     p.add_argument('--idle-zero-work',action='store_true',help='Experimental zero legacy gesture specialization')
     p.add_argument('--swipe-optimization',action='store_true',help='Experimental conservative tiles and fused distortion')
+    p.add_argument('--mask-roi',action='store_true',help='Experimental zero-only mask window storage')
     a=p.parse_args()
     a.output.mkdir(parents=True,exist_ok=True)
-    generated=outputs(a.mode,a.mask_domain,a.shared_background,a.idle_zero_work,a.swipe_optimization)
+    generated=outputs(a.mode,a.mask_domain,a.shared_background,a.idle_zero_work,a.swipe_optimization,a.mask_roi)
     for name,data in generated.items():
         path=a.output/name
         if not path.exists() or path.read_bytes()!=data:path.write_bytes(data)
-    manifest={'mode':a.mode,'mask_domain':a.mask_domain,'shared_background':a.shared_background,'idle_zero_work':a.idle_zero_work,'swipe_optimization':a.swipe_optimization,'files':{n:hashlib.sha256(d).hexdigest() for n,d in generated.items()}}
+    manifest={'mode':a.mode,'mask_domain':a.mask_domain,'shared_background':a.shared_background,'idle_zero_work':a.idle_zero_work,'swipe_optimization':a.swipe_optimization,'mask_roi':a.mask_roi,'files':{n:hashlib.sha256(d).hexdigest() for n,d in generated.items()}}
     (a.output/'SourceManifest.json').write_text(json.dumps(manifest,indent=2)+'\n')
     print('Prepared isolated '+a.mode+' sources in '+str(a.output))
