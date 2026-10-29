@@ -1,0 +1,198 @@
+// New independent Yellow QA. All scalar geometry, timing and interaction fields are immutable.
+// Authorized Yellow-only removal of the restored outer residual.
+// Exact accepted pose/clock/profiles. Only the restored outer term respects
+// its EXISTING completion mask, as it already does in the Light readout.
+// The immutable Blue implementation and physical CONTACT fields stay intact.
+float yellowReviewDarkMainAtPose(float2 uv,float progress,float time) {
+    if(progress<=0.76) return qaMainAtPose(uv,progress,time,true);
+    uv.y+=(102.0/844.0)*segmentEase(progress,0.85,1.0);
+    float p=qaMainPoseProgress(progress),t=qaMainPoseTime(progress,time);
+    float center,width;qaMainPoseBand(p,center,width);
+    float L=qaAcceptedLightShapeDensityImpl(uv,p,t,center,width,true,true,progress);
+    float D=qaAcceptedDarkShapeDensity(uv,p,t,center,width);
+    float transfer=segmentEase(p,.70,.76)*(1.0-segmentEase(p,.94,1.0));
+    float x=uv.x,mx=1.0-x;
+    float w=sin(x*5.7+t*.11)*.018+sin(x*10.4-t*.08+1.2)*.008;
+    float mw=sin(mx*5.7+t*.11)*.018+sin(mx*10.4-t*.08+1.2)*.008;
+    w=mix(w,(w+mw)*.5,segmentEase(p,.50,.76));
+    return qaDarkLateFade(mix(D,L,transfer),(uv.y+w-center)/width,progress);
+}
+// QA-only perceptual warm readout of the accepted Blue radiance.
+// IEC sRGB transfer. Gamut compression reduces chroma at constant OKLab L;
+// no HSV V substitution, RGB hue clipping, exposure renormalization or blur.
+float3 amberDecode(float3 c) {
+    c=max(c,float3(0));
+    return select(pow((c+0.055)/1.055,float3(2.4)),c/12.92,c<=0.04045);
+}
+float3 amberEncode(float3 c) {
+    c=max(c,float3(0));
+    return select(1.055*pow(c,float3(1.0/2.4))-0.055,c*12.92,c<=0.0031308);
+}
+float3 amberLab(float3 rgb) {
+    float3 c=amberDecode(rgb);
+    float3 lms=float3(dot(c,float3(.4122214708,.5363325363,.0514459929)),
+        dot(c,float3(.2119034982,.6806995451,.1073969566)),
+        dot(c,float3(.0883024619,.2817188376,.6299787005)));
+    lms=pow(max(lms,float3(0)),float3(1.0/3.0));
+    return float3(dot(lms,float3(.2104542553,.7936177850,-.0040720468)),
+        dot(lms,float3(1.9779984951,-2.4285922050,.4505937099)),
+        dot(lms,float3(.0259040371,.7827717662,-.8086757660)));
+}
+float3 amberLinear(float3 lab) {
+    float3 v=float3(lab.x+.3963377774*lab.y+.2158037573*lab.z,
+        lab.x-.1055613458*lab.y-.0638541728*lab.z,
+        lab.x-.0894841775*lab.y-1.2914855480*lab.z);v=v*v*v;
+    return float3(dot(v,float3(4.0767416621,-3.3077115913,.2309699292)),
+        dot(v,float3(-1.2684380046,2.6097574011,-.3413193965)),
+        dot(v,float3(-.0041960863,-.7034186147,1.7076147010)));
+}
+float amberHue(float3 rgb){float3 l=amberLab(rgb);return atan2(l.z,l.y);}
+float3 amberGamut(float3 lab) {
+    float L=clamp(lab.x,0.0,1.0),C=length(lab.yz);
+    if(C<0.000001)return amberEncode(float3(L*L*L));
+    float2 direction=lab.yz/C;
+    float lo=0.0,hi=0.5;
+    for(int i=0;i<16;i++) {
+        float mid=(lo+hi)*0.5;
+        float3 rgb=amberLinear(float3(L,direction*mid));
+        if(all(rgb>=0.0)&&all(rgb<=1.0))lo=mid;else hi=mid;
+    }
+    float safeC=max(lo,0.000001);
+    // Idempotent gamut projection: retain every already-displayable colour.
+    // Only out-of-gamut chroma is reduced; re-evaluation cannot bleach it.
+    float mappedC=min(C,safeC);
+    return clamp(amberEncode(amberLinear(float3(L,direction*mappedC))),0.0,1.0);
+}
+float amberTargetHue(float L,bool contact) {
+    float deep=amberHue(yellowDeepColor.rgb),mid=amberHue(yellowMidColor.rgb),hot=amberHue(yellowHotColor.rgb);
+    // T-Pay samples: shadow 49-52 degrees, orange body ~58, gold maxima ~80.
+    // Existing Deep/Mid/Hot are 43.49 / 58.40 / 77.69 degrees in OKLCH.
+    return mix(mid,hot,segmentEase(L,.70,.87));
+}
+float3 amberTargetLab(float3 reference,bool contact) {
+    float3 lab=amberLab(clamp(reference,0.0,1.0));
+    float C=length(lab.yz),h=amberTargetHue(lab.x,contact);
+    return float3(lab.x,C*cos(h),C*sin(h));
+}
+// Linear change of the accepted Blue emitter basis. Black and white are fixed,
+// and the native Blue core/halo channel ramps retain their full dynamic range.
+// Hot.g is the production Yellow warm anchor, not an output-channel clamp.
+float3 amberContactReadout(float3 c,bool light=false) {
+    float gold=segmentEase(c.g,.60,1.0);
+    float warmth=light ? mix(yellowHotColor.g,yellowLightAccent.g,gold) : yellowHotColor.g;
+    return float3(c.b,mix(c.r,c.g,warmth),c.r);
+}
+float3 amberReadout(float3 reference,bool contact) {
+    return amberGamut(amberTargetLab(reference,contact));
+}
+float3 amberBlueMain(float M,float grain) {
+    return clamp(float3(.10*M,.55*M,qaNativeBlueCap(M))+grain,0.0,1.0);
+}
+float3 yellowReviewTransmission() {
+    return float3(1.0,mix(yellowMidColor.g,yellowHotColor.g,0.75),pow(yellowLightAccent.b,2.5));
+}
+[[ stitchable ]]
+half4 liquidYellowReviewBackground(
+    float2 position,
+    half4 color,
+    float2 size,
+    float progress,
+    float tapPulse,
+    float2 tapPoint,
+    float2 previousTouchPoint,
+    float swipePulse,
+    float swipeStrength,
+    float time,
+    float progressSpeed,
+    float fillGain,
+    float waveStrength,
+    float waveSpread,
+    float topBloom,
+    float whiteCore,
+    float blueDepth,
+    float dragWave,
+    float shockStrength,
+    float shockInteraction,
+    float shockTrail,
+    float waveCount,
+    float themeStrength,
+    float gradientColorIndex,
+    float idleActivity,
+    float idleTime,
+    device const float *interactionSegments,
+    int interactionFloatCount
+) {
+    if(abs(round(gradientColorIndex)-3.0)>0.5) {
+        return liquidSpecBackground(position,color,size,progress,tapPulse,tapPoint,previousTouchPoint,swipePulse,swipeStrength,time,progressSpeed,fillGain,waveStrength,waveSpread,topBloom,whiteCore,blueDepth,dragWave,shockStrength,shockInteraction,shockTrail,waveCount,themeStrength,gradientColorIndex,idleActivity,idleTime,interactionSegments,interactionFloatCount);
+    }
+    float2 safeSize=max(size,float2(1.0)),uv=position/safeSize;
+    float4 physical=yellowReferenceContactFields(position,color,size,progress,tapPulse,tapPoint,previousTouchPoint,swipePulse,swipeStrength,time,progressSpeed,fillGain,waveStrength,waveSpread,topBloom,whiteCore,blueDepth,dragWave,shockStrength,shockInteraction,shockTrail,waveCount,1.0,0.0,idleActivity,idleTime,interactionSegments,interactionFloatCount);
+    float physicalMain=physical.x;
+    float W=float(half(physical.y));
+    IdleContact contact=sharedIdleContact(physicalMain,W);
+    float3 transmission=yellowReviewTransmission();
+    bool dark=themeStrength>0.5;
+    // Query, do not rewrite, the exact accepted Blue MAIN display fields.
+    float M=dark ? yellowReviewDarkMainAtPose(uv,progress,time) : qaMainAtPose(uv,progress,time,false);
+    float3 mainBase=dark ? amberReadout(amberBlueMain(M,physical.w),false)
+        : correctedLightPigment(M,3.0,transmission);
+    // Reuse Blue's original diffuse counter-protection pocket, with the same
+    // field and 0.32 weight. Keep the production percentage/UI untouched.
+    if(!dark) mainBase=mix(mainBase,float3(1.0),clamp(physical.z,0.0,1.0)*0.32);
+    float3 result=mainBase;
+#include "Shared/YellowInteraction.inc"
+    if(W<=0.0)return half4(half3(result),1.0);
+    if(dark) {
+        float3 referenceMain=amberBlueMain(M,physical.w);
+        float3 source=float3(.14,.48,1.0),peak=float3(.24,1.0,1.0);
+        float3 referenceContact=clamp(referenceMain+peak*contact.frontReaction+
+            idleContactLight(source,peak,contact),0.0,1.0);
+        // Evaluate the complete accepted additive response before converting
+        // emitter colour; keep the MAIN display correction on its exact native
+        // remaining-coverage coefficient, never normalize the summed light.
+        float a=1.0-exp(-4.0*contact.intersection);
+        float remaining=(1.0-contact.idle)*(1.0-a);
+        float3 warm=amberContactReadout(referenceContact)+remaining*(mainBase-amberContactReadout(referenceMain));
+        return half4(half3(clamp(warm+trailDelta,0.0,1.0)),1.0);
+    }
+    // Restore the earlier direct CONTACT composition, before RGB clipping.
+    // Identical Blue W/I/remaining/substrate operators; only spectral operands
+    // are Yellow. No wave-share hue response or post-clipped RGB matrix.
+    // Palette anchors: free #FF8C00, overlap core #FFDD2D.
+    float3 LightBase=correctedLightPigment(physicalMain,3.0,transmission);
+    float3 waveSource=float3(1.0,140.0/255.0,0.0);
+    // Same W/I/a response. Primary stays bright Yellow, existing secondary
+    // and halo retain their warm colour progression instead of merging.
+    float3 lightContactColor=float3(1.0,221.0/255.0,45.0/255.0);
+    float3 appearance=LightBase*(1.0-contact.idle)
+        +waveSource*(contact.idle-contact.intersection)
+        +lightContactColor*contact.intersection;
+    float a=1.0-exp(-4.0*contact.intersection);
+    appearance=mix(clamp(appearance,0.0,1.0),lightContactColor,a);
+    if(contact.intersection>0.0) {
+        // Keep the accepted Light substrate colour reference; Dark late-MAIN
+        // feathering must not propagate into this protected contact term.
+        // Exact Blue substrate channel response in Yellow channel order.
+        // Keep the SUBSTRATE FIX composition and its fields untouched.
+        float3 DarkBase=float3(LightBase.r,blueDarkReference.g,blueDarkReference.r);
+        float3 source=waveSource;
+        float3 DarkContact=clamp(DarkBase+lightContactColor*contact.frontReaction+
+            idleContactLight(source,lightContactColor,contact),0.0,1.0);
+        float3 beforeDark=appearance;
+        float3 pigment=correctedLightPigment(1.0,3.0,transmission);
+        float peripheral=(1.0-contact.coverage)*(1.0-contact.coverage);
+        float3 substrateDelta=a*peripheral*max(min(beforeDark,pigment)-DarkBase,0.0);
+        appearance=mix(appearance,DarkContact,a);
+        appearance+=substrateDelta;
+    }
+    appearance+=(mainBase-LightBase)*(1.0-contact.idle)*(1.0-a);
+    // Core-only contrast gain from the existing W/I; Gaussian widths unchanged.
+    float coreResponse=pow(clamp(W,0.0,1.0),4.0)*contact.coverage;
+    float coreBlue=appearance.b;
+    appearance=mainBase+(appearance-mainBase)*(1.0+0.24*coreResponse);
+    // Keep the brighter core saturated: do not amplify its neutral B carrier.
+    appearance.b=coreBlue/(1.0+0.12*coreResponse);
+    appearance+=trailDelta;
+
+    return half4(half3(clamp(appearance,0.0,1.0)),1.0);
+}

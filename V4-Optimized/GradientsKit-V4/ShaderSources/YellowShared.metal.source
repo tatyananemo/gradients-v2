@@ -1,0 +1,55 @@
+// Exact helpers shared by the listed Yellow namespaces. Theme-specific readouts stay local.
+namespace YellowShared {
+
+float3 yellowReviewDarkPalette(float M,float progress) {
+    float q=clamp(M/1.32,0.0,1.0);
+    float3 current=mix(yellowDeepColor.rgb,yellowHotColor.rgb,q);
+    float3 hue=current;
+    float3 w=float3(0.2126,0.7152,0.0722);
+    // Unclipped Blue reference avoids the B=1 derivative corner at M=1.
+    // A common smooth peak cap preserves colour ratios and bright maxima.
+    float reference=dot(pow(float3(.10,.55,1.0)*max(M,0.0),float3(2.2)),w);
+    float amplitude=pow(reference*1.12/max(dot(pow(current,float3(2.2)),w),.00001),1.0/2.2);
+    float commonAmplitude=qaNativeBlueCap(amplitude);
+    // Use the common exposure without re-darkening configured gold to the
+    // CURRENT palette's luminance. Chroma brightness remains palette-specific.
+    return hue*commonAmplitude;
+}
+
+float3 yellowReviewTransmission() {
+    float3 yellowLightOrange=mix(yellowMidColor.rgb,yellowHotColor.rgb,0.25);
+    return float3(yellowLightOrange.r,mix(yellowMidColor.g,yellowHotColor.g,0.75),
+        pow(yellowLightAccent.b,2.5));
+}
+
+float yellowReviewPrimaryShare(float2 position,float2 size,float idleTime) {
+#include "Shared/YellowWaveProfile.inc"
+    return primary/max(primary+secondary+halo,0.000001);
+}
+
+float3 yellowReviewWaveShares(float2 position,float2 size,float idleTime) {
+#include "Shared/YellowWaveProfile.inc"
+    return float3(primary,secondary,halo)/max(primary+secondary+halo,0.000001);
+}
+
+float3 yellowReviewLightSource(float3 shares,float W) {
+    return float3(1.0,0.48,0.14);
+}
+
+float3 yellowReviewLightPeak(float3 shares) {
+    return float3(1.0,1.0,0.24);
+}
+
+float3 yellowReviewHSV(float3 rgb) {
+    float hi=max(rgb.r,max(rgb.g,rgb.b)),lo=min(rgb.r,min(rgb.g,rgb.b));
+    float d=hi-lo,h=0.0;
+    if(d>0.000001) {
+        if(hi==rgb.r)h=(rgb.g-rgb.b)/d;
+        else if(hi==rgb.g)h=2.0+(rgb.b-rgb.r)/d;
+        else h=4.0+(rgb.r-rgb.g)/d;
+        h=fract(h/6.0+1.0);
+    }
+    return float3(h,hi>0.000001 ? d/hi:0.0,hi);
+}
+
+} // namespace YellowShared

@@ -1,0 +1,29 @@
+{
+  "base": "0efba7a",
+  "checks": {
+    "Debug": "passed",
+    "Release": "passed",
+    "CPUContracts": 12,
+    "exactRenderedFrames": 724,
+    "exactRawMasks": 168,
+    "MetalAPIValidationFrames": 20
+  },
+  "maskTextureDimensionsBefore": [
+    1170,
+    2532
+  ],
+  "maskTextureDimensionsAfter": [
+    1170,
+    1368
+  ],
+  "maskTextureBytesSaved": 32685120,
+  "preserved": [
+    "input IOSurface pool and CG raster",
+    "Gaussian formula/radius and scale",
+    "shader background and color configuration",
+    "frame scheduling, session behavior, public API",
+    "oracles and tolerances"
+  ],
+  "notes": "Fixed conservative ROI per layout; independent mask origins and full-size fallback; no per-frame texture resizing. Physical device test pending.",
+  "artifacts": "/private/tmp/v4-mask-roi-20261029"
+}

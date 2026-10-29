@@ -1,0 +1,91 @@
+half4 v2ComposeBackground(
+    float2 position,
+    half4 color,
+    float2 size,
+    float progress,
+    float tapPulse,
+    float2 tapPoint,
+    float2 previousTouchPoint,
+    float swipePulse,
+    float swipeStrength,
+    float time,
+    float progressSpeed,
+    float fillGain,
+    float waveStrength,
+    float waveSpread,
+    float topBloom,
+    float whiteCore,
+    float blueDepth,
+    float dragWave,
+    float shockStrength,
+    float shockInteraction,
+    float shockTrail,
+    float waveCount,
+    float themeStrength,
+    float gradientColorIndex,
+    float idleActivity,
+    float idleTime,
+    device const float *interactionSegments,
+    int interactionFloatCount
+) {
+ if(abs(round(gradientColorIndex)-3.0)>0.5) return liquidSpecBackground(position,color,size,progress,tapPulse,tapPoint,previousTouchPoint,swipePulse,swipeStrength,time,progressSpeed,fillGain,waveStrength,waveSpread,topBloom,whiteCore,blueDepth,dragWave,shockStrength,shockInteraction,shockTrail,waveCount,themeStrength,gradientColorIndex,idleActivity,idleTime,interactionSegments,interactionFloatCount);
+ if(idleActivity<=0.0) {
+ if(themeStrength>0.5) return YellowDarkMAIN::liquidYellowReviewBackground(position,color,size,progress,tapPulse,tapPoint,previousTouchPoint,swipePulse,swipeStrength,time,progressSpeed,fillGain,waveStrength,waveSpread,topBloom,whiteCore,blueDepth,dragWave,shockStrength,shockInteraction,shockTrail,waveCount,themeStrength,gradientColorIndex,idleActivity,idleTime,interactionSegments,interactionFloatCount);
+ return YellowLightMAIN::liquidYellowReviewBackground(position,color,size,progress,tapPulse,tapPoint,previousTouchPoint,swipePulse,swipeStrength,time,progressSpeed,fillGain,waveStrength,waveSpread,topBloom,whiteCore,blueDepth,dragWave,shockStrength,shockInteraction,shockTrail,waveCount,themeStrength,gradientColorIndex,idleActivity,idleTime,interactionSegments,interactionFloatCount);
+ }
+ if(themeStrength>0.5) return YellowDarkContact::liquidYellowReviewBackground(position,color,size,progress,tapPulse,tapPoint,previousTouchPoint,swipePulse,swipeStrength,time,progressSpeed,fillGain,waveStrength,waveSpread,topBloom,whiteCore,blueDepth,dragWave,shockStrength,shockInteraction,shockTrail,waveCount,themeStrength,gradientColorIndex,idleActivity,idleTime,interactionSegments,interactionFloatCount);
+ return YellowLightContact::liquidYellowReviewBackground(position,color,size,progress,tapPulse,tapPoint,previousTouchPoint,swipePulse,swipeStrength,time,progressSpeed,fillGain,waveStrength,waveSpread,topBloom,whiteCore,blueDepth,dragWave,shockStrength,shockInteraction,shockTrail,waveCount,themeStrength,gradientColorIndex,idleActivity,idleTime,interactionSegments,interactionFloatCount);
+}
+
+[[ stitchable ]]
+half4 gradientsV2Background(
+    float2 position,
+    half4 color,
+    float2 size,
+    float progress,
+    float tapPulse,
+    float2 tapPoint,
+    float2 previousTouchPoint,
+    float swipePulse,
+    float swipeStrength,
+    float time,
+    float progressSpeed,
+    float fillGain,
+    float waveStrength,
+    float waveSpread,
+    float topBloom,
+    float whiteCore,
+    float blueDepth,
+    float dragWave,
+    float shockStrength,
+    float shockInteraction,
+    float shockTrail,
+    float waveCount,
+    float themeStrength,
+    float gradientColorIndex,
+    float idleActivity,
+    float idleTime,
+    device const float *interactionSegments,
+    int interactionFloatCount
+) { return v2ComposeBackground(position,color,size,progress,tapPulse,tapPoint,previousTouchPoint,swipePulse,swipeStrength,time,progressSpeed,fillGain,waveStrength,waveSpread,topBloom,whiteCore,blueDepth,dragWave,shockStrength,shockInteraction,shockTrail,waveCount,themeStrength,gradientColorIndex,idleActivity,idleTime,interactionSegments,interactionFloatCount); }
+
+[[ stitchable ]] half4 v2ReadabilityMask(float2 position,half4 colour,float2 origin,float2 scale,device const float *u,int count) {
+ if(count<28 || u[25]<=0)return half4(1);
+ float2 p=origin+position*scale;
+ float4 f=yellowReferenceContactFields(p,half4(1),float2(u[0],u[1]),u[2],u[3],float2(u[4],u[5]),float2(u[6],u[7]),u[8],u[9],u[10],u[11],u[12],u[13],u[14],u[15],u[16],u[17],u[18],u[19],u[20],u[21],u[22],1.0,0.0,u[25],u[26],u,0);
+ float W=float(half(f.y));
+ float keep=1.0-0.98*segmentEase(W,0.015,0.40)*(1.0-0.28*segmentEase(f.z,0.42,0.84));
+ return half4(1,1,1,half(keep));
+}
+float v2Linear(float x) {return x<=.04045 ? x/12.92:pow((x+.055)/1.055,2.4);}
+float v2Luma(float3 c) {return .2126*v2Linear(c.r)+.7152*v2Linear(c.g)+.0722*v2Linear(c.b);}
+kernel void v2CaptionProbe(constant float *input [[buffer(0)]],device const float *history [[buffer(1)]],device float4 *output [[buffer(2)]],uint id [[thread_position_in_grid]]) {
+ if(id>=360)return;
+ device const float *u=history+256;
+ // Parameters are also copied to a device address-space buffer for the shared helpers.
+ float2 p=float2(mix(input[28],input[30],(float(id%40)+.5)/40.0),mix(input[29],input[31],(float(id/40)+.5)/9.0));
+ float3 c=float3(v2ComposeBackground(p,half4(1),float2(u[0],u[1]),u[2],u[3],float2(u[4],u[5]),float2(u[6],u[7]),u[8],u[9],u[10],u[11],u[12],u[13],u[14],u[15],u[16],u[17],u[18],u[19],u[20],u[21],u[22],u[23],u[24],u[25],u[26],history,int(u[27])).rgb);
+ float4 f=yellowReferenceContactFields(p,half4(1),float2(u[0],u[1]),u[2],u[3],float2(u[4],u[5]),float2(u[6],u[7]),u[8],u[9],u[10],u[11],u[12],u[13],u[14],u[15],u[16],u[17],u[18],u[19],u[20],u[21],u[22],1.0,0.0,u[25],u[26],u,0);
+ float3 main=float3(v2ComposeBackground(p,half4(1),float2(u[0],u[1]),u[2],u[3],float2(u[4],u[5]),float2(u[6],u[7]),u[8],u[9],u[10],u[11],u[12],u[13],u[14],u[15],u[16],u[17],u[18],u[19],u[20],u[21],u[22],u[23],u[24],0.0,u[26],history,0).rgb);
+ output[id]=float4(v2Luma(c),f.y,max(v2Luma(c)-v2Luma(main),0.0),(max(c.r,max(c.g,c.b))-min(c.r,min(c.g,c.b)))/max(max(c.r,max(c.g,c.b)),0.000001));
+}

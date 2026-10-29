@@ -1,0 +1,65 @@
+{
+  "base": "c72a140",
+  "purpose": "Per-worker integer source height and conservative output extent; original CG draw and Gaussian radii preserved",
+  "maskComparisons": 168,
+  "maxFP16Delta": 0.0029296875,
+  "compositorFrames": 494,
+  "nativeSequenceFrames": 362,
+  "final": {
+    "dark": {
+      "maxChannelDelta8": 1,
+      "meanAbsoluteRGBA8": 0.001154314207236798,
+      "changedPixelPercent": 0.45784257869565925,
+      "worstFrameChangedPixelPercent": 2.2425433088940196,
+      "maxTemporalErrorChange8": 2
+    },
+    "light": {
+      "maxChannelDelta8": 0,
+      "meanAbsoluteRGBA8": 0.0,
+      "changedPixelPercent": 0.0,
+      "worstFrameChangedPixelPercent": 0,
+      "maxTemporalErrorChange8": 0
+    }
+  },
+  "MacRuns": [
+    {
+      "dark-idle": {
+        "fullFrameBeforeMS": 6.899702546358337,
+        "fullFrameAfterMS": 6.618535879599424,
+        "maskBeforeMS": 3.186672453870819,
+        "maskAfterMS": 3.060037037029259,
+        "frameReductionPercent": 4.075054900842245,
+        "maskReductionPercent": 3.973907537554955
+      },
+      "dark-swipe": {
+        "fullFrameBeforeMS": 7.287635416661134,
+        "fullFrameAfterMS": 6.999847222131292,
+        "maskBeforeMS": 3.0442916665581126,
+        "maskAfterMS": 2.8946122684929936,
+        "frameReductionPercent": 3.9489927538347347,
+        "maskReductionPercent": 4.916723312334492
+      }
+    },
+    {
+      "dark-idle": {
+        "fullFrameBeforeMS": 7.490243055574158,
+        "fullFrameAfterMS": 7.106256944603552,
+        "maskBeforeMS": 3.4037361112445472,
+        "maskAfterMS": 3.1691724536813126,
+        "frameReductionPercent": 5.126483988858654,
+        "maskReductionPercent": 6.891358492461642
+      },
+      "dark-swipe": {
+        "fullFrameBeforeMS": 8.127181712906248,
+        "fullFrameAfterMS": 7.5128043979222845,
+        "maskBeforeMS": 3.243260416689332,
+        "maskAfterMS": 3.0389513888925044,
+        "frameReductionPercent": 7.5595370780046744,
+        "maskReductionPercent": 6.299495000323874
+      }
+    }
+  ],
+  "status": "moderate measured CPU/frame improvement; visual approval and iPhone confirmation pending; no main/delivery merge",
+  "gpuFormulaChanges": false,
+  "goldensChanged": false
+}

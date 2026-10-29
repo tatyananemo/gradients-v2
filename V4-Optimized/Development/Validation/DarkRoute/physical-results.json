@@ -1,0 +1,97 @@
+{
+  "sourceCodeCommit": "a28aff5",
+  "baseline": "c72a140",
+  "firstOptimization": "3b72d08",
+  "device": "physical iPhone 14 / A15 / iOS 26.7",
+  "scenario": "One A/B set: 3 s warm-up then 6 s auto-swipes from 63%, each theme once per version, 45+ s stopped cooldown between runs, brightness .35, low power off, no Instruments",
+  "runs": [
+    {
+      "version": "c72a140",
+      "theme": "Dark",
+      "status": "completed",
+      "FPS": 45.6093147586298,
+      "frameMeanMS": 21.925345848586527,
+      "p95MS": 33.35908334702253,
+      "p99MS": 33.38749997783452,
+      "maskCPUms": 7.2070136856428775,
+      "commandElapsedMS": 25.272138076443497,
+      "drawableMS": 10.12711526752096,
+      "thermalStates": [
+        0
+      ],
+      "brightness": 0.3499999940395355,
+      "lowPower": false,
+      "errors": {},
+      "measuredSeconds": 5.985619416664122,
+      "missedVSyncsEstimate": 86,
+      "maxFrameMS": 33.40375001425855
+    },
+    {
+      "version": "c72a140",
+      "theme": "Light",
+      "status": "completed",
+      "FPS": 57.84944118896817,
+      "frameMeanMS": 17.286251681039555,
+      "p95MS": 16.684583330061287,
+      "p99MS": 33.33141666371375,
+      "maskCPUms": 0.004275382885136695,
+      "commandElapsedMS": 21.549884699072273,
+      "drawableMS": 7.340471864739518,
+      "thermalStates": [
+        0
+      ],
+      "brightness": 0.3499999940395355,
+      "lowPower": false,
+      "errors": {},
+      "measuredSeconds": 5.998329333320726,
+      "missedVSyncsEstimate": 13,
+      "maxFrameMS": 33.337541681248695
+    },
+    {
+      "version": "a28aff5",
+      "theme": "Dark",
+      "status": "completed",
+      "FPS": 59.8411687862391,
+      "frameMeanMS": 16.71090355156895,
+      "p95MS": 16.675958322593942,
+      "p99MS": 16.690458345692605,
+      "maskCPUms": 5.745325809807077,
+      "commandElapsedMS": 13.306809838104527,
+      "drawableMS": 3.020998379927025,
+      "thermalStates": [
+        0
+      ],
+      "brightness": 0.3499999940395355,
+      "lowPower": false,
+      "errors": {},
+      "measuredSeconds": 5.999214375013253,
+      "missedVSyncsEstimate": 1,
+      "maxFrameMS": 33.33200002089143
+    },
+    {
+      "version": "a28aff5",
+      "theme": "Light",
+      "status": "completed",
+      "FPS": 56.17871270909529,
+      "frameMeanMS": 17.80033667161798,
+      "p95MS": 33.31533333403058,
+      "p99MS": 33.33270832081325,
+      "maskCPUms": 0.002661120017698398,
+      "commandElapsedMS": 21.583387328118235,
+      "drawableMS": 13.103570266607488,
+      "thermalStates": [
+        0
+      ],
+      "brightness": 0.3499999940395355,
+      "lowPower": false,
+      "errors": {},
+      "measuredSeconds": 5.99871345833526,
+      "missedVSyncsEstimate": 23,
+      "maxFrameMS": 33.34683334105648
+    }
+  ],
+  "allAppsStopped": true,
+  "sourceMetallibBytes": 491804,
+  "candidateMetallibBytes": 492236,
+  "interpretation": "Dark improves by 31.2% FPS in this short test. Light is 2.9% lower; no-regression requirement is not established by this single comparison. Candidate remains experimental, not accepted/merged. Long idle/thermal not tested. Command-buffer durations include waits, not GPU utilization."
+}

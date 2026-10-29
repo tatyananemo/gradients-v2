@@ -1,0 +1,149 @@
+// Mechanical projection of frozen Blue physical MAIN/W fields; no colour mapping.
+float4 yellowReferenceContactFields(
+    float2 position,
+    half4 color,
+    float2 size,
+    float progress,
+    float tapPulse,
+    float2 tapPoint,
+    float2 previousTouchPoint,
+    float swipePulse,
+    float swipeStrength,
+    float time,
+    float progressSpeed,
+    float fillGain,
+    float waveStrength,
+    float waveSpread,
+    float topBloom,
+    float whiteCore,
+    float blueDepth,
+    float dragWave,
+    float shockStrength,
+    float shockInteraction,
+    float shockTrail,
+    float waveCount,
+    float themeStrength,
+    float gradientColorIndex,
+    float idleActivity,
+    float idleTime,
+    device const float *interactionSegments,
+    int interactionFloatCount
+) {
+#include "Shared/PhysicalFields.inc"
+
+    // Shared travelling-band timing; each light preset applies its own palette below.
+    float referenceBandCenter;
+    float referenceBandWidth;
+    if (progress <= 0.50) {
+        float phase = smootherLiquid(progress / 0.50);
+        referenceBandCenter = bandMotion(1.105, 0.855, 0.0, -0.838028, progress / 0.50, 0.50);
+        referenceBandWidth = mix(0.205, 0.315, phase);
+    } else if (progress <= 0.70) {
+        float phase = smootherLiquid((progress - 0.50) / 0.20);
+        referenceBandCenter = bandMotion(0.855, 0.515, -0.838028, -1.676693, (progress - 0.50) / 0.20, 0.20);
+        referenceBandWidth = mix(0.315, 0.285, phase);
+    } else {
+        float phase = smootherLiquid((progress - 0.70) / 0.30);
+        referenceBandCenter = bandMotion(0.515, 0.020, -1.676693, 0.0, (progress - 0.70) / 0.30, 0.30);
+        referenceBandWidth = mix(0.285, 0.235, phase);
+    }
+
+    // Yellow follows the established Blue entry; Blue geometry stays unchanged.
+    referenceBandCenter -= clamp(isBluePreset + isYellowPreset, 0.0, 1.0) * 0.065 * smoothstep(0.0, 0.05, progress) *
+        (1.0 - segmentEase(progress, 0.26, 0.45));
+    // Continue the shared mass upward after 90%, without changing the clock.
+    referenceBandCenter -= 0.075 * segmentEase(progress, 0.90, 1.0);
+
+    float referenceWarp =
+        sin(uv.x * 5.7 + time * 0.11) * 0.018 +
+        sin(uv.x * 10.4 - time * 0.08 + 1.2) * 0.008;
+    float referenceDistance = uv.y + referenceWarp - referenceBandCenter;
+    float referenceOuter = exp(-pow(referenceDistance / referenceBandWidth, 2.0));
+    float referenceBody = exp(-pow(referenceDistance / (referenceBandWidth * 0.70), 2.0));
+    float referenceCore = exp(-pow(referenceDistance / (referenceBandWidth * 0.34), 2.0));
+    float referenceEntry = smoothstep(0.002, 0.020, progress);
+    referenceOuter *= referenceEntry;
+    referenceBody *= referenceEntry;
+    referenceCore *= referenceEntry;
+
+    // One broad pigment profile avoids the narrow accent stripe produced by
+    // compositing several differently sized blue cores over one another.
+    float blueLightDensity = exp(-pow(referenceDistance / (referenceBandWidth * 0.82), 2.0)) * referenceEntry;
+
+    // One soft, asymmetric reduction of light behind the digits; no ring or
+    // constant-radius plateau. Coordinates match the existing counter region.
+    float counterDrift = sin(time * 0.16) * 0.006;
+    float2 counterDelta = float2(
+        (uv.x - 0.5 + sin(uv.y * 11.0 + time * 0.12) * 0.018) / 0.29,
+        (uv.y - 0.475 + sin(uv.x * 8.0 + 0.8) * 0.016 + counterDrift) / 0.090
+    );
+    float2 counterLobe = float2((uv.x - 0.57) / 0.23, (uv.y - 0.45 + counterDrift) / 0.105);
+    float counterProtection = 0.76 * exp(-dot(counterDelta, counterDelta)) +
+        0.24 * exp(-dot(counterLobe, counterLobe));
+
+    float centerVoidD =
+        pow((uv.x - 0.5 + sin(uv.y * 11.0 + time * 0.12) * 0.018) / 0.354, 2.0) +
+        pow((uv.y - 0.475 + sin(uv.x * 8.0 + 0.8) * 0.014) / 0.150, 2.0);
+    float centerVoid = (1.0 - smoothstep(0.36, 1.68, centerVoidD)) *
+        mix(0.56, 0.82, smoothstep(0.02, 0.58, progress));
+    float centerVoidSoft = (1.0 - smoothstep(0.58, 2.55, centerVoidD)) *
+        mix(0.18, 0.32, smoothstep(0.10, 0.72, progress));
+    float centerReduction = clamp(centerVoid * 0.58 + centerVoidSoft * 0.18, 0.0, 0.70);
+
+
+    float3 darkBase = float3(0.0, 0.0, 0.0);
+    float3 darkResult = darkBase;
+    // Dark mode uses the same travelling band as the light reference. Only the
+    // canvas changes to black; no accumulated color remains below the band.
+    float3 darkBandOuterColor = mix(targetBlue, cyan, 0.30);
+    float3 darkBandBodyColor = mix(targetBlue, electric, 0.34);
+    float3 darkBandCoreColor = mix(targetBlue, electric, 0.72);
+    if (isYellowPreset > 0.5) {
+        // Carry Blue Dark's dominant-channel light field through the shared
+        // masks first. Apply Yellow's palette after them, not before dimming.
+        darkBandOuterColor = darkBandBodyColor = darkBandCoreColor = float3(1.0);
+    }
+    float darkBandEntry = smoothstep(0.002, 0.020, progress);
+    float darkBandOuter = referenceOuter * darkBandEntry;
+    float darkBandBody = referenceBody * darkBandEntry;
+    float darkBandCore = referenceCore * darkBandEntry;
+    float3 travellingDarkResult = darkBase;
+    travellingDarkResult += darkBandOuterColor * darkBandOuter * 0.20;
+    travellingDarkResult += darkBandBodyColor * darkBandBody * 0.58;
+    travellingDarkResult += darkBandCoreColor * darkBandCore * 0.54;
+    travellingDarkResult = mix(
+        travellingDarkResult,
+        darkBase,
+        centerReduction
+    );
+    darkResult = travellingDarkResult;
+    // Clear behind the moving mass, not through its bright core at 70–85%.
+    // Rejoin the original completion fade before the explicit endpoint gate.
+    float completionBlackout =
+        segmentEase(progress, 0.58, 0.98) *
+        smoothstep(0.06, 0.38, uv.y) *
+        mix(smoothstep(0.04, 0.32, referenceDistance),
+            1.0, segmentEase(progress, 0.85, 0.98));
+    darkResult = mix(darkResult, darkBase, completionBlackout);
+    // Hard safety gate: no color is allowed to leak into a dark-theme canvas at 0%.
+    // This is intentionally applied after every dark effect contribution.
+    float darkCanvasReveal = smoothstep(0.0, 0.10, progress);
+    darkResult = mix(darkBase, darkResult, darkCanvasReveal);
+
+    float finishSync = segmentEase(progress, 0.94, 1.0);
+    float endpointCoverage = referenceOuter * (0.82 + 0.16 * blueLightDensity) *
+        (1.0 - counterProtection * 0.32);
+    float3 endpointColor = isYellowPreset > 0.5 ? float3(1.0) : darkBandCoreColor;
+    darkResult = mix(darkResult, endpointColor * endpointCoverage, finishSync);
+    // Blue Dark's unbounded density is the only spatial input to palette
+    // mapping. A second, narrower body mask made the other palettes read as
+    // stripes even though their outer coverage matched Blue.
+    float sharedLightField = max(darkResult.r, max(darkResult.g, darkResult.b));
+    // REGRESSION LOCK: geometry is resolved ONCE before any of the four palettes.
+    // Main/front/free-wave fields contain no theme or color coefficients.
+    float idleDensity = idleActivity > 0.0
+        ? idleWaveDensity(position, size, idleActivity, idleTime, waveStrength) : 0.0;
+    float preservedGrain=grain*mix(0.0010,0.0035,grainMask)*
+        (1.0-completionBlackout)*darkCanvasReveal;
+    return float4(sharedLightField,idleDensity,counterProtection,preservedGrain);
+}

@@ -1,0 +1,938 @@
+#include <metal_stdlib>
+using namespace metal;
+
+// Exact team RGBA palette, shared by both Yellow themes and their interaction light.
+constant float4 yellowDeepColor = float4(1.0, 0.4, 0.0, 1.0);
+constant float4 yellowMidColor = float4(1.0, 0.55, 0.0, 1.0);
+constant float4 yellowHotColor = float4(1.0, 0.7, 0.0, 1.0);
+constant float3 yellowLightAccent = float3(1.0, 221.0 / 255.0, 45.0 / 255.0); // #FFDD2D
+
+// Approximate display luminance, used only to balance Yellow Dark's light
+// against the established blue. A scalar gain preserves the warm hue.
+float3 balanceYellowDarkLight(float3 warm, float3 reference) {
+    const float3 luminanceWeights = float3(0.2126, 0.7152, 0.0722);
+    float warmLuminance = dot(pow(warm, float3(2.2)), luminanceWeights);
+    float referenceLuminance = dot(pow(reference, float3(2.2)), luminanceWeights);
+    float gain = pow(min(referenceLuminance / max(warmLuminance, 0.0001), 1.0), 1.0 / 2.2);
+    return warm * gain;
+}
+
+struct LayerState {
+    float2 pos;
+    float2 dim;
+    float opacity;
+    float blur;
+};
+
+// MARK: - Utils
+
+float hashLiquid(float2 p) {
+    return fract(sin(dot(p, float2(127.1, 311.7))) * 43758.5453123);
+}
+
+float smootherLiquid(float x) {
+    x = clamp(x, 0.0, 1.0);
+    return x * x * x * (x * (x * 6.0 - 15.0) + 10.0);
+}
+
+float segmentEase(float value, float start, float end) {
+    return smootherLiquid((value - start) / max(end - start, 0.0001));
+}
+
+// Shared tangents keep the travelling band moving through its key positions.
+float bandMotion(float from, float to, float fromSlope, float toSlope, float t, float span) {
+    float t2 = t * t;
+    float t3 = t2 * t;
+    return (2.0 * t3 - 3.0 * t2 + 1.0) * from +
+        (t3 - 2.0 * t2 + t) * span * fromSlope +
+        (-2.0 * t3 + 3.0 * t2) * to +
+        (t3 - t2) * span * toSlope;
+}
+
+
+float interactionLightField(float2 uv, float aspect, device const float *segments, int count) {
+    float field = 0.0;
+    float2 p = uv * float2(aspect, 1.0);
+    for (int i = 0; i + 5 < count; i += 6) {
+        float age = segments[i + 4];
+        float life = 1.0 - smootherLiquid(age / 1.8);
+        float lift = age * 0.055;
+        float2 a = float2(segments[i] * aspect, segments[i + 1] - lift);
+        float2 b = float2(segments[i + 2] * aspect, segments[i + 3] - lift);
+        float2 radii = float2(0.057 + age * 0.007, 0.065 + age * 0.016);
+        // Reject distant pixels before evaluating the soft swept field.
+        if (any(p < min(a, b) - radii * 3.0) || any(p > max(a, b) + radii * 3.0)) continue;
+        float2 path = b - a;
+        float projection = clamp(dot(p - a, path) / max(dot(path, path), 0.000001), 0.0, 1.0);
+        float2 delta = (p - mix(a, b, projection)) / radii;
+        float softArea = exp(-dot(delta, delta));
+        field += softArea * life * segments[i + 5] * 0.54;
+    }
+    return field;
+}
+
+float interp4(float a, float b, float c, float d, float p) {
+    p = clamp(p, 0.0, 1.0);
+
+    if (p <= 0.35) {
+        return mix(a, b, smootherLiquid(p / 0.35));
+    }
+
+    if (p <= 0.75) {
+        return mix(b, c, smootherLiquid((p - 0.35) / 0.40));
+    }
+
+    return mix(c, d, smootherLiquid((p - 0.75) / 0.25));
+}
+
+float interpKeys(float k0, float k1, float k2, float k3, float progress) {
+    if (progress <= 0.30) {
+        return mix(k0, k1, smootherLiquid((progress - 0.10) / 0.24));
+    }
+
+    if (progress <= 0.60) {
+        return mix(k1, k2, smootherLiquid((progress - 0.24) / 0.42));
+    }
+
+    return mix(k2, k3, smootherLiquid((progress - 0.52) / 0.36));
+}
+
+float2 interp4v(float2 a, float2 b, float2 c, float2 d, float p) {
+    return float2(
+        interp4(a.x, b.x, c.x, d.x, p),
+        interp4(a.y, b.y, c.y, d.y, p)
+    );
+}
+
+LayerState makeState(
+    float2 p0, float2 p1, float2 p2, float2 p3,
+    float2 d0, float2 d1, float2 d2, float2 d3,
+    float o0, float o1, float o2, float o3,
+    float b0, float b1, float b2, float b3,
+    float progress
+) {
+    LayerState s;
+
+    s.pos = interp4v(p0, p1, p2, p3, progress);
+    s.dim = interp4v(d0, d1, d2, d3, progress);
+    s.opacity = interp4(o0, o1, o2, o3, progress);
+    s.blur = interp4(b0, b1, b2, b3, progress);
+
+    return s;
+}
+
+float localY(float2 p, LayerState s) {
+    return clamp((p.y - s.pos.y) / max(s.dim.y, 1.0), 0.0, 1.0);
+}
+
+// MARK: - SDF shapes
+
+float trapezoidSDF(
+    float2 p,
+    LayerState s,
+    float leftTop,
+    float rightTop,
+    float leftBottom,
+    float rightBottom
+) {
+    float2 safeDim = float2(max(s.dim.x, 1.0), max(s.dim.y, 1.0));
+    float2 q = (p - s.pos) / safeDim;
+
+    float l = mix(leftTop, leftBottom, q.y);
+    float r = mix(rightTop, rightBottom, q.y);
+
+    float left = (q.x - l) * s.dim.x;
+    float right = (r - q.x) * s.dim.x;
+    float top = q.y * s.dim.y;
+    float bottom = (1.0 - q.y) * s.dim.y;
+
+    return min(min(left, right), min(top, bottom));
+}
+
+
+float svgGradientAlpha(
+    float2 p,
+    LayerState s,
+    float blueY,
+    float transparentY
+) {
+    float y = localY(p, s);
+
+    if (blueY > transparentY) {
+        return smoothstep(transparentY, blueY, y);
+    } else {
+        return 1.0 - smoothstep(blueY, transparentY, y);
+    }
+}
+
+float softLayerAlpha(float sdf, float blur) {
+    // Более мягкие края liquid-слоёв.
+    float softness = max(24.0, blur * 0.70);
+    return smoothstep(-softness, softness, sdf);
+}
+
+// MARK: - Layer fields
+
+float blueTrapField(
+    float2 p,
+    LayerState s,
+    float leftTop,
+    float rightTop,
+    float leftBottom,
+    float rightBottom,
+    float blueY,
+    float transparentY,
+    float strength
+) {
+    float sdf = trapezoidSDF(
+        p,
+        s,
+        leftTop,
+        rightTop,
+        leftBottom,
+        rightBottom
+    );
+
+    float shape = softLayerAlpha(sdf, s.blur);
+    float grad = svgGradientAlpha(p, s, blueY, transparentY);
+
+    return shape * grad * s.opacity * strength;
+}
+
+
+
+// MARK: - Blend approximations
+
+float3 plusDarkerApprox(float3 backdrop, float3 source, float alpha) {
+    alpha = clamp(alpha, 0.0, 1.0);
+    float3 blended = max(float3(0.0), backdrop + source - float3(1.0));
+    return mix(backdrop, blended, alpha);
+}
+
+float3 plusLighterApprox(float3 backdrop, float3 source, float alpha) {
+    alpha = clamp(alpha, 0.0, 1.0);
+    float3 blended = min(float3(1.0), backdrop + source);
+    return mix(backdrop, blended, alpha);
+}
+
+// MARK: - Main shader
+
+// REGRESSION LOCK: CURRENT Blue Dark is the immutable visual reference.
+// - Theme-specific Light/Yellow fixes must leave its output pixel-identical.
+// - Dark Blue output and both Dark contact paths remain frozen.
+// - Yellow Dark main/contact mapping is restored from the accepted checkpoint.
+// - Light reuses Dark's two-band field and contact partition; palette response
+//   changes alone. No added halo, offset contours or optical/RGB double application.
+// - Zero wave restores the original Light main palette exactly.
+float3 yellowDarkDensityPalette(float density) {
+    // ONE continuous palette for main, free wave and their density union.
+    // Low/middle density stays orange/brown; yellow is never progress-gated.
+    float brightness = 1.0 - exp(-3.0 * density);
+    float hue = 1.0 - exp(-6.0 * density * density);
+    return mix(yellowDeepColor.rgb, yellowLightAccent, hue) * brightness;
+}
+
+// Dark's additive field union and overlap, before any theme color response.
+// Alpha is the existing idle density; no theme participates in this calculation.
+struct IdleContact {
+    float main;
+    float idle;
+    float coverage;
+    float intersection;
+    float frontReaction;
+    float reactedMain;
+    float freeIdle;
+    float reactedDensity;
+};
+
+IdleContact sharedIdleContact(float mainDensity, float idleDensity) {
+    IdleContact contact;
+    contact.main = mainDensity;
+    contact.idle = idleDensity;
+    contact.coverage = clamp(mainDensity, 0.0, 1.0);
+    contact.intersection = contact.coverage * idleDensity;
+    // Partition Dark's existing additive union at the MAIN front. A filled
+    // interior has no boundary left to move; only its wave pigment changes.
+    // Both densities retain the same union, M+W, without a second idle layer.
+    contact.frontReaction = contact.intersection * (1.0 - contact.coverage);
+    contact.reactedMain = mainDensity + contact.frontReaction;
+    contact.freeIdle = idleDensity - contact.frontReaction;
+    contact.reactedDensity = mainDensity + idleDensity;
+    return contact;
+}
+
+float idleWaveDensity(float2 position, float2 size, float activity, float time, float waveStrength);
+half4 idleWaveColor(float density, float themeStrength, float gradientColorIndex);
+half4 qaHistoricalYellowDarkWave(float density);
+half4 blendDarkIdle(half4 color, half4 wave, IdleContact contact, float gradientColorIndex);
+half4 blendLightIdle(half4 color, half4 wave, IdleContact contact, float gradientColorIndex, float3 transmission);
+float3 correctedLightPigment(float density, float gradientColorIndex, float3 transmission) {
+    // Accepted Light absorption curve: white at zero density, continuously
+    // approaching the existing saturated pigment without a coverage threshold.
+    return pow(max(transmission, float3(0.0001)), float3(density));
+}
+
+// Collision support uses the two existing wave ridges. Their diffuse halo is
+// light in the background, not a surface that can push the liquid boundary.
+
+
+
+
+
+// QA GEOMETRY ONLY: one display coordinate system for Blue MAIN.
+// Physical contact fields and the frozen Dark contact helper are not inputs/outputs.
+struct QaCommonMainShape {
+    float warp;
+    float distance;
+    float voidD;
+    float counter;
+};
+QaCommonMainShape qaCommonMainShape(float2 uv, float progress, float time,
+    float bandCenter, float originalWarp, float originalVoidD,
+    float originalCounter, float counterDrift) {
+    // Preserve the original Light curve in the lower travel. Continuously
+    // remove only its odd horizontal component as MAIN rises above halfway.
+    // .50 is the existing middle travel key; .76 the existing finish-lift onset.
+    float balance = segmentEase(progress, 0.50, 0.76);
+    float mirrorX = 1.0 - uv.x;
+    float mirrorWarp = sin(mirrorX * 5.7 + time * 0.11) * 0.018 +
+        sin(mirrorX * 10.4 - time * 0.08 + 1.2) * 0.008;
+    float mirrorVoidD =
+        pow((mirrorX - 0.5 + sin(uv.y * 11.0 + time * 0.12) * 0.018) / 0.354, 2.0) +
+        pow((uv.y - 0.475 + sin(mirrorX * 8.0 + 0.8) * 0.014) / 0.150, 2.0);
+    float2 mirrorCounter = float2(
+        (mirrorX - 0.5 + sin(uv.y * 11.0 + time * 0.12) * 0.018) / 0.29,
+        (uv.y - 0.475 + sin(mirrorX * 8.0 + 0.8) * 0.016 + counterDrift) / 0.090);
+    float2 mirrorLobe = float2((mirrorX - 0.57) / 0.23,
+        (uv.y - 0.45 + counterDrift) / 0.105);
+    float mirrorProtection = 0.76 * exp(-dot(mirrorCounter, mirrorCounter)) +
+        0.24 * exp(-dot(mirrorLobe, mirrorLobe));
+    QaCommonMainShape shape;
+    shape.warp = mix(originalWarp, (originalWarp + mirrorWarp)*0.5, balance);
+    shape.distance = uv.y + shape.warp - bandCenter;
+    shape.voidD = mix(originalVoidD, (originalVoidD + mirrorVoidD)*0.5, balance);
+    shape.counter = mix(originalCounter, (originalCounter + mirrorProtection)*0.5, balance);
+    return shape;
+}
+
+// ONE small softness adjustment to existing display MAIN Gaussians only.
+// Add common variance (quarter of the existing core radius); peak amplitudes,
+// original RGB readout, masks, warp, clock and contact fields remain unchanged.
+float qaDisplayMainGaussian(float distance,float width,float radius) {
+    const float softness=0.25*0.34;
+    float softenedRadius=sqrt(radius*radius+2.0*softness*softness);
+    return exp(-pow(distance/(width*softenedRadius),2.0));
+}
+
+float qaMainPoseProgress(float p);
+float qaMainPoseTime(float p,float time);
+float qaMainAtPose(float2 uv,float progress,float time,bool dark);
+
+// Inset the EXISTING central area in ellipse-radius units. An additive
+// radial inset translates its soft edge; it does not scale/contract feather
+// width. Keep centre depth smooth and all physical/contact coordinates exact.
+float qaCompactMainCentre(float q,float progress) {
+    float active=segmentEase(progress,0.40,0.50)*(1.0-segmentEase(progress,0.80,0.85));
+    if(active<=0.0) return q;
+    float r=sqrt(max(q,0.0));
+    // Inset the inner area while pinning the existing outer soft support and
+    // side highlights. Feather support is preserved, not scaled smaller.
+    float interior=1.0-smoothstep(0.36,1.68,q);
+    float inset=0.10*active*segmentEase(r,0.0,0.60)*interior;
+    return (r+inset)*(r+inset);
+}
+
+// Dark only, outgoing low-density colour toe. Same hue vector, same existing
+// blue-cap knee, exact bright values. C2 join to untouched mid/high density.
+// No new Gaussian, RGB layer, geometry, blur or per-column normalization.
+float qaDarkLateFade(float density,float outwardDistance,float displayProgress) {
+    const float knee=1.0-(0.20+0.58+0.54-1.0);
+    float toe=max(1.0-density/knee,0.0);
+    float late=segmentEase(displayProgress,0.78,0.86);
+    float flank=segmentEase(outwardDistance,0.0,0.34);
+    return density*(1.0+0.35*late*flank*toe*toe*toe);
+}
+
+float qaRestoreMainOuter(float outer,float entry,float reveal,float transmission,
+    float distance,float width,float voidD,float progress) {
+    // Restore only the missing part of the EXISTING .20 outer contribution.
+    // Existing void + outgoing-flank coordinates; no added Gaussian/glow/mask.
+    voidD=qaCompactMainCentre(voidD,progress);
+    float interior=1.0-smoothstep(0.36,1.68,voidD);
+    float exterior=segmentEase(distance/width,0.0,0.34)*segmentEase(progress,0.76,0.80);
+    return outer*0.20*entry*reveal*(1.0-transmission)*interior*exterior;
+}
+
+// Display-only primary void: same centre and existing soft-void extent.
+// Remove the flat inner plateau / short oval shoulder during the requested
+// middle travel. Physical/contact fields and normalization probes stay exact.
+float qaDisplayCentreProfile(float q,float progress) {
+    q=qaCompactMainCentre(q,progress);
+    float original=1.0-smoothstep(0.36,1.68,q);
+    float soft=1.0-smootherLiquid(clamp(q/2.55,0.0,1.0));
+    float active=segmentEase(progress,0.40,0.50)*(1.0-segmentEase(progress,0.80,0.85));
+    return mix(original,soft,active);
+}
+
+float qaCentreMainRetention(float outer,float body,float core,float voidD,float progress,
+    float outwardDistance=0.0,float displayProgress=-1.0) {
+    voidD=qaCompactMainCentre(voidD,progress);
+    float originalInterior=1.0-smoothstep(0.36,1.68,voidD);
+    // Centre only: remove the flat oval plateau. Use the existing soft-void
+    // extent, with one continuous falloff from its centre and zero edge slope.
+    // Same accepted 7-second falloff, entering continuously before 2 seconds.
+    // No new light/pigment profile; outer and all MAIN Gaussians stay exact.
+    float radial=1.0-clamp(voidD/2.55,0.0,1.0);
+    float softInterior=radial*radial;
+    float local=segmentEase(progress,0.0,0.20)*(1.0-segmentEase(progress,0.80,0.85));
+    float interior=mix(originalInterior,softInterior,local);
+    float narrow=body*0.58+core*0.54;
+    float retention=1.0-interior*narrow/max(outer*0.20+narrow,0.000001);
+    // This is already a SECOND attenuation after centerReduction. Relax only
+    // that duplicate depth within its existing support, preserving one pocket.
+    // A geometric mean with unity spreads the retained energy continuously;
+    // no new spatial mask, colour, Gaussian, ring or light layer.
+    float soften=local*segmentEase(progress,0.30,0.40);
+    // Late colour shoulder only: the duplicate body/core removal otherwise
+    // returns abruptly to its compact attenuation as the accepted soft centre
+    // hands over. Reuse its accepted sqrt readout on the OUTER shoulder only.
+    // Central flat interior, MAIN peak, Gaussians, geometry and contact stay exact.
+    float clock=displayProgress>=0.0 ? displayProgress : progress;
+    float late=segmentEase(clock,0.76,0.80)*(1.0-segmentEase(clock,0.86,0.90));
+    float shoulder=segmentEase(outwardDistance,0.0,0.34)*(1.0-originalInterior);
+    soften=max(soften,late*shoulder);
+    return mix(retention,sqrt(max(retention,0.0)),soften);
+}
+
+
+
+// QA B: smooth only Blue Dark MAIN's blue saturation readout.
+// Join the existing linear and saturated branches across the available
+// density headroom, (.20+.58+.54)-1. No geometry/contact field changes.
+float qaNativeBlueCap(float x) {
+    const float radius = 0.20 + 0.58 + 0.54 - 1.0;
+    if (x <= 1.0-radius) return max(x, 0.0);
+    if (x >= 1.0+radius) return 1.0;
+    float t = (x-(1.0-radius))/(2.0*radius);
+    return 1.0-radius+2.0*radius*(t-t*t*t+0.5*t*t*t*t);
+}
+
+// QA: query the exact ACCEPTED Light MAIN density AFTER its visual masks.
+// This is a colour-free shape query: no wave/contact/trail or palette changes.
+float qaAcceptedLightShapeDensityImpl(float2 uv, float progress, float time,
+    float bandCenter, float bandWidth,bool correctInterior,bool cleanOuter=false,float displayProgress=-1.0) {
+    float originalWarp=sin(uv.x*5.7+time*0.11)*0.018 +
+        sin(uv.x*10.4-time*0.08+1.2)*0.008;
+    float originalVoidD=pow((uv.x-0.5+sin(uv.y*11.0+time*0.12)*0.018)/0.354,2.0) +
+        pow((uv.y-0.475+sin(uv.x*8.0+0.8)*0.014)/0.150,2.0);
+    float counterDrift=sin(time*0.16)*0.006;
+    float2 counterDelta=float2((uv.x-0.5+sin(uv.y*11.0+time*0.12)*0.018)/0.29,
+        (uv.y-0.475+sin(uv.x*8.0+0.8)*0.016+counterDrift)/0.090);
+    float2 counterLobe=float2((uv.x-0.57)/0.23,(uv.y-0.45+counterDrift)/0.105);
+    float originalCounter=0.76*exp(-dot(counterDelta,counterDelta)) +
+        0.24*exp(-dot(counterLobe,counterLobe));
+    QaCommonMainShape shape=qaCommonMainShape(uv,progress,time,bandCenter,
+        originalWarp,originalVoidD,originalCounter,counterDrift);
+    float entry=smoothstep(0.002,0.020,progress);
+    float outer=qaDisplayMainGaussian(shape.distance,bandWidth,1.0)*entry;
+    float body=qaDisplayMainGaussian(shape.distance,bandWidth,0.70)*entry;
+    float core=qaDisplayMainGaussian(shape.distance,bandWidth,0.34)*entry;
+    float voidMain=(correctInterior ? qaDisplayCentreProfile(shape.voidD,progress) : 1.0-smoothstep(0.36,1.68,shape.voidD))*
+        mix(0.56,0.82,smoothstep(0.02,0.58,progress));
+    float voidSoft=(1.0-smoothstep(0.58,2.55,correctInterior ? qaCompactMainCentre(shape.voidD,progress) : shape.voidD))*
+        mix(0.18,0.32,smoothstep(0.10,0.72,progress));
+    float reduction=clamp(voidMain*0.58+voidSoft*0.18,0.0,0.70);
+    float completion=segmentEase(progress,0.58,0.98)*smoothstep(0.06,0.38,uv.y)*
+        mix(smoothstep(0.04,0.32,shape.distance),1.0,segmentEase(progress,0.85,0.98));
+    float density=(outer*0.20+body*0.58+core*0.54)*entry*(1.0-reduction);
+    if(correctInterior) density*=qaCentreMainRetention(outer,body,core,shape.voidD,
+        progress,shape.distance/bandWidth,displayProgress);
+    density=mix(density,0.0,completion);
+    density=mix(0.0,density,smoothstep(0.0,0.10,progress));
+    if(correctInterior) {
+        float restoredOuter=qaRestoreMainOuter(outer,entry,smoothstep(0.0,0.10,progress),
+            (1.0-reduction)*(1.0-completion),shape.distance,bandWidth,shape.voidD,progress);
+        // Light readout only: do not revive an isolated pigment pocket after
+        // the existing completion field has extinguished MAIN there.
+        density+=restoredOuter*(cleanOuter ? (1.0-completion) : 1.0);
+    }
+    float blueDensity=exp(-pow(shape.distance/(bandWidth*0.82),2.0))*entry;
+    float endpoint=outer*(0.82+0.16*blueDensity)*(1.0-shape.counter*0.32);
+    return mix(density,endpoint,segmentEase(progress,0.94,1.0));
+}
+float qaAcceptedLightShapeDensity(float2 uv,float progress,float time,float bandCenter,float bandWidth) {
+ return qaAcceptedLightShapeDensityImpl(uv,progress,time,bandCenter,bandWidth,true);
+}
+
+float qaAcceptedDarkShapeDensityImpl(float2 uv,float progress,float time,
+    float bandCenter,float bandWidth,bool correctInterior) {
+    float warp=sin(uv.x*5.7+time*.11)*.018+sin(uv.x*10.4-time*.08+1.2)*.008;
+    float vd=pow((uv.x-.5+sin(uv.y*11.0+time*.12)*.018)/.354,2.0)+
+        pow((uv.y-.475+sin(uv.x*8.0+.8)*.014)/.150,2.0);
+    float drift=sin(time*.16)*.006;
+    float2 dc=float2((uv.x-.5+sin(uv.y*11.0+time*.12)*.018)/.29,
+        (uv.y-.475+sin(uv.x*8.0+.8)*.016+drift)/.090);
+    float2 dl=float2((uv.x-.57)/.23,(uv.y-.45+drift)/.105);
+    float cp=.76*exp(-dot(dc,dc))+.24*exp(-dot(dl,dl));
+    QaCommonMainShape sh=qaCommonMainShape(uv,progress,time,bandCenter,warp,vd,cp,drift);
+    float entry=smoothstep(.002,.020,progress);
+    float outer=qaDisplayMainGaussian(sh.distance,bandWidth,1.0)*entry;
+    float body=qaDisplayMainGaussian(sh.distance,bandWidth,0.70)*entry;
+    float core=qaDisplayMainGaussian(sh.distance,bandWidth,0.34)*entry;
+    float v=(correctInterior ? qaDisplayCentreProfile(sh.voidD,progress) : 1.0-smoothstep(.36,1.68,sh.voidD))*mix(.56,.82,smoothstep(.02,.58,progress));
+    float vs=(1.0-smoothstep(.58,2.55,correctInterior ? qaCompactMainCentre(sh.voidD,progress) : sh.voidD))*mix(.18,.32,smoothstep(.10,.72,progress));
+    float red=clamp(v*.58+vs*.18,0.0,.70)*(1.0-segmentEase((.475-bandCenter)/bandWidth,0.0,.70));
+    float completion=segmentEase(progress,.58,.98)*smoothstep(.06,.38,uv.y)*
+        mix(smoothstep(.04,.32,sh.distance),1.0,segmentEase(progress,.85,.98));
+    const float refP=.33;
+    float refC=bandMotion(1.105,.855,0.0,-.838028,refP/.50,.50);
+    refC-=.065*smoothstep(0.0,.05,refP)*(1.0-segmentEase(refP,.26,.45));
+    float refW=mix(.205,.315,smootherLiquid(refP/.50));
+    float refY=refC-sh.warp-sh.distance/bandWidth*refW;
+    float mx=1.0-uv.x;
+    float rv=pow((uv.x-.5+sin(refY*11.0+time*.12)*.018)/.354,2.0)+
+        pow((refY-.475+sin(uv.x*8.0+.8)*.014)/.150,2.0);
+    float rmv=pow((mx-.5+sin(refY*11.0+time*.12)*.018)/.354,2.0)+
+        pow((refY-.475+sin(mx*8.0+.8)*.014)/.150,2.0);
+    float brv=(rv+rmv)*.5;
+    float rr=clamp((1.0-smoothstep(.36,1.68,brv))*mix(.56,.82,smoothstep(.02,.58,refP))*.58+
+        (1.0-smoothstep(.58,2.55,brv))*mix(.18,.32,smoothstep(.10,.72,refP))*.18,0.0,.70);
+    float finish=segmentEase(progress,.94,1.0);
+    float ext=segmentEase(sh.distance/bandWidth,0.0,.34)*segmentEase(progress,.70,.90);
+    float trans=mix((1.0-red)*(1.0-completion),1.0-rr*(1.0-finish),ext);
+    float M=(outer*.20+body*.58+core*.54)*entry*trans*smoothstep(0.0,.10,progress);
+    if(correctInterior) M*=qaCentreMainRetention(outer,body,core,sh.voidD,progress);
+    if(correctInterior) M+=qaRestoreMainOuter(outer,entry,smoothstep(0.0,0.10,progress),
+        trans,sh.distance,bandWidth,sh.voidD,progress);
+    if(finish>0.0) {
+        float py=clamp(bandCenter-sh.warp,0.0,1.0),pu=(py+sh.warp-bandCenter)/bandWidth;
+        float po=qaDisplayMainGaussian(pu,1.0,1.0),pb=qaDisplayMainGaussian(pu,1.0,0.70),pc=qaDisplayMainGaussian(pu,1.0,0.34);
+        float2 dc1=float2((uv.x-.5+sin(py*11.0+time*.12)*.018)/.29,
+            (py-.475+sin(uv.x*8.0+.8)*.016+drift)/.090);
+        float2 dl1=float2((uv.x-.57)/.23,(py-.45+drift)/.105);
+        float2 dc2=float2((mx-.5+sin(py*11.0+time*.12)*.018)/.29,
+            (py-.475+sin(mx*8.0+.8)*.016+drift)/.090);
+        float2 dl2=float2((mx-.57)/.23,(py-.45+drift)/.105);
+        float protect=(.76*exp(-dot(dc1,dc1))+.24*exp(-dot(dl1,dl1))+
+            .76*exp(-dot(dc2,dc2))+.24*exp(-dot(dl2,dl2)))*.5;
+        float ep=po*(.82+.16*exp(-pow(pu/.82,2.0)))*(1.0-protect*.32);
+        M*=mix(1.0,ep/max(po*.20+pb*.58+pc*.54,.000001),finish);
+    }
+    return M;
+}
+float qaAcceptedDarkShapeDensity(float2 uv,float progress,float time,float bandCenter,float bandWidth) {
+ return qaAcceptedDarkShapeDensityImpl(uv,progress,time,bandCenter,bandWidth,true);
+}
+
+
+
+float qaMainPoseProgress(float p) {
+    if(p<=0.85) return p;
+    if(p>=0.95) return 0.90;
+    float q=(p-0.85)/0.10;
+    return 0.85+0.10*(q-q*q*q+0.5*q*q*q*q);
+}
+float qaMainPoseTime(float p,float time) {
+    // MAIN's shape clock only. Free wave, contact, history/release time unchanged.
+    return time+10.0*(qaMainPoseProgress(p)-p);
+}
+void qaMainPoseBand(float p,thread float &center,thread float &width) {
+    if(p<=0.50) {
+        center=bandMotion(1.105,0.855,0.0,-0.838028,p/0.50,0.50);
+        width=mix(0.205,0.315,smootherLiquid(p/0.50));
+    } else if(p<=0.70) {
+        center=bandMotion(0.855,0.515,-0.838028,-1.676693,(p-0.50)/0.20,0.20);
+        width=mix(0.315,0.285,smootherLiquid((p-0.50)/0.20));
+    } else {
+        center=bandMotion(0.515,0.020,-1.676693,0.0,(p-0.70)/0.30,0.30);
+        width=mix(0.285,0.235,smootherLiquid((p-0.70)/0.30));
+    }
+    center-=0.065*smoothstep(0.0,0.05,p)*(1.0-segmentEase(p,0.26,0.45));
+    center-=0.075*segmentEase(p,0.90,1.0);
+}
+float qaMainAtPose(float2 uv,float progress,float time,bool dark) {
+    // Final DISPLAY translation only, identical for both Blue palettes.
+    // Measured from the protected final GPU frame: its furthest existing peak
+    // must reach the top edge to reveal only the descending colour sequence.
+    // Zero through85%; continuous deceleration to rest at100%.
+    // Physical/contact/gesture coordinates and their clocks remain untouched.
+    uv.y+=(102.0/844.0)*segmentEase(progress,0.85,1.0);
+    float p=qaMainPoseProgress(progress),t=qaMainPoseTime(progress,time);
+    float center,width;qaMainPoseBand(p,center,width);
+    if(!dark) return qaAcceptedLightShapeDensityImpl(uv,p,t,center,width,true,!dark,progress);
+    float D=qaAcceptedDarkShapeDensity(uv,p,t,center,width);
+    float transfer=segmentEase(p,.70,.76)*(1.0-segmentEase(p,.94,1.0));
+    if(transfer<=0.0) return D;
+    float L=qaAcceptedLightShapeDensityImpl(uv,p,t,center,width,true,!dark,progress);
+    // Keep the inherited shape intact: no x-only gain / vertical slab.
+    float x=uv.x,mx=1.0-x;
+    float w=sin(x*5.7+t*.11)*.018+sin(x*10.4-t*.08+1.2)*.008;
+    float mw=sin(mx*5.7+t*.11)*.018+sin(mx*10.4-t*.08+1.2)*.008;
+    w=mix(w,(w+mw)*.5,segmentEase(p,.50,.76));
+    return qaDarkLateFade(mix(D,L,transfer),(uv.y+w-center)/width,progress);
+}
+
+[[ stitchable ]]
+half4 liquidSpecBackground(
+    float2 position,
+    half4 color,
+    float2 size,
+    float progress,
+    float tapPulse,
+    float2 tapPoint,
+    float2 previousTouchPoint,
+    float swipePulse,
+    float swipeStrength,
+    float time,
+    float progressSpeed,
+    float fillGain,
+    float waveStrength,
+    float waveSpread,
+    float topBloom,
+    float whiteCore,
+    float blueDepth,
+    float dragWave,
+    float shockStrength,
+    float shockInteraction,
+    float shockTrail,
+    float waveCount,
+    float themeStrength,
+    float gradientColorIndex,
+    float idleActivity,
+    float idleTime,
+    device const float *interactionSegments,
+    int interactionFloatCount
+) {
+
+    // Keep the accepted Dark Blue body below untouched. Other theme changes
+    // compile in a separate function and cannot rewrite its main/idle arithmetic.
+
+#include "Shared/PhysicalFields.inc"
+#include "Shared/BlueGeometryTail.inc"
+    // QA A: MAIN spatial symmetry only. Palette, density readout and all
+    // interaction fields above stay original. No RGB/pixel mirroring.
+    float qaVisualDistance = referenceDistance;
+    float qaVisualCenterReduction = centerReduction;
+    float qaVisualCompletion = completionBlackout;
+    float3 qaVisualMain = darkResult;
+    if (isBluePreset > 0.5 && themeStrength > 0.5) {
+        QaCommonMainShape qaCommon = qaCommonMainShape(uv, progress, time,
+            referenceBandCenter, referenceWarp, centerVoidD, counterProtection, counterDrift);
+        float qaMirrorX = 1.0 - uv.x;
+        qaVisualDistance = qaCommon.distance;
+        float qaOuter = qaDisplayMainGaussian(qaVisualDistance,referenceBandWidth,1.0) * referenceEntry;
+        float qaBody = qaDisplayMainGaussian(qaVisualDistance,referenceBandWidth,0.70) * referenceEntry;
+        float qaCore = qaDisplayMainGaussian(qaVisualDistance,referenceBandWidth,0.34) * referenceEntry;
+        float qaBalancedVoidD = qaCommon.voidD;
+        float qaVoid = qaDisplayCentreProfile(qaBalancedVoidD,progress) *
+            mix(0.56, 0.82, smoothstep(0.02, 0.58, progress));
+        float qaVoidSoft = (1.0 - smoothstep(0.58, 2.55, qaCompactMainCentre(qaBalancedVoidD,progress))) *
+            mix(0.18, 0.32, smoothstep(0.10, 0.72, progress));
+        qaVisualCenterReduction = clamp(qaVoid * 0.58 + qaVoidSoft * 0.18, 0.0, 0.70);
+        // QA DARK SPOT ONLY: release the fixed counter pocket as MAIN clears it.
+        // Contact density above, mapped exterior fade and every palette stay original.
+        float qaCounterClearance = (0.475-referenceBandCenter)/referenceBandWidth;
+        qaVisualCenterReduction *= 1.0-segmentEase(qaCounterClearance,0.0,0.70);
+        qaVisualCompletion = segmentEase(progress, 0.58, 0.98) *
+            smoothstep(0.06, 0.38, uv.y) * mix(smoothstep(0.04, 0.32, qaVisualDistance),
+                1.0, segmentEase(progress, 0.85, 0.98));
+        // QA: reuse the approved 33% exterior attenuation in MAIN-local coordinates.
+        // Original geometry, A symmetry and contact masks above are untouched.
+        const float qaFadeReferenceProgress = 0.33;
+        float qaFadeReferenceCenter = bandMotion(1.105, 0.855, 0.0, -0.838028,
+            qaFadeReferenceProgress / 0.50, 0.50);
+        qaFadeReferenceCenter -= 0.065 * smoothstep(0.0, 0.05, qaFadeReferenceProgress) *
+            (1.0 - segmentEase(qaFadeReferenceProgress, 0.26, 0.45));
+        float qaFadeReferenceWidth = mix(0.205, 0.315,
+            smootherLiquid(qaFadeReferenceProgress / 0.50));
+        float qaFadeLocalDistance = qaVisualDistance / referenceBandWidth;
+        float qaFadeReferenceY = qaFadeReferenceCenter - qaCommon.warp -
+            qaFadeLocalDistance * qaFadeReferenceWidth;
+        float qaFadeVoidD =
+            pow((uv.x - 0.5 + sin(qaFadeReferenceY * 11.0 + time * 0.12) * 0.018) / 0.354, 2.0) +
+            pow((qaFadeReferenceY - 0.475 + sin(uv.x * 8.0 + 0.8) * 0.014) / 0.150, 2.0);
+        float qaFadeMirrorVoidD =
+            pow((qaMirrorX - 0.5 + sin(qaFadeReferenceY * 11.0 + time * 0.12) * 0.018) / 0.354, 2.0) +
+            pow((qaFadeReferenceY - 0.475 + sin(qaMirrorX * 8.0 + 0.8) * 0.014) / 0.150, 2.0);
+        float qaFadeBalancedVoidD = (qaFadeVoidD + qaFadeMirrorVoidD) * 0.5;
+        float qaFadeVoid = (1.0 - smoothstep(0.36, 1.68, qaFadeBalancedVoidD)) *
+            mix(0.56, 0.82, smoothstep(0.02, 0.58, qaFadeReferenceProgress));
+        float qaFadeVoidSoft = (1.0 - smoothstep(0.58, 2.55, qaFadeBalancedVoidD)) *
+            mix(0.18, 0.32, smoothstep(0.10, 0.72, qaFadeReferenceProgress));
+        float qaFadeReferenceReduction = clamp(qaFadeVoid * 0.58 + qaFadeVoidSoft * 0.18, 0.0, 0.70);
+        // Restrict this readout to the outgoing lower flank beyond the existing core.
+        // Reuse core/body radii and the upper-travel interval, not a progress-86 switch.
+        // Complete the existing local-mask transition within the core radius.
+        // Do not rebuild a second shoulder at the body/core junction.
+        float qaFadeExteriorWeight = segmentEase(qaFadeLocalDistance, 0.0, 0.34) *
+            segmentEase(progress, 0.70, 0.90);
+        float qaFadeTransmission = mix(
+            (1.0 - qaVisualCenterReduction) * (1.0 - qaVisualCompletion),
+            1.0 - qaFadeReferenceReduction * (1.0 - finishSync), qaFadeExteriorWeight);
+        qaVisualMain = (darkBandOuterColor * qaOuter * 0.20 +
+            darkBandBodyColor * qaBody * 0.58 + darkBandCoreColor * qaCore * 0.54) *
+            darkBandEntry * qaFadeTransmission * darkCanvasReveal;
+        // Preserve the travelling profile at completion: synchronize intensity,
+        // not a second, broader endpoint geometry. Evaluate its visible peak only.
+        float qaPeakY = clamp(referenceBandCenter - qaCommon.warp, 0.0, 1.0);
+        float qaPeakU = (qaPeakY + qaCommon.warp - referenceBandCenter) / referenceBandWidth;
+        float qaPeakOuter = qaDisplayMainGaussian(qaPeakU,1.0,1.0);
+        float qaPeakBody = qaDisplayMainGaussian(qaPeakU,1.0,0.70);
+        float qaPeakCore = qaDisplayMainGaussian(qaPeakU,1.0,0.34);
+        float qaPeakBlue = exp(-pow(qaPeakU / 0.82, 2.0));
+        float2 qaPeakCounter = float2(
+            (uv.x - 0.5 + sin(qaPeakY * 11.0 + time * 0.12) * 0.018) / 0.29,
+            (qaPeakY - 0.475 + sin(uv.x * 8.0 + 0.8) * 0.016 + counterDrift) / 0.090);
+        float2 qaPeakLobe = float2((uv.x - 0.57) / 0.23, (qaPeakY - 0.45 + counterDrift) / 0.105);
+        float2 qaPeakMirrorCounter = float2(
+            (qaMirrorX - 0.5 + sin(qaPeakY * 11.0 + time * 0.12) * 0.018) / 0.29,
+            (qaPeakY - 0.475 + sin(qaMirrorX * 8.0 + 0.8) * 0.016 + counterDrift) / 0.090);
+        float2 qaPeakMirrorLobe = float2((qaMirrorX - 0.57) / 0.23, (qaPeakY - 0.45 + counterDrift) / 0.105);
+        float qaPeakProtection = (0.76 * exp(-dot(qaPeakCounter, qaPeakCounter)) +
+            0.24 * exp(-dot(qaPeakLobe, qaPeakLobe)) +
+            0.76 * exp(-dot(qaPeakMirrorCounter, qaPeakMirrorCounter)) +
+            0.24 * exp(-dot(qaPeakMirrorLobe, qaPeakMirrorLobe))) * 0.5;
+        float qaEndpointPeak = qaPeakOuter * (0.82 + 0.16 * qaPeakBlue) * (1.0 - qaPeakProtection * 0.32);
+        float qaTravellingPeak = qaPeakOuter * 0.20 + qaPeakBody * 0.58 + qaPeakCore * 0.54;
+        qaVisualMain *= mix(1.0, qaEndpointPeak / max(qaTravellingPeak, 0.000001), finishSync);
+        qaVisualMain*=qaCentreMainRetention(qaOuter,qaBody,qaCore,qaCommon.voidD,progress);
+        qaVisualMain+=darkBandOuterColor*qaRestoreMainOuter(qaOuter,darkBandEntry,darkCanvasReveal,
+            qaFadeTransmission,qaVisualDistance,referenceBandWidth,qaCommon.voidD,progress);
+        // QA complete display-shape transfer, not a partial peripheral mask.
+        // Preserve33/63 and the accepted endpoint with existing travel keys.
+        float qaShapeTransfer=segmentEase(progress,0.70,0.76)*(1.0-finishSync);
+        if(qaShapeTransfer>0.0) {
+            float qaLightShape=qaAcceptedLightShapeDensity(uv,progress,time,
+                referenceBandCenter,referenceBandWidth);
+            // Same display density, original Dark RGB readout. Do not apply
+            // per-column peak ratios: their lobe crossings form tunnel walls.
+            float3 qaShapeMain=darkBandCoreColor*qaLightShape;
+            qaVisualMain=mix(qaVisualMain,qaShapeMain,qaShapeTransfer);
+        }
+        if(progress>0.85) {
+            qaVisualMain=darkBandCoreColor*qaMainAtPose(uv,progress,time,true);
+        } else if(progress>0.78) {
+            float density=qaVisualMain.b;
+            qaVisualMain*=qaDarkLateFade(density,qaVisualDistance/referenceBandWidth,progress)/
+                max(density,0.000001);
+        }
+        darkResult = qaVisualMain;
+    }
+    float qaMainGrain=grain;
+    if(isBluePreset>0.5 && themeStrength>0.5 && progress>0.85)
+        qaMainGrain=hashLiquid(position+float2(qaMainPoseTime(progress,time)*0.37))-0.5;
+    darkResult += qaMainGrain * mix(0.0010, 0.0035, grainMask) *
+        (1.0 - completionBlackout) * darkCanvasReveal;
+    blueDarkReference = clamp(blueDarkReference + grain * mix(0.0010, 0.0035, grainMask) *
+        (1.0 - completionBlackout) * darkCanvasReveal, 0.0, 1.0);
+    float3 finishedDark = clamp(darkResult, 0.0, 1.0);
+    if (isBluePreset > 0.5 && themeStrength > 0.5) {
+        finishedDark.b = qaNativeBlueCap(darkResult.b);
+    }
+    // White transmits the same density field. Channel-wise absorption gives
+    // blue -> cyan -> white / orange -> yellow -> white continuously, rather
+    // than painting a saturated band with separate hue and opacity masks.
+    float3 blueTransmission = mix(referenceBlue, referenceBlueAccent, 0.65);
+    float3 yellowTransmission = float3(yellowLightOrange.r,
+        mix(yellowMidColor.g, yellowHotColor.g, 0.75),
+        pow(yellowLightAccent.b, 2.5));
+    float3 transmission = mix(blueTransmission, yellowTransmission, isYellowPreset);
+    float3 matchingLight = pow(max(transmission, float3(0.0001)), float3(sharedLightField));
+    lightResult = mix(lightResult, matchingLight, clamp(isBluePreset + isYellowPreset, 0.0, 1.0));
+    result = mix(lightResult, finishedDark, themeStrength);
+
+    // Explicit boundary states for the dark theme. These sit after all palette
+    // effects, so a selected color can never replace the black canvas at rest.
+    float darkTheme = step(0.5, themeStrength);
+    float darkAtRest = 1.0 - smoothstep(0.001, 0.035, progress);
+    result = mix(result, darkBase, darkTheme * darkAtRest);
+    blueDarkReference = mix(blueDarkReference, darkBase, darkTheme * darkAtRest);
+
+    // Purely visual history; no clock or field value feeds the progress mechanic.
+#include "Shared/InteractionHistory.inc"
+
+    half4 output = half4(half3(clamp(result, 0.0, 1.0)), 1.0);
+    if (themeStrength < 0.5 && idleActivity > 0.0) {
+        output = blendLightIdle(output, idleWaveColor(idleDensity, 0.0, gradientColorIndex),
+            contact, gradientColorIndex, transmission);
+    }
+    if (themeStrength > 0.5 && (isBluePreset + isYellowPreset) > 0.5 && idleActivity > 0.0) {
+        output = blendDarkIdle(output, idleWaveColor(idleDensity, 1.0, gradientColorIndex),
+            contact, gradientColorIndex);
+    }
+    return output;
+}
+
+float idleWaveDensity(
+    float2 position, float2 size, float activity, float time, float waveStrength
+) {
+    float2 safeSize = max(size, float2(1.0));
+    float2 p = position / safeSize * float2(375.0, 812.0);
+    float cycleRaw = fract(time / 3.0);
+    float cycle = smootherLiquid(cycleRaw);
+    float visibility =
+        smoothstep(0.02, 0.11, cycleRaw) *
+        (1.0 - smoothstep(0.88, 1.0, cycleRaw)) *
+        smootherLiquid(clamp(activity, 0.0, 1.0));
+
+    float waveY = mix(-110.0, 925.0, cycle);
+    float width = mix(72.0, 420.0, cycle);
+    float thickness = mix(19.0, 42.0, cycle);
+    float dx = p.x - 187.5;
+    float arcY = waveY + (dx * dx) / max(width * 1.72, 1.0);
+    float distanceToArc = p.y - arcY;
+
+    float mainWave =
+        exp(-pow(distanceToArc / thickness, 2.0)) *
+        exp(-pow(dx / width, 2.0));
+    float secondWave =
+        exp(-pow((distanceToArc + 72.0) / (thickness * 1.35), 2.0)) *
+        exp(-pow(dx / (width * 1.18), 2.0)) *
+        0.32;
+    float halo =
+        exp(-pow((p.y - waveY) / 180.0, 2.0)) *
+        exp(-pow(dx / max(width * 1.18, 1.0), 2.0)) *
+        0.12;
+    float energy = clamp(mainWave + secondWave + halo, 0.0, 1.0) *
+        visibility * clamp(waveStrength, 0.3, 2.0);
+
+    return clamp(energy * 0.84, 0.0, 0.86);
+}
+
+
+half4 idleWaveColor(float waveAlpha, float themeStrength, float gradientColorIndex) {
+    float preset = clamp(round(gradientColorIndex), 0.0, 4.0);
+    float isYellow = 1.0 - step(0.5, abs(preset - 3.0));
+    // A single premultiplied light-theme pass can tint white and illuminate
+    // pigment. Multiply could only darken; multiply + addition made contours
+    // where the two opposite responses cancelled or clipped.
+    // Fixed chroma avoids a pale hole in the wave's brighter center.
+    // Geometry, halo and alpha are shared with the Blue Dark reference.
+    float3 lightWave = mix(float3(0.380, 0.910, 1.0), float3(1.0), 0.04);
+    // Yellow Light uses the same warm red/green hue with no white/blue
+    // component in its wave pigment, so the filled core stays saturated.
+    float3 yellowWavePigment = float3(yellowLightAccent.r, yellowLightAccent.g, 0.0);
+    lightWave = mix(lightWave, yellowWavePigment, isYellow);
+    float3 darkWave = float3(0.14, 0.48, 1.0);
+    // Warm amber source; only RGB changes, not alpha or either wave field.
+    float3 warmWave = mix(yellowHotColor.rgb, yellowLightAccent, 0.60);
+    darkWave = mix(darkWave, warmWave, isYellow);
+    float3 waveColor = mix(lightWave, darkWave, clamp(themeStrength, 0.0, 1.0));
+
+    return half4(half3(waveColor * waveAlpha), half(waveAlpha));
+}
+
+
+
+
+float3 idleContactLight(float3 source, float3 contactColor, IdleContact contact) {
+    // Color only the free-wave density. The contact assigned to the main
+    // front is mapped separately, using the SAME partition in Light/Dark.
+    float interiorContact = contact.intersection - contact.frontReaction;
+    return source * contact.freeIdle + (contactColor - source) * interiorContact;
+}
+
+half4 blendLightIdle(half4 color, half4 wave, IdleContact contact, float gradientColorIndex, float3 transmission) {
+    if (wave.a == half(0.0)) { return color; }
+    float3 source = float3(wave.rgb) / contact.idle;
+    bool isYellow = abs(round(gradientColorIndex) - 3.0) < 0.5;
+    bool hasSharedLiquid = isYellow || abs(round(gradientColorIndex)) < 0.5;
+    float3 contactColor = isYellow ? float3(yellowLightAccent.r, yellowLightAccent.g, 0.0) : float3(0.24, 1.0, 1.0);
+    float3 tint;
+    float3 base = float3(color.rgb) / max(float(color.a), 0.00001);
+    if (!hasSharedLiquid) {
+        // Preserve other presets' original RGB compositing.
+        tint = mix(source, contactColor, contact.coverage);
+        float3 target = tint + base * (1.0 - base) *
+            mix(tint, float3(1.0), 0.55) * 0.55;
+        return half4(half3(clamp(mix(base, target, contact.idle), 0.0, 1.0) *
+            float(color.a)), color.a);
+    }
+    if (!isYellow) {
+        // The main front has already moved in geometry. Composite its single
+        // cyan wave once; interior contact changes chroma without a second rim.
+        float3 target = mix(source, contactColor, contact.coverage);
+        return half4(half3(clamp(mix(base, target, contact.idle), 0.0, 1.0) * float(color.a)), color.a);
+    }
+    // Yellow Light: one saturated warm wave over the displaced main front.
+    // Retain full warm yellow chroma at intersection; the locally displaced
+    // orange main front supplies contrast, not white light or another rim.
+    float3 warmContact = float3(1.0, yellowLightAccent.g, 0.0);
+    float3 target = mix(source, warmContact, contact.coverage);
+    return half4(half3(clamp(mix(base, target, contact.idle), 0.0, 1.0) * float(color.a)), color.a);
+}
+
+
+
+
+half4 blendDarkIdle(half4 color, half4 wave, IdleContact contact, float gradientColorIndex) {
+    if (wave.a == half(0.0)) { return color; }
+    float3 base = float3(color.rgb);
+    bool isYellow = abs(round(gradientColorIndex) - 3.0) < 0.5;
+    if (isYellow) {
+        // Map the SAME accepted Dark union M+W, including the reacted front,
+        // with one palette. Dimming a fixed yellow wave into black made olive;
+        // adding it over an already bright main palette made clipped bands.
+        // Preserve the incoming grain/history by applying only the palette delta.
+        float3 paletteDelta = yellowDarkDensityPalette(contact.reactedMain + contact.freeIdle)
+            - yellowDarkDensityPalette(contact.main);
+        return half4(half3(clamp(base + paletteDelta, 0.0, 1.0)), color.a);
+    }
+    float3 contactColor = isYellow ? yellowLightAccent : float3(0.24, 1.0, 1.0);
+    // Map the reacted MAIN front and free idle separately. Their sum is
+    // exactly the accepted Dark main + source*W + (contactColor-source)*C.
+    float3 reactedMain = base + contactColor * contact.frontReaction;
+    float3 light = idleContactLight(float3(wave.rgb) / contact.idle,
+        contactColor, contact);
+    float3 overlap = clamp(reactedMain + light, 0.0, 1.0);
+    return half4(half3(overlap), color.a);
+}
+
+
+
+
+
+
+[[ stitchable ]]
+float2 gradientTrailDistortion(
+    float2 position,
+    float2 size,
+    float2 tapPoint,
+    float2 previousTouchPoint,
+    float strength,
+    float time
+) {
+    strength = clamp(strength, 0.0, 1.0);
+
+    float2 safeSize = float2(max(size.x, 1.0), max(size.y, 1.0));
+    float2 uv = position / safeSize;
+    float aspect = safeSize.x / safeSize.y;
+    float2 trailUv = float2((uv.x - 0.5) * aspect + 0.5, uv.y);
+    float2 touchUv = float2((tapPoint.x - 0.5) * aspect + 0.5, tapPoint.y);
+    float2 previousUv = float2((previousTouchPoint.x - 0.5) * aspect + 0.5, previousTouchPoint.y);
+
+    float2 path = touchUv - previousUv;
+    float pathLength = length(path);
+    float2 direction = path / max(pathLength, 0.0001);
+    float projection = clamp(dot(trailUv - previousUv, path) / max(dot(path, path), 0.000001), 0.0, 1.0);
+    float2 delta = (trailUv - mix(previousUv, touchUv, projection)) / float2(0.065, 0.075);
+    float envelope = exp(-dot(delta, delta));
+    // The old projection gates compressed an up-to-7.5 pt displacement into
+    // a few pixels, folding the gradient into moving slices. No phase ripple,
+    // no clipped offset: a bounded Gaussian deformation remains smooth.
+    float movement = pathLength / (pathLength + 0.025);
+    float2 offset = direction * (1.5 * strength * movement * envelope);
+
+    return position + offset;
+}
+
+
+
+
+
+// QA-only source restoration from theme-isolation-pass/after.metal.
+half4 qaHistoricalYellowDarkWave(float density) {
+    float3 warmWave = mix(yellowMidColor.rgb, yellowLightAccent, 0.20);
+    float3 source = balanceYellowDarkLight(warmWave, float3(0.14, 0.48, 1.0));
+    return half4(half3(source * density), half(density));
+}

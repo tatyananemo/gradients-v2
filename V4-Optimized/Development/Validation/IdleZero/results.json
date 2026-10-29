@@ -1,0 +1,93 @@
+{
+  "base": "ca1045c",
+  "device": "Mac Apple M3 Pro; native offscreen, not presented FPS",
+  "method": "paired alternating order; each variant includes masks, axes, background, optional distortion, compositor, completion; round0 excluded; CPU/GPU times not added",
+  "measurements": {
+    "idleDark": {
+      "baseline": {
+        "fullFrameWallMS": 17.4941,
+        "fullFrameCPUms": 9.6652,
+        "gpuMS": 12.5311,
+        "maskWallMS": 3.7356
+      },
+      "optimized": {
+        "fullFrameWallMS": 16.0507,
+        "fullFrameCPUms": 9.8149,
+        "gpuMS": 11.2821,
+        "maskWallMS": 3.7552
+      },
+      "samplesPerVariant": 192
+    },
+    "idleLight": {
+      "baseline": {
+        "fullFrameWallMS": 6.8191,
+        "fullFrameCPUms": 0.2567,
+        "gpuMS": 5.9937,
+        "maskWallMS": 0.0011
+      },
+      "optimized": {
+        "fullFrameWallMS": 6.7391,
+        "fullFrameCPUms": 0.2617,
+        "gpuMS": 5.9116,
+        "maskWallMS": 0.0009
+      },
+      "samplesPerVariant": 96
+    },
+    "gestureDark": {
+      "baseline": {
+        "fullFrameWallMS": 19.4297,
+        "fullFrameCPUms": 9.9081,
+        "gpuMS": 14.9474,
+        "maskWallMS": 3.7326
+      },
+      "optimized": {
+        "fullFrameWallMS": 16.9511,
+        "fullFrameCPUms": 9.634,
+        "gpuMS": 12.731,
+        "maskWallMS": 3.6519
+      },
+      "samplesPerVariant": 32
+    }
+  },
+  "images": {
+    "frames": 514,
+    "pixelExactToCa1045c": 510,
+    "maxChannelDifference8ToCa1045c": 1,
+    "maxChangedPixelsToCa1045c": 1,
+    "maxChannelDifference8ToApproved": 1,
+    "nonzeroFallbackFrames": 152
+  },
+  "gpuMaskRasterization": {
+    "retained": false,
+    "reason": "Full-frame gain only 2.7\u20133.3%, more GPU work/implementation complexity; CPU decreases but bottleneck shifts to GPU. Existing Gaussian retained in trial.",
+    "measurements": {
+      "mask-bench": {
+        "baseline": {
+          "fullFrameWallMS": 20.4189,
+          "fullFrameCPUms": 12.5643
+        },
+        "plain": {
+          "fullFrameWallMS": 19.8647,
+          "fullFrameCPUms": 7.2313
+        }
+      },
+      "mask-bench2": {
+        "baseline": {
+          "fullFrameWallMS": 19.3252,
+          "fullFrameCPUms": 12.2457
+        },
+        "plain": {
+          "fullFrameWallMS": 18.6967,
+          "fullFrameCPUms": 7.3728
+        }
+      }
+    }
+  },
+  "unretained": [
+    "ring guard",
+    "tap/legacy swipe guards",
+    "legacy shockwave guard: inconsistent full-frame improvement"
+  ],
+  "artifacts": "/private/tmp/v4-idle-zero-20261029",
+  "noDeviceLaunch": true
+}

@@ -1,0 +1,122 @@
+{
+  "baseCodeCommit": "a28aff5",
+  "SDKCodeChanged": false,
+  "sequence": "B-A-A-B Light; 3s warm-up + 6s auto-swipes from .63 each, 45+ s stopped cooldown; then one unchanged-candidate Dark control",
+  "device": "physical iPhone 14 / iOS 26.7",
+  "runs": [
+    {
+      "run": "b1",
+      "version": "a28aff5",
+      "theme": "Light",
+      "FPS": 57.829661149939575,
+      "durationSeconds": 6.000380999990739,
+      "intervalCount": 347,
+      "frameMeanMS": 17.292164265102993,
+      "p95MS": 16.70425001066178,
+      "p99MS": 33.350208308547735,
+      "maskPreparationMS": 0.0038017236477770337,
+      "commandElapsedMS": 21.47242935771128,
+      "thermalStates": [
+        0
+      ],
+      "brightness": 0.3499999940395355,
+      "lowPower": false
+    },
+    {
+      "run": "a1",
+      "version": "c72a140",
+      "theme": "Light",
+      "FPS": 57.67547459280813,
+      "durationSeconds": 5.9990837083314545,
+      "intervalCount": 346,
+      "frameMeanMS": 17.33839222061114,
+      "p95MS": 16.70070833642967,
+      "p99MS": 33.34766664193012,
+      "maskPreparationMS": 0.004514170004060272,
+      "commandElapsedMS": 21.422412944622124,
+      "thermalStates": [
+        0
+      ],
+      "brightness": 0.3499999940395355,
+      "lowPower": false
+    },
+    {
+      "run": "a2",
+      "version": "c72a140",
+      "theme": "Light",
+      "FPS": 57.84822282304962,
+      "durationSeconds": 5.9984556666749995,
+      "intervalCount": 347,
+      "frameMeanMS": 17.286615754106627,
+      "p95MS": 16.69020834378898,
+      "p99MS": 33.32312498241663,
+      "maskPreparationMS": 0.003993654628311038,
+      "commandElapsedMS": 21.396016283312026,
+      "thermalStates": [
+        0
+      ],
+      "brightness": 0.3499999940395355,
+      "lowPower": false
+    },
+    {
+      "run": "b2",
+      "version": "a28aff5",
+      "theme": "Light",
+      "FPS": 57.34568157608166,
+      "durationSeconds": 6.016146125009982,
+      "intervalCount": 345,
+      "frameMeanMS": 17.43810471017386,
+      "p95MS": 16.70166666735895,
+      "p99MS": 33.348375000059605,
+      "maskPreparationMS": 0.004192798417276902,
+      "commandElapsedMS": 21.60681069325898,
+      "thermalStates": [
+        0
+      ],
+      "brightness": 0.3499999940395355,
+      "lowPower": false
+    },
+    {
+      "run": "dark-check",
+      "version": "a28aff5",
+      "theme": "Dark",
+      "FPS": 59.97044075348766,
+      "durationSeconds": 5.986282500001835,
+      "intervalCount": 359,
+      "frameMeanMS": 16.674881615603997,
+      "p95MS": 16.700666659744456,
+      "p99MS": 16.704083333024755,
+      "maskPreparationMS": 5.94314016117197,
+      "commandElapsedMS": 12.836564930492184,
+      "thermalStates": [
+        0
+      ],
+      "brightness": 0.3499999940395355,
+      "lowPower": false
+    }
+  ],
+  "LightPooled": {
+    "c72a140": {
+      "FPS": 57.76184418645654,
+      "meanFrameMS": 17.312466630600944,
+      "rangeFPS": [
+        57.67547459280813,
+        57.84822282304962
+      ]
+    },
+    "a28aff5": {
+      "FPS": 57.58735388365867,
+      "meanFrameMS": 17.364923591041503,
+      "rangeFPS": [
+        57.34568157608166,
+        57.829661149939575
+      ]
+    }
+  },
+  "LightRelativeChangePercent": -0.3020857544551614,
+  "conclusion": "Previous 2.9% Light drop was not reproduced. Repeat pooled difference is about -0.3%, run ranges overlap; no reproducible Light regression established, so no shader/SDK optimization attempted. Dark gain retained. This is bounded short-run evidence, not long idle/thermal certification.",
+  "visualChecks": "No executable inputs changed from a28aff5; prior 494-frame differential results remain applicable.",
+  "collectorNote": "b1 USB polling was late; finalized on-device stop record proves full six-second completion. No rerun or synthetic interpolation was substituted.",
+  "appsStopped": true,
+  "mainAndDeliveryUnchanged": true
+}

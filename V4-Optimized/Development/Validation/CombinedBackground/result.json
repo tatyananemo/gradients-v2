@@ -1,0 +1,78 @@
+{
+  "scope": "Mac M3 Pro only; no phone/Simulator, energy/power not measured",
+  "parent": "3adbaf2",
+  "fullFrame": {
+    "dark": {
+      "combined": {
+        "count": 192,
+        "fullFrameMeanMS": 9.059524522475234,
+        "p95MS": 11.058208328904584,
+        "p99MS": 17.6015000033658,
+        "compositionGPUms": 5.357532118068775
+      },
+      "reuseMain": {
+        "count": 192,
+        "fullFrameMeanMS": 7.400655164853258,
+        "p95MS": 9.33833334420342,
+        "p99MS": 13.63241666695103,
+        "compositionGPUms": 4.1927424044843065
+      }
+    },
+    "light": {
+      "combined": {
+        "count": 96,
+        "fullFrameMeanMS": 3.119060330239639,
+        "p95MS": 3.174083336489275,
+        "p99MS": 4.315958343795501,
+        "compositionGPUms": 2.8383029515074063
+      },
+      "reuseMain": {
+        "count": 96,
+        "fullFrameMeanMS": 1.9664861115415988,
+        "p95MS": 2.038250007899478,
+        "p99MS": 2.9378333420027047,
+        "compositionGPUms": 1.686371962478006
+      }
+    },
+    "gesture": {
+      "combined": {
+        "count": 32,
+        "fullFrameMeanMS": 7.974361979449895,
+        "p95MS": 10.27516667090822,
+        "p99MS": 12.567249999847263,
+        "compositionGPUms": 5.027024738410546
+      },
+      "reuseMain": {
+        "count": 32,
+        "fullFrameMeanMS": 7.9011132806954265,
+        "p95MS": 10.485499995411374,
+        "p99MS": 10.813166678417474,
+        "compositionGPUms": 4.9557252605154645
+      }
+    }
+  },
+  "backgroundPlusPrepMS": {
+    "dark": {
+      "combined": 4.140891098138651,
+      "reuseMain": 2.9238746841050065
+    },
+    "light": {
+      "combined": 2.494175820615827,
+      "reuseMain": 1.3625321973284537
+    }
+  },
+  "framesCompared": 514,
+  "maxRGBA8vsApproved": 1,
+  "maxRGBA8vsCombined": 1,
+  "maxChangedPixelPercentVsCombined": 0.0015190181066958317,
+  "captionRiskMaxDelta": 0,
+  "captionActivationMaxDelta": 0,
+  "GPUResourcesAndPassCountUnchanged": true,
+  "SDKAndGoldensUnchanged": true,
+  "publicSwiftInterfaceUnchanged": true,
+  "metallibBytesBeforeAfter": [
+    374932,
+    484884
+  ],
+  "actualBuildMatchesTestedInputs": true
+}

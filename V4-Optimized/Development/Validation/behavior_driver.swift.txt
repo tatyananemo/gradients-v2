@@ -1,0 +1,90 @@
+// Methods and handlers are inserted verbatim by validate.py from the actual app.
+import Foundation
+import SwiftUI
+
+@@DECLARATIONS@@
+
+struct GestureValue { let location: CGPoint; let startLocation: CGPoint }
+struct Geometry { let size: CGSize }
+private final class Replay {
+    @@CONSTANTS@@
+    let touchRuntime = TouchRuntime()
+    let geo = Geometry(size: CGSize(width: 390, height: 844))
+    var progress: CGFloat = 0
+    var progressIncrements: [ProgressIncrement] = []
+    var startTime: TimeInterval = 0
+    var waterTouchPoint: CGPoint?
+    var waterTouchPreviousPoint: CGPoint?
+    var waterTouchLastMove: TimeInterval = -10
+    var waterTouchIsActive = false
+    var idleWaveStartTime: TimeInterval = 0
+    var waterDragEnergy: CGFloat = 0
+    var gradientTrailSamples: [GradientTrailSample] = []
+    var interactionTrail: [InteractionTrailSegment] = []
+    var bottomTextShakeStart: TimeInterval = -10
+    var snapshots: [[String: Any]] = []
+    @@METHODS@@
+    func changed(_ value: GestureValue, at gestureTime: TimeInterval) {
+        let waterSurfaceEnabled = true
+        @@CHANGED@@
+    }
+    func ended(at gestureTime: TimeInterval) {
+        @@ENDED@@
+    }
+    func snapshot(_ name: String, at time: TimeInterval) {
+        snapshots.append(["name": name, "time": time,
+            "progress": Double(progress), "rendered": Double(interpolatedProgress(at: time)),
+            "history": interactionTrailArguments(at: time, origin: .zero, size: geo.size),
+            "active": waterTouchIsActive, "energy": Double(waterDragEnergy),
+            "idleStart": idleWaveStartTime, "segments": interactionTrail.count])
+        precondition(interactionTrail.count <= 40 && progress >= 0 && progress <= 1)
+    }
+    func run() {
+        let start = CGPoint(x: 50, y: 700)
+        changed(GestureValue(location: start, startLocation: start), at: 0)
+        snapshot("first-touch", at: 0)
+        // A long continuous swipe and hold, using the original callback body.
+        for i in 1...240 {
+            let t = Double(i) / 120
+            let p = CGPoint(x: 195 + sin(t * 6) * 170, y: 420 + cos(t * 4) * 300)
+            changed(GestureValue(location: p, startLocation: start), at: t)
+            if i % 30 == 0 { snapshot("long-\(i)", at: t) }
+        }
+        snapshot("hold", at: 3)
+        ended(at: 3)
+        for delay in [0.0, 0.299, 0.30, 0.31, 0.82, 1.119, 1.12, 1.8] {
+            snapshot("release-\(delay)", at: 3 + delay)
+        }
+        // Many independent gestures exercise release clocks and the 40-segment cap.
+        for i in 0..<90 {
+            let t = 5 + Double(i) * 0.09
+            let p = CGPoint(x: i % 2 == 0 ? 30 : 360, y: 100 + i % 7 * 100)
+            let q = CGPoint(x: 390 - p.x, y: p.y + 30)
+            changed(GestureValue(location: p, startLocation: p), at: t)
+            changed(GestureValue(location: q, startLocation: p), at: t + 0.025)
+            ended(at: t + 0.035)
+            if i % 10 == 0 { snapshot("repeat-\(i)", at: t + 0.04) }
+        }
+        var nextMilestone = 0.3
+        // Progress reaches 100% only through V2's existing movement handler.
+        for i in 0..<6000 where progress < 1 {
+            let t = 15 + Double(i) / 60
+            let p = CGPoint(x: i % 2 == 0 ? 20 : 370, y: 300)
+            changed(GestureValue(location: p, startLocation: start), at: t)
+            if Double(progress) >= nextMilestone {
+                snapshot("milestone-\(nextMilestone)", at: t)
+                nextMilestone = nextMilestone < 0.6 ? 0.6 : nextMilestone < 0.8 ? 0.8 : 1.0
+            }
+        }
+        precondition(progress == 1)
+        snapshot("completed", at: 120)
+        reset(now: 121, animated: false)
+        snapshot("reset", at: 121)
+        precondition(progress == 0 && interactionTrail.isEmpty && progressIncrements.isEmpty)
+    }
+}
+private let replay = Replay()
+replay.run()
+let data = try JSONSerialization.data(withJSONObject: replay.snapshots, options: [.prettyPrinted, .sortedKeys])
+try data.write(to: URL(fileURLWithPath: CommandLine.arguments[1]))
+print("Behavior replay: \(replay.snapshots.count) checkpoints; progress 30/60/80/100%, release and reset passed")

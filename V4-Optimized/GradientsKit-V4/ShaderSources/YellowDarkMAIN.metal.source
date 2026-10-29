@@ -1,0 +1,115 @@
+// Yellow-only review overlay. Compile with the immutable accepted Blue source.
+// Production Yellow colour stops; Yellow-only readout/contact corrections.
+// Authorized Yellow-only removal of the restored outer residual.
+// Exact accepted pose/clock/profiles. Only the restored outer term respects
+// its EXISTING completion mask, as it already does in the Light readout.
+// The immutable Blue implementation and physical CONTACT fields stay intact.
+#include "Shared/YellowDarkPose.inc"
+// Both Dark alternatives use ONE scalar exposure. Only chroma stops differ.
+// No per-channel clipping, progress-dependent toe boost or alternate density curve.
+using YellowShared::yellowReviewDarkPalette;
+using YellowShared::yellowReviewTransmission;
+// Colour partition of the EXISTING idleWaveDensity profiles. Geometry is
+// copied verbatim only to recover primary / (primary+secondary+halo); W and I
+// still come from the immutable physical field, including its exact clamps.
+// Light-only colour metadata from the exact existing primary/secondary/halo.
+// Keep the scalar function and all Dark calls unchanged for pixel identity.
+using YellowShared::yellowReviewWaveShares;
+// Match the accepted Blue channel response, exchanging its blue energy
+// axis for Yellow's red axis. Same W/I and same positive relief increment.
+// Blue source (.14,.48,1), peak (.24,1,1): Yellow (1,.48,.14), (1,1,.24).
+// Constants come from the protected response, not a new spatial light layer.
+using YellowShared::yellowReviewLightSource;
+using YellowShared::yellowReviewLightPeak;
+// Hue-only warm gamut readout. The unchanged caption backdrop can make
+// pure R=G yellow look olive. Preserve HSV V and S, unlike the previous
+// OKLab/max-linear normalization that suppressed the luminous crest.
+using YellowShared::yellowReviewHSV;
+float3 yellowReviewGoldenHue(float3 rgb,float counterProtection) {
+    float3 hsv=yellowReviewHSV(rgb);
+    // Existing configured Accent to the bright yellow endpoint. Only the
+    // upper yellow hue shoulder changes, never V/S or an independent channel.
+    // Keep configured golden hue when the protected UI darkens the crest.
+    // The former added lemon endpoint became olive under the caption shade.
+    float brightGold=yellowReviewHSV(yellowLightAccent).x;
+    // Existing Dark counter protection predicts the protected UI shade.
+    // Warm only that shaded contact hue; unshaded luminous crest stays yellow.
+    float shadedOrange=yellowReviewHSV(float3(1.0,140.0/255.0,0.0)).x;
+    float limit=mix(brightGold,shadedOrange,
+        // Reuse the existing readability field and the prior accepted colour shoulder.
+        segmentEase(sqrt(clamp(counterProtection,0.0,1.0)),0.06,0.36));
+    if(hsv.x<0.25) {
+        float excess=max(hsv.x-limit,0.0);
+        hsv.x=hsv.x-excess+0.002*(1.0-exp(-excess/0.002));
+    }
+    float3 p=abs(fract(hsv.x+float3(0.0,2.0/3.0,1.0/3.0))*6.0-3.0);
+    return hsv.z*mix(float3(1.0),clamp(p-1.0,0.0,1.0),hsv.y);
+}
+float3 yellowReviewDarkContact(float3 base,IdleContact contact,float physicalMain,float displayMain) {
+    // The reference's additive contact response, with the energy axes exchanged.
+    // Positive low-channel increment restores relief; source G=.48 leaves
+    // room for the I-driven G=1 crest instead of saturating the entire halo.
+    // Free emitter anchor: #FF8C00. Overlap peak and W/I are preserved.
+    float3 source=float3(1.0,140.0/255.0,0.0),peak=float3(1.0,1.0,.24);
+    return clamp(base+peak*contact.frontReaction+
+        idleContactLight(source,peak,contact),0.0,1.0);
+}
+
+[[ stitchable ]]
+half4 liquidYellowReviewBackground(
+    float2 position,
+    half4 color,
+    float2 size,
+    float progress,
+    float tapPulse,
+    float2 tapPoint,
+    float2 previousTouchPoint,
+    float swipePulse,
+    float swipeStrength,
+    float time,
+    float progressSpeed,
+    float fillGain,
+    float waveStrength,
+    float waveSpread,
+    float topBloom,
+    float whiteCore,
+    float blueDepth,
+    float dragWave,
+    float shockStrength,
+    float shockInteraction,
+    float shockTrail,
+    float waveCount,
+    float themeStrength,
+    float gradientColorIndex,
+    float idleActivity,
+    float idleTime,
+    device const float *interactionSegments,
+    int interactionFloatCount
+) {
+    if(abs(round(gradientColorIndex)-3.0)>0.5) {
+        return liquidSpecBackground(position,color,size,progress,tapPulse,tapPoint,previousTouchPoint,swipePulse,swipeStrength,time,progressSpeed,fillGain,waveStrength,waveSpread,topBloom,whiteCore,blueDepth,dragWave,shockStrength,shockInteraction,shockTrail,waveCount,themeStrength,gradientColorIndex,idleActivity,idleTime,interactionSegments,interactionFloatCount);
+    }
+    float2 safeSize=max(size,float2(1.0)),uv=position/safeSize;
+    float4 physical=yellowReferenceContactFields(position,color,size,progress,tapPulse,tapPoint,previousTouchPoint,swipePulse,swipeStrength,time,progressSpeed,fillGain,waveStrength,waveSpread,topBloom,whiteCore,blueDepth,dragWave,shockStrength,shockInteraction,shockTrail,waveCount,1.0,0.0,idleActivity,idleTime,interactionSegments,interactionFloatCount);
+    float physicalMain=physical.x;
+    float W=float(half(physical.y));
+    IdleContact contact=sharedIdleContact(physicalMain,W);
+    float3 transmission=yellowReviewTransmission();
+    bool dark=themeStrength>0.5;
+    // Query, do not rewrite, the exact accepted Blue MAIN display fields.
+    float M=dark ? yellowReviewDarkMainAtPose(uv,progress,time) : qaMainAtPose(uv,progress,time,false);
+    float3 mainBase=dark ? clamp(yellowReviewDarkPalette(M,progress)+physical.w,0.0,1.0)
+        : correctedLightPigment(M,3.0,transmission);
+    // Reuse Blue's original diffuse counter-protection pocket, with the same
+    // field and 0.32 weight. Keep the production percentage/UI untouched.
+    if(!dark) mainBase=mix(mainBase,float3(1.0),clamp(physical.z,0.0,1.0)*0.32);
+    float3 result=mainBase;
+#include "Shared/YellowInteraction.inc"
+    if(dark) {
+        // Same core/secondary/halo W and contact partition as accepted Dark.
+        if(W>0.0) result=yellowReviewDarkContact(result,contact,physicalMain,M);
+        if(contact.intersection>0.0)result=mix(result,yellowReviewGoldenHue(result,counterProtection),1.0-exp(-12.0*contact.intersection));
+        return half4(half3(clamp(result,0.0,1.0)),1.0);
+    }
+#include "Shared/YellowLightSubstrate.inc"
+}
