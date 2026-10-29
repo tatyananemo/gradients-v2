@@ -5,9 +5,9 @@ from pathlib import Path
 ROOT=Path(__file__).resolve().parents[3]
 sys.path.insert(0,str(ROOT/'Development/DeviceComparison'))
 from prepare_sources import outputs
-p=argparse.ArgumentParser();p.add_argument('--cases',type=Path,required=True);p.add_argument('--output',type=Path,required=True);p.add_argument('--run',action='store_true');a=p.parse_args()
+p=argparse.ArgumentParser();p.add_argument('--cases',type=Path,required=True);p.add_argument('--output',type=Path,required=True);p.add_argument('--run',action='store_true');p.add_argument('--idle-zero-work',action='store_true');a=p.parse_args()
 out=a.output.resolve();out.mkdir(parents=True,exist_ok=False)
-reference,combined,new=outputs('reference'),outputs('precalc',True),outputs('precalc',True,True)
+reference,combined,new=outputs('reference'),outputs('precalc',True),outputs('precalc',True,True,a.idle_zero_work)
 for name,data in [('candidate936.metal',reference['GradientsUIKit.metal']),('precalculated.metal',combined['GradientsUIKit.metal']),('optimized.metal',new['GradientsUIKit.metal']),('colors.swift',new['GradientYellowColors.swift']),('DomainMaskRenderer.swift',new['GradientMaskRenderer.swift'].replace(b'GradientMaskRenderer',b'DomainMaskRenderer'))]:(out/name).write_bytes(data)
 s=(ROOT/'Development/Validation/DarkCriticalPath/CompareMasks.swift').read_text()
 s=s.replace('idle-cache.metal','optimized.metal').replace('\"idleCache\"','\"reuseMain\"').replace('\"maskDomain\"','\"combined\"')

@@ -59,6 +59,20 @@ class PreparationTests(unittest.TestCase):
         self.assertEqual(shader.count('[[function_constant(101)]]'),1)
         with self.assertRaises(ValueError):outputs('reference',shared_background=True)
 
+    def test_zero_specialization_changes_only_background_call(self):
+        a,b=outputs('precalc',True,True),outputs('precalc',True,True,True)
+        for name in a:
+            if name!='GradientsUIKit.metal':self.assertEqual(a[name],b[name])
+        before=a['GradientsUIKit.metal'].decode();after=b['GradientsUIKit.metal'].decode()
+        begin=before.index('kernel void prototypeComputeBackground(')
+        self.assertEqual(before[:begin],after[:begin])
+        original=before[before.index(' half4 c=v2ComposeBackground(',begin):].split(';',1)[0].replace('half4 c=','c=')
+        self.assertIn(' } else {\n'+original+';',after)
+        for index in (3,8,9,18):self.assertIn(f'u[{index}]==0.0',after)
+        self.assertEqual(after.count('[[function_constant('),before.count('[[function_constant('))
+        with self.assertRaises(ValueError):outputs('reference',idle_zero_work=True)
+        with self.assertRaises(ValueError):outputs('precalc',idle_zero_work=True)
+
     def test_pipeline_modes_and_allocation_publication(self):
         b=outputs('precalc');g=b['GradientGPU.swift'].decode();v=b['GradientViewController.swift'].decode()
         for phrase in ['function("prototypePrepareAxes",mode:3)','function("prototypeComputeBackground",mode:3)','function("v2CaptionProbe",mode:0)','pipeline("prototypeComposite",.bgra8Unorm,mode:0)']:
