@@ -14,7 +14,7 @@ from prepare_sources import outputs
 class PreparationTests(unittest.TestCase):
     def test_reference_is_exact_original(self):
         a=outputs('reference')
-        for name in ['GradientGPU.swift','GradientViewController.swift']:
+        for name in ['GradientGPU.swift','GradientViewController.swift','GradientMaskRenderer.swift']:
             self.assertEqual(a[name],(SDK/'Sources/GradientsKit'/name).read_bytes())
         self.assertEqual(hashlib.sha256(a['GradientsUIKit.metal']).hexdigest(),'6543c25f9bf24ccd7b58cd8e08e8711f599c97e9dcdcfdf0d3ae60714e713bea')
 
@@ -24,6 +24,15 @@ class PreparationTests(unittest.TestCase):
         self.assertEqual(a['GradientYellowColors.swift'],b['GradientYellowColors.swift'])
         public=lambda s:[x.strip() for x in s.decode().splitlines() if re.search(r'\bpublic\b',x)]
         self.assertEqual(public(a['GradientViewController.swift']),public(b['GradientViewController.swift']))
+
+    def test_mask_domain_is_only_one_graph_change(self):
+        a=outputs('precalc');b=outputs('precalc',mask_domain=True)
+        for name in a:
+            if name != 'GradientMaskRenderer.swift':self.assertEqual(a[name],b[name])
+        expansion=b'\n            .composited(over:CIImage(color:.clear).cropped(to:fullExtent))'
+        self.assertEqual(a['GradientMaskRenderer.swift'].replace(expansion,b''),b['GradientMaskRenderer.swift'])
+        self.assertNotEqual(a['GradientMaskRenderer.swift'],b['GradientMaskRenderer.swift'])
+        with self.assertRaises(ValueError):outputs('reference',mask_domain=True)
 
     def test_pipeline_modes_and_allocation_publication(self):
         b=outputs('precalc');g=b['GradientGPU.swift'].decode();v=b['GradientViewController.swift'].decode()

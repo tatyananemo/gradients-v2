@@ -62,23 +62,37 @@ def controller_source():
     s=replace(s,'encoder.setBuffer(historyBuffer,offset:0,index:1)','encoder.setBuffer(cache,offset:0,index:1)')
     return s.encode()
 
-def outputs(mode):
+def mask_source(reduce_domain=False):
+    source=(SDK/'Sources/GradientsKit/GradientMaskRenderer.swift').read_bytes()
+    if reduce_domain:
+        expansion=b'\n            .composited(over:CIImage(color:.clear).cropped(to:fullExtent))'
+        if source.count(expansion)!=1:
+            raise ValueError('Unexpected mask source domain')
+        source=source.replace(expansion,b'')
+    return source
+
+def outputs(mode,mask_domain=False):
     optimized=mode=='precalc'
+    if mask_domain and not optimized:
+        raise ValueError('Reference must retain the approved mask graph')
     return {
         'GradientsUIKit.metal':compose_candidate(ROOT) if optimized else compose_sdk(),
         'GradientYellowColors.swift':swift_source(load(SDK)).encode(),
         'GradientGPU.swift':gpu_source() if optimized else (SDK/'Sources/GradientsKit/GradientGPU.swift').read_bytes(),
         'GradientViewController.swift':controller_source() if optimized else (SDK/'Sources/GradientsKit/GradientViewController.swift').read_bytes(),
+        'GradientMaskRenderer.swift':mask_source(mask_domain),
         'GradientPrecalculationBuffers.swift':(HERE/'GradientPrecalculationBuffers.swift').read_bytes() if optimized else b'// Reference build: no precalculation resources.\n',
     }
 
 if __name__=='__main__':
-    p=argparse.ArgumentParser(description=__doc__);p.add_argument('--mode',choices=['reference','precalc'],required=True);p.add_argument('--output',type=Path,required=True);a=p.parse_args()
+    p=argparse.ArgumentParser(description=__doc__);p.add_argument('--mode',choices=['reference','precalc'],required=True);p.add_argument('--output',type=Path,required=True)
+    p.add_argument('--mask-domain',action='store_true',help='Experimental CI source extent; no SDK input edits')
+    a=p.parse_args()
     a.output.mkdir(parents=True,exist_ok=True)
-    generated=outputs(a.mode)
+    generated=outputs(a.mode,a.mask_domain)
     for name,data in generated.items():
         path=a.output/name
         if not path.exists() or path.read_bytes()!=data:path.write_bytes(data)
-    manifest={'mode':a.mode,'files':{n:hashlib.sha256(d).hexdigest() for n,d in generated.items()}}
+    manifest={'mode':a.mode,'mask_domain':a.mask_domain,'files':{n:hashlib.sha256(d).hexdigest() for n,d in generated.items()}}
     (a.output/'SourceManifest.json').write_text(json.dumps(manifest,indent=2)+'\n')
     print('Prepared isolated '+a.mode+' sources in '+str(a.output))

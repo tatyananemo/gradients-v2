@@ -1,0 +1,345 @@
+{
+  "idle": {
+    "maskDomain": {
+      "fullFrameWallMS": {
+        "count": 192,
+        "mean": 10.08771375836659,
+        "p95": 13.608624998596497,
+        "p99": 21.42416666902136
+      },
+      "fullFrameCPUms": {
+        "count": 192,
+        "mean": 7.96083333333335,
+        "p95": 11.732999999999993,
+        "p99": 14.085000000000125
+      },
+      "maskWallMS": {
+        "count": 192,
+        "mean": 3.0219346789787473,
+        "p95": 3.7998750049155205,
+        "p99": 6.746916667907499
+      },
+      "gpuMS": {
+        "count": 192,
+        "mean": 5.859585937666149,
+        "p95": 7.485124995582737,
+        "p99": 8.130375004839152
+      }
+    },
+    "precalc": {
+      "fullFrameWallMS": {
+        "count": 192,
+        "mean": 12.602644748767489,
+        "p95": 16.130416668602265,
+        "p99": 43.302208330715075
+      },
+      "fullFrameCPUms": {
+        "count": 192,
+        "mean": 8.14907291666667,
+        "p95": 12.480999999999964,
+        "p99": 16.95100000000016
+      },
+      "maskWallMS": {
+        "count": 192,
+        "mean": 3.8025078126793233,
+        "p95": 5.28308333014138,
+        "p99": 8.029041666304693
+      },
+      "gpuMS": {
+        "count": 192,
+        "mean": 7.420391275597164,
+        "p95": 9.168499993393198,
+        "p99": 10.07345832476858
+      }
+    },
+    "reference": {
+      "fullFrameWallMS": {
+        "count": 192,
+        "mean": 16.24410807244203,
+        "p95": 21.69333332858514,
+        "p99": 42.590041673975065
+      },
+      "fullFrameCPUms": {
+        "count": 192,
+        "mean": 8.959666666666681,
+        "p95": 13.055000000000039,
+        "p99": 18.315000000000083
+      },
+      "maskWallMS": {
+        "count": 192,
+        "mean": 4.089012586291574,
+        "p95": 5.711666672141291,
+        "p99": 9.024583341670223
+      },
+      "gpuMS": {
+        "count": 192,
+        "mean": 10.60419184022976,
+        "p95": 13.308499997947365,
+        "p99": 14.208624997991137
+      }
+    }
+  },
+  "gestureInputs": {
+    "maskDomain": {
+      "fullFrameWallMS": {
+        "count": 32,
+        "mean": 8.701367188677978,
+        "p95": 11.07745832996443,
+        "p99": 11.163458329974674
+      },
+      "fullFrameCPUms": {
+        "count": 32,
+        "mean": 6.320218749999994,
+        "p95": 7.269999999999999,
+        "p99": 7.408999999999999
+      },
+      "maskWallMS": {
+        "count": 32,
+        "mean": 3.1242122399817163,
+        "p95": 3.6564583278959617,
+        "p99": 3.670999998576008
+      },
+      "gpuMS": {
+        "count": 32,
+        "mean": 5.20012499873701,
+        "p95": 7.625791666214354,
+        "p99": 7.829250011127442
+      }
+    },
+    "precalc": {
+      "fullFrameWallMS": {
+        "count": 32,
+        "mean": 10.426839843148628,
+        "p95": 12.389374998747371,
+        "p99": 12.554333326988854
+      },
+      "fullFrameCPUms": {
+        "count": 32,
+        "mean": 6.447750000000004,
+        "p95": 7.761000000000018,
+        "p99": 7.991999999999999
+      },
+      "maskWallMS": {
+        "count": 32,
+        "mean": 3.0889518220647005,
+        "p95": 3.9475416706409305,
+        "p99": 4.216166664264165
+      },
+      "gpuMS": {
+        "count": 32,
+        "mean": 7.004605468864611,
+        "p95": 8.132500006468035,
+        "p99": 9.440291658393107
+      }
+    },
+    "reference": {
+      "fullFrameWallMS": {
+        "count": 32,
+        "mean": 10.848226560938201,
+        "p95": 13.306208333233371,
+        "p99": 13.352750000194646
+      },
+      "fullFrameCPUms": {
+        "count": 32,
+        "mean": 6.710406249999996,
+        "p95": 8.815999999999935,
+        "p99": 9.109999999999951
+      },
+      "maskWallMS": {
+        "count": 32,
+        "mean": 3.1772773459124437,
+        "p95": 3.8188333419384435,
+        "p99": 3.8449166750069708
+      },
+      "gpuMS": {
+        "count": 32,
+        "mean": 7.30936458285214,
+        "p95": 9.535375007544644,
+        "p99": 9.988541671191342
+      }
+    }
+  },
+  "screening": {
+    "idleCache": {
+      "fullFrameWallMS": {
+        "count": 96,
+        "mean": 13.5134118932001,
+        "p95": 16.50470834283624,
+        "p99": 19.70962500490714
+      },
+      "fullFrameCPUms": {
+        "count": 96,
+        "mean": 8.535760416666646,
+        "p95": 10.855999999999977,
+        "p99": 12.841999999999132
+      },
+      "maskWallMS": {
+        "count": 96,
+        "mean": 3.8571514761921812,
+        "p95": 4.787291662069038,
+        "p99": 7.293333328561857
+      },
+      "gpuMS": {
+        "count": 96,
+        "mean": 9.147769097732331,
+        "p95": 11.410124992835335,
+        "p99": 13.15762499871198
+      }
+    },
+    "localMask": {
+      "fullFrameWallMS": {
+        "count": 96,
+        "mean": 12.769197047873604,
+        "p95": 15.611499999067746,
+        "p99": 21.219041664153337
+      },
+      "fullFrameCPUms": {
+        "count": 96,
+        "mean": 6.954729166666671,
+        "p95": 9.58900000000007,
+        "p99": 13.715000000000144
+      },
+      "maskWallMS": {
+        "count": 96,
+        "mean": 3.5010013031448275,
+        "p95": 5.03095833119005,
+        "p99": 9.21474999631755
+      },
+      "gpuMS": {
+        "count": 96,
+        "mean": 8.273787326743332,
+        "p95": 9.674499990069307,
+        "p99": 11.189750002813525
+      }
+    },
+    "maskDomain": {
+      "fullFrameWallMS": {
+        "count": 96,
+        "mean": 9.759261285883744,
+        "p95": 12.509291671449319,
+        "p99": 22.044083336368203
+      },
+      "fullFrameCPUms": {
+        "count": 96,
+        "mean": 7.946885416666628,
+        "p95": 10.483999999999938,
+        "p99": 14.071000000000167
+      },
+      "maskWallMS": {
+        "count": 96,
+        "mean": 3.282952256843904,
+        "p95": 3.9277916657738388,
+        "p99": 12.187791668111458
+      },
+      "gpuMS": {
+        "count": 96,
+        "mean": 5.818078560272018,
+        "p95": 7.516166675486602,
+        "p99": 8.13962500251364
+      }
+    },
+    "precalc": {
+      "fullFrameWallMS": {
+        "count": 96,
+        "mean": 12.324566406277881,
+        "p95": 15.641208330634981,
+        "p99": 32.5157916668104
+      },
+      "fullFrameCPUms": {
+        "count": 96,
+        "mean": 8.56336458333333,
+        "p95": 11.373999999999995,
+        "p99": 14.254999999999907
+      },
+      "maskWallMS": {
+        "count": 96,
+        "mean": 3.991846787812392,
+        "p95": 4.834208331885748,
+        "p99": 22.242249993723817
+      },
+      "gpuMS": {
+        "count": 96,
+        "mean": 7.711822481875667,
+        "p95": 9.137999993981794,
+        "p99": 9.770874996320345
+      }
+    },
+    "reference": {
+      "fullFrameWallMS": {
+        "count": 96,
+        "mean": 15.647303818695946,
+        "p95": 18.81175000744406,
+        "p99": 22.787875001085922
+      },
+      "fullFrameCPUms": {
+        "count": 96,
+        "mean": 9.128760416666669,
+        "p95": 11.398999999999937,
+        "p99": 14.628000000000085
+      },
+      "maskWallMS": {
+        "count": 96,
+        "mean": 4.189022568728736,
+        "p95": 5.035166657762602,
+        "p99": 5.852749993209727
+      },
+      "gpuMS": {
+        "count": 96,
+        "mean": 10.784802950790132,
+        "p95": 13.377875002333894,
+        "p99": 14.139124992652796
+      }
+    }
+  },
+  "images": {
+    "dark": {
+      "frames": 247,
+      "maxRGBA8": 1,
+      "maxChangedPixelPercentPerFrame": 3.3670892912599073,
+      "meanChannelDelta8": 0.001042226970096672,
+      "maxRGBA8vsPrecalc": 1
+    },
+    "light": {
+      "frames": 247,
+      "maxRGBA8": 1,
+      "maxChangedPixelPercentPerFrame": 0.0021266253493741646,
+      "meanChannelDelta8": 1.0002409244566056e-06,
+      "maxRGBA8vsPrecalc": 0
+    }
+  },
+  "rawMasks": {
+    "compared": 168,
+    "maxFloatDelta": 0.002197265625,
+    "changedComponents": 545624346,
+    "totalComponents": 1990759680,
+    "meanFloatDelta": 8.46162294824214e-06,
+    "pixelExact": false
+  },
+  "temporal": {
+    "dark": {
+      "pairs": 180,
+      "maxSignedErrorChange8": 2
+    },
+    "light": {
+      "pairs": 180,
+      "maxSignedErrorChange8": 1
+    }
+  },
+  "physicalTrace": {
+    "windowSeconds": 11.012231167,
+    "GPUIntervalUnionMS": 10996.849924,
+    "GPUIntervalUnionByRoleMS": {
+      "composition Fragment": 919.715837,
+      "mask Compute": 2697.691808,
+      "composition Compute": 9951.267,
+      "composition Vertex": 2260.017086,
+      "caption Compute": 35.582337
+    },
+    "mainDrawableWaitMS": 7139.679959,
+    "drawableWaitCount": 271,
+    "drawableWaitOverlappingGPUPercent": 99.80106955659691,
+    "drawableWaitOverlappingBackgroundComputePercent": 85.75391617214085,
+    "note": "Intervals include driver stalls and may overlap. Unions are timeline occupancy proxies, not additive ALU execution cost."
+  },
+  "scope": "Native Mac M3 Pro offscreen completion latency, not presentation FPS. Full-frame wall time includes masks and GPU completion, excludes UIKit, drawable wait, caption probe and display presentation. GPU command time includes dependency overlap; do not sum with mask commands."
+}

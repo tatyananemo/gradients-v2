@@ -47,12 +47,6 @@
 			lastKnownFileType = sourcecode.swift;
 			sourceTree = "<group>";
 		};
-		0DC349E50DF1963FAB279D9B = {
-			isa = PBXFileReference;
-			path = "../../GradientsKit-V4/Sources/GradientsKit/GradientMaskRenderer.swift";
-			lastKnownFileType = sourcecode.swift;
-			sourceTree = "<group>";
-		};
 		FDACB4BF9115C16D64FAF769 = {
 			isa = PBXFileReference;
 			path = "../../GradientsKit-V4/Sources/GradientsKit/GradientPercentageLabel.swift";
@@ -92,6 +86,12 @@
 		360E9CA4BD7336B558536F6E = {
 			isa = PBXFileReference;
 			path = "GradientViewController.swift";
+			lastKnownFileType = sourcecode.swift;
+			sourceTree = "DERIVED_FILE_DIR";
+		};
+		F0309F3E6A482E0B5863EC82 = {
+			isa = PBXFileReference;
+			path = "GradientMaskRenderer.swift";
 			lastKnownFileType = sourcecode.swift;
 			sourceTree = "DERIVED_FILE_DIR";
 		};
@@ -159,6 +159,7 @@
 			outputPaths = (
 				"$(DERIVED_FILE_DIR)/GradientGPU.swift",
 				"$(DERIVED_FILE_DIR)/GradientViewController.swift",
+				"$(DERIVED_FILE_DIR)/GradientMaskRenderer.swift",
 				"$(DERIVED_FILE_DIR)/GradientPrecalculationBuffers.swift",
 				"$(DERIVED_FILE_DIR)/GradientYellowColors.swift",
 				"$(DERIVED_FILE_DIR)/GradientsUIKit.metal",
@@ -167,7 +168,7 @@
 			name = "Prepare isolated comparison sources";
 			runOnlyForDeploymentPostprocessing = "0";
 			shellPath = "/bin/sh";
-			shellScript = "/usr/bin/python3 -I -B \"$SRCROOT/prepare_sources.py\" --mode \"$V4_COMPARISON_MODE\" --output \"$DERIVED_FILE_DIR\"\n";
+			shellScript = "if [ \"$V4_MASK_DOMAIN\" = \"1\" ]; then\n/usr/bin/python3 -I -B \"$SRCROOT/prepare_sources.py\" --mode \"$V4_COMPARISON_MODE\" --mask-domain --output \"$DERIVED_FILE_DIR\"\nelse\n/usr/bin/python3 -I -B \"$SRCROOT/prepare_sources.py\" --mode \"$V4_COMPARISON_MODE\" --output \"$DERIVED_FILE_DIR\"\nfi\n";
 		};
 		6CA2D723A4E3753F8C0202DB = {
 			isa = XCBuildConfiguration;
@@ -326,35 +327,35 @@
 		};
 		7F40E11B5F3707BA2A6C22E3 = {
 			isa = PBXBuildFile;
-			fileRef = 0DC349E50DF1963FAB279D9B;
+			fileRef = FDACB4BF9115C16D64FAF769;
 		};
 		DAD9AB35E7C48A71FF84C7D1 = {
 			isa = PBXBuildFile;
-			fileRef = FDACB4BF9115C16D64FAF769;
+			fileRef = A1D5EBBBDB0410FD0EA762AF;
 		};
 		7C819849F12A26973F483D59 = {
 			isa = PBXBuildFile;
-			fileRef = A1D5EBBBDB0410FD0EA762AF;
+			fileRef = 1DC80A5911E1CA42D222A983;
 		};
 		7A7EDF9310917B63BFFE3A7C = {
 			isa = PBXBuildFile;
-			fileRef = 1DC80A5911E1CA42D222A983;
+			fileRef = 90E16090AACBA06C40C20F4B;
 		};
 		B1A344BC4CC11283C79E6077 = {
 			isa = PBXBuildFile;
-			fileRef = 90E16090AACBA06C40C20F4B;
+			fileRef = 71B34E08F019D36059B9817B;
 		};
 		2745DDA64832543C75688326 = {
 			isa = PBXBuildFile;
-			fileRef = 71B34E08F019D36059B9817B;
+			fileRef = 7B82CD6C4BE38AB416FD8B04;
 		};
 		6AC56F2511148FED790FA49C = {
 			isa = PBXBuildFile;
-			fileRef = 7B82CD6C4BE38AB416FD8B04;
+			fileRef = 360E9CA4BD7336B558536F6E;
 		};
 		C219AACFC28EBFC645A6E00E = {
 			isa = PBXBuildFile;
-			fileRef = 360E9CA4BD7336B558536F6E;
+			fileRef = F0309F3E6A482E0B5863EC82;
 		};
 		3C05530276C5BD08508AA23D = {
 			isa = PBXBuildFile;
@@ -1089,7 +1090,6 @@
 				BF41536EEB53083E42CD36AD,
 				7F16D782FD0A5292176BB0E7,
 				4887C33F0B1A13203CE851B9,
-				0DC349E50DF1963FAB279D9B,
 				FDACB4BF9115C16D64FAF769,
 				A1D5EBBBDB0410FD0EA762AF,
 				1DC80A5911E1CA42D222A983,
@@ -1097,6 +1097,7 @@
 				71B34E08F019D36059B9817B,
 				7B82CD6C4BE38AB416FD8B04,
 				360E9CA4BD7336B558536F6E,
+				F0309F3E6A482E0B5863EC82,
 				F50F7B5AFFBF69C958E1A1CC,
 				F38E2CADA1B01630CE7F6437,
 				0A8AF3B2CBB0F9288F1AE8A3,

@@ -1,0 +1,30 @@
+{
+  "approved_sdk_source_commit": "9368500",
+  "experimental_parent": "04f3cef",
+  "branch": "experiment/v4-dark-critical-path",
+  "canonical_sdk_edited": false,
+  "source_colors_edited": false,
+  "goldens_edited": false,
+  "iPhone_launched": false,
+  "simulator_launched": false,
+  "ios_metallib_sha256": "c8d5b70f3066c74629d0679c7108b15b150793c9c77c87c145fc063689329141",
+  "mask_source_before_sha256": "a54c1f0d73ade16314ab485ee696ff42337b4684df34233d3f8eaadbe529ae48",
+  "mask_source_after_sha256": "90bdc1e8e13da8fb95665c30aa1c2088fb7b07d51c998f33279138b64fac2324",
+  "metal_source_sha256": "06145e07ae6d8723e81a17741ec48905637e8365e8816fce35a39e797adb2e06",
+  "cases_sha256": "ff1bdec868a729e5b5d9d98d9bdf76d3efb8a4f2591819d87e144a5aba19e8f4",
+  "checks": {
+    "iosDebugBuild": true,
+    "iosReleaseBuild": true,
+    "CPUContracts": 6,
+    "sourceColorTests": 5,
+    "behaviorStates": 1385,
+    "frameArguments": 5540,
+    "finalCompositorFrames": 494,
+    "rawMaskComparisons": 168,
+    "rawMasksPixelExact": false,
+    "publicInterfaceUnchanged": true,
+    "metallibUnchanged": true,
+    "UIRuntimeTestsRun": false
+  },
+  "timing_scope": "Native Mac offscreen completion; not iPhone FPS"
+}

@@ -32,17 +32,17 @@ product=file('GradientsKit.framework','wrapper.framework','BUILT_PRODUCTS_DIR')
 app_product=file('GradientsV4Comparison.app','wrapper.application','BUILT_PRODUCTS_DIR')
 unit_product=file('GradientsV4ComparisonTests.xctest','wrapper.cfbundle','BUILT_PRODUCTS_DIR')
 ui_product=file('GradientsV4ComparisonUITests.xctest','wrapper.cfbundle','BUILT_PRODUCTS_DIR')
-base_sources=[p for p in sorted((SDK/'Sources/GradientsKit').rglob('*.swift')) if p.name not in ['GradientGPU.swift','GradientViewController.swift']]
+base_sources=[p for p in sorted((SDK/'Sources/GradientsKit').rglob('*.swift')) if p.name not in ['GradientGPU.swift','GradientViewController.swift','GradientMaskRenderer.swift']]
 sources=[file('../../GradientsKit-V4/'+str(p.relative_to(SDK)),'sourcecode.swift') for p in base_sources]
 generated=[]
-for name,kind in [('GradientGPU.swift','sourcecode.swift'),('GradientViewController.swift','sourcecode.swift'),('GradientPrecalculationBuffers.swift','sourcecode.swift'),('GradientYellowColors.swift','sourcecode.swift'),('GradientsUIKit.metal','sourcecode.metal')]:
+for name,kind in [('GradientGPU.swift','sourcecode.swift'),('GradientViewController.swift','sourcecode.swift'),('GradientMaskRenderer.swift','sourcecode.swift'),('GradientPrecalculationBuffers.swift','sourcecode.swift'),('GradientYellowColors.swift','sourcecode.swift'),('GradientsUIKit.metal','sourcecode.metal')]:
     generated.append(obj('generated:'+name,'PBXFileReference',path=name,lastKnownFileType=raw(kind),sourceTree='DERIVED_FILE_DIR'))
 inputs=[str(p.relative_to(ROOT)) for p in sorted([*(SDK/'Scripts').glob('*.py'),*(SDK/'ShaderSources').rglob('*'),*(SDK/'Configuration').glob('*.json'),*(SDK/'Sources/GradientsKit').rglob('*.swift'),*(SDK/'Sources/GradientsKit/Shaders').glob('*.metal')]) if p.is_file()]
 inputs=['$(SRCROOT)/../../'+p for p in inputs]+['$(SRCROOT)/'+p for p in ['prepare_sources.py','precalculation_source.py','GradientPrecalculationBuffers.swift']]
 compose=obj('compose','PBXShellScriptBuildPhase',buildActionMask=2147483647,files=[],inputPaths=inputs,
-    outputPaths=['$(DERIVED_FILE_DIR)/'+n for n in ['GradientGPU.swift','GradientViewController.swift','GradientPrecalculationBuffers.swift','GradientYellowColors.swift','GradientsUIKit.metal','SourceManifest.json']],
+    outputPaths=['$(DERIVED_FILE_DIR)/'+n for n in ['GradientGPU.swift','GradientViewController.swift','GradientMaskRenderer.swift','GradientPrecalculationBuffers.swift','GradientYellowColors.swift','GradientsUIKit.metal','SourceManifest.json']],
     name='Prepare isolated comparison sources',runOnlyForDeploymentPostprocessing=0,shellPath='/bin/sh',
-    shellScript='/usr/bin/python3 -I -B "$SRCROOT/prepare_sources.py" --mode "$V4_COMPARISON_MODE" --output "$DERIVED_FILE_DIR"\n')
+    shellScript='if [ "$V4_MASK_DOMAIN" = "1" ]; then\n/usr/bin/python3 -I -B "$SRCROOT/prepare_sources.py" --mode "$V4_COMPARISON_MODE" --mask-domain --output "$DERIVED_FILE_DIR"\nelse\n/usr/bin/python3 -I -B "$SRCROOT/prepare_sources.py" --mode "$V4_COMPARISON_MODE" --output "$DERIVED_FILE_DIR"\nfi\n')
 sdk=obj('sdk','PBXNativeTarget',name='GradientsKit',productName='GradientsKit',productReference=product,productType='com.apple.product-type.framework',
     buildConfigurationList=configs('sdk',{'PRODUCT_BUNDLE_IDENTIFIER':'com.local.gradients.v4.kit','DEFINES_MODULE':'YES','SKIP_INSTALL':'NO','BUILD_LIBRARY_FOR_DISTRIBUTION':'YES','INSTALL_PATH':'$(LOCAL_LIBRARY_DIR)/Frameworks','DYLIB_INSTALL_NAME_BASE':'@rpath','LD_DYLIB_INSTALL_NAME':'@rpath/$(EXECUTABLE_PATH)'}),
     buildPhases=[compose,phase('sdkSources','PBXSourcesBuildPhase',[build(s,'sdk'+str(i)) for i,s in enumerate(sources+generated)]),phase('sdkFrameworks','PBXFrameworksBuildPhase',[]),phase('sdkResources','PBXResourcesBuildPhase',[])],buildRules=[],dependencies=[])
