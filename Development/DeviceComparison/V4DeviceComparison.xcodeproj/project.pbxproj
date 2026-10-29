@@ -5,9 +5,9 @@
 	};
 	objectVersion = "60";
 	objects = {
-		BF41536EEB53083E42CD36AD = {
+		368A4204CF13421F1EE40DF8 = {
 			isa = PBXFileReference;
-			path = "LocalSigning.xcconfig";
+			path = "Signing.xcconfig";
 			lastKnownFileType = text.xcconfig;
 			sourceTree = "<group>";
 		};
@@ -211,7 +211,7 @@
 				ENABLE_USER_SCRIPT_SANDBOXING = "NO";
 			};
 			name = "ReferenceDebug";
-			baseConfigurationReference = BF41536EEB53083E42CD36AD;
+			baseConfigurationReference = 368A4204CF13421F1EE40DF8;
 		};
 		30BA4A503FF75A76945316E0 = {
 			isa = XCBuildConfiguration;
@@ -250,7 +250,7 @@
 				ENABLE_USER_SCRIPT_SANDBOXING = "NO";
 			};
 			name = "ReferenceRelease";
-			baseConfigurationReference = BF41536EEB53083E42CD36AD;
+			baseConfigurationReference = 368A4204CF13421F1EE40DF8;
 		};
 		2909CD41BDEA73A3AA730DFA = {
 			isa = XCBuildConfiguration;
@@ -289,7 +289,7 @@
 				ENABLE_USER_SCRIPT_SANDBOXING = "NO";
 			};
 			name = "PrecalcDebug";
-			baseConfigurationReference = BF41536EEB53083E42CD36AD;
+			baseConfigurationReference = 368A4204CF13421F1EE40DF8;
 		};
 		65335F3C0BF85298CD1A4DBB = {
 			isa = XCBuildConfiguration;
@@ -328,7 +328,7 @@
 				ENABLE_USER_SCRIPT_SANDBOXING = "NO";
 			};
 			name = "PrecalcRelease";
-			baseConfigurationReference = BF41536EEB53083E42CD36AD;
+			baseConfigurationReference = 368A4204CF13421F1EE40DF8;
 		};
 		98F18AF81A25F5DD54F99327 = {
 			isa = XCBuildConfiguration;
@@ -367,7 +367,7 @@
 				ENABLE_USER_SCRIPT_SANDBOXING = "NO";
 			};
 			name = "CombinedDebug";
-			baseConfigurationReference = BF41536EEB53083E42CD36AD;
+			baseConfigurationReference = 368A4204CF13421F1EE40DF8;
 		};
 		9D62036FC7EAECBE64BFFD1A = {
 			isa = XCBuildConfiguration;
@@ -406,7 +406,7 @@
 				ENABLE_USER_SCRIPT_SANDBOXING = "NO";
 			};
 			name = "CombinedRelease";
-			baseConfigurationReference = BF41536EEB53083E42CD36AD;
+			baseConfigurationReference = 368A4204CF13421F1EE40DF8;
 		};
 		2376425E5DA0B052BF396CB2 = {
 			isa = XCBuildConfiguration;
@@ -445,7 +445,7 @@
 				ENABLE_USER_SCRIPT_SANDBOXING = "NO";
 			};
 			name = "OptimizedDebug";
-			baseConfigurationReference = BF41536EEB53083E42CD36AD;
+			baseConfigurationReference = 368A4204CF13421F1EE40DF8;
 		};
 		28F13D5212EAFFF16E443F7E = {
 			isa = XCBuildConfiguration;
@@ -484,7 +484,7 @@
 				ENABLE_USER_SCRIPT_SANDBOXING = "NO";
 			};
 			name = "OptimizedRelease";
-			baseConfigurationReference = BF41536EEB53083E42CD36AD;
+			baseConfigurationReference = 368A4204CF13421F1EE40DF8;
 		};
 		0AC0AB9714AA8CB827043575 = {
 			isa = XCConfigurationList;
@@ -698,7 +698,7 @@
 				INFOPLIST_KEY_CFBundleDisplayName = "V4 Reference";
 			};
 			name = "ReferenceDebug";
-			baseConfigurationReference = BF41536EEB53083E42CD36AD;
+			baseConfigurationReference = 368A4204CF13421F1EE40DF8;
 		};
 		C10082D379B76C8B7D2C414E = {
 			isa = XCBuildConfiguration;
@@ -737,7 +737,7 @@
 				INFOPLIST_KEY_CFBundleDisplayName = "V4 Reference";
 			};
 			name = "ReferenceRelease";
-			baseConfigurationReference = BF41536EEB53083E42CD36AD;
+			baseConfigurationReference = 368A4204CF13421F1EE40DF8;
 		};
 		729C695918E572002B9C3852 = {
 			isa = XCBuildConfiguration;
@@ -776,7 +776,7 @@
 				INFOPLIST_KEY_CFBundleDisplayName = "V4 Precalc";
 			};
 			name = "PrecalcDebug";
-			baseConfigurationReference = BF41536EEB53083E42CD36AD;
+			baseConfigurationReference = 368A4204CF13421F1EE40DF8;
 		};
 		8E7D2EB0B3BB5E2E7997028F = {
 			isa = XCBuildConfiguration;
@@ -815,7 +815,7 @@
 				INFOPLIST_KEY_CFBundleDisplayName = "V4 Precalc";
 			};
 			name = "PrecalcRelease";
-			baseConfigurationReference = BF41536EEB53083E42CD36AD;
+			baseConfigurationReference = 368A4204CF13421F1EE40DF8;
 		};
 		265A6CAABB50D1256649B1B1 = {
 			isa = XCBuildConfiguration;
@@ -854,7 +854,7 @@
 				INFOPLIST_KEY_CFBundleDisplayName = "V4 Combined";
 			};
 			name = "CombinedDebug";
-			baseConfigurationReference = BF41536EEB53083E42CD36AD;
+			baseConfigurationReference = 368A4204CF13421F1EE40DF8;
 		};
 		DCF08460A2EBC671DAAC132E = {
 			isa = XCBuildConfiguration;
@@ -893,7 +893,7 @@
 				INFOPLIST_KEY_CFBundleDisplayName = "V4 Combined";
 			};
 			name = "CombinedRelease";
-			baseConfigurationReference = BF41536EEB53083E42CD36AD;
+			baseConfigurationReference = 368A4204CF13421F1EE40DF8;
 		};
 		AD71A2786ADD4D26693C37B4 = {
 			isa = XCBuildConfiguration;
@@ -932,7 +932,7 @@
 				INFOPLIST_KEY_CFBundleDisplayName = "V4 Optimized";
 			};
 			name = "OptimizedDebug";
-			baseConfigurationReference = BF41536EEB53083E42CD36AD;
+			baseConfigurationReference = 368A4204CF13421F1EE40DF8;
 		};
 		BB58FA8018C44DDBD18FE262 = {
 			isa = XCBuildConfiguration;
@@ -971,7 +971,7 @@
 				INFOPLIST_KEY_CFBundleDisplayName = "V4 Optimized";
 			};
 			name = "OptimizedRelease";
-			baseConfigurationReference = BF41536EEB53083E42CD36AD;
+			baseConfigurationReference = 368A4204CF13421F1EE40DF8;
 		};
 		08350E39CB02F1A07EA15590 = {
 			isa = XCConfigurationList;
@@ -1105,7 +1105,7 @@
 				ENABLE_USER_SCRIPT_SANDBOXING = "NO";
 			};
 			name = "ReferenceDebug";
-			baseConfigurationReference = BF41536EEB53083E42CD36AD;
+			baseConfigurationReference = 368A4204CF13421F1EE40DF8;
 		};
 		4B9B134CC26A8AF9732EA941 = {
 			isa = XCBuildConfiguration;
@@ -1140,7 +1140,7 @@
 				ENABLE_USER_SCRIPT_SANDBOXING = "NO";
 			};
 			name = "ReferenceRelease";
-			baseConfigurationReference = BF41536EEB53083E42CD36AD;
+			baseConfigurationReference = 368A4204CF13421F1EE40DF8;
 		};
 		76E515AB1C2CBAFE4432AD9A = {
 			isa = XCBuildConfiguration;
@@ -1175,7 +1175,7 @@
 				ENABLE_USER_SCRIPT_SANDBOXING = "NO";
 			};
 			name = "PrecalcDebug";
-			baseConfigurationReference = BF41536EEB53083E42CD36AD;
+			baseConfigurationReference = 368A4204CF13421F1EE40DF8;
 		};
 		7377A42B0667336F9B4E2B89 = {
 			isa = XCBuildConfiguration;
@@ -1210,7 +1210,7 @@
 				ENABLE_USER_SCRIPT_SANDBOXING = "NO";
 			};
 			name = "PrecalcRelease";
-			baseConfigurationReference = BF41536EEB53083E42CD36AD;
+			baseConfigurationReference = 368A4204CF13421F1EE40DF8;
 		};
 		55420300B0F1B312D4EFF7B7 = {
 			isa = XCBuildConfiguration;
@@ -1245,7 +1245,7 @@
 				ENABLE_USER_SCRIPT_SANDBOXING = "NO";
 			};
 			name = "CombinedDebug";
-			baseConfigurationReference = BF41536EEB53083E42CD36AD;
+			baseConfigurationReference = 368A4204CF13421F1EE40DF8;
 		};
 		5B9DDD7CDD3799FED79C59F4 = {
 			isa = XCBuildConfiguration;
@@ -1280,7 +1280,7 @@
 				ENABLE_USER_SCRIPT_SANDBOXING = "NO";
 			};
 			name = "CombinedRelease";
-			baseConfigurationReference = BF41536EEB53083E42CD36AD;
+			baseConfigurationReference = 368A4204CF13421F1EE40DF8;
 		};
 		781DFCA3FEC1FE442C2A30B3 = {
 			isa = XCBuildConfiguration;
@@ -1315,7 +1315,7 @@
 				ENABLE_USER_SCRIPT_SANDBOXING = "NO";
 			};
 			name = "OptimizedDebug";
-			baseConfigurationReference = BF41536EEB53083E42CD36AD;
+			baseConfigurationReference = 368A4204CF13421F1EE40DF8;
 		};
 		52E04225FCD39F07F45106CE = {
 			isa = XCBuildConfiguration;
@@ -1350,7 +1350,7 @@
 				ENABLE_USER_SCRIPT_SANDBOXING = "NO";
 			};
 			name = "OptimizedRelease";
-			baseConfigurationReference = BF41536EEB53083E42CD36AD;
+			baseConfigurationReference = 368A4204CF13421F1EE40DF8;
 		};
 		2D367368963E15D0DD2158D3 = {
 			isa = XCConfigurationList;
@@ -1462,7 +1462,7 @@
 				ENABLE_USER_SCRIPT_SANDBOXING = "NO";
 			};
 			name = "ReferenceDebug";
-			baseConfigurationReference = BF41536EEB53083E42CD36AD;
+			baseConfigurationReference = 368A4204CF13421F1EE40DF8;
 		};
 		50BA3B1D57076FCF01B73DD0 = {
 			isa = XCBuildConfiguration;
@@ -1496,7 +1496,7 @@
 				ENABLE_USER_SCRIPT_SANDBOXING = "NO";
 			};
 			name = "ReferenceRelease";
-			baseConfigurationReference = BF41536EEB53083E42CD36AD;
+			baseConfigurationReference = 368A4204CF13421F1EE40DF8;
 		};
 		47F422C08698039175CD0634 = {
 			isa = XCBuildConfiguration;
@@ -1530,7 +1530,7 @@
 				ENABLE_USER_SCRIPT_SANDBOXING = "NO";
 			};
 			name = "PrecalcDebug";
-			baseConfigurationReference = BF41536EEB53083E42CD36AD;
+			baseConfigurationReference = 368A4204CF13421F1EE40DF8;
 		};
 		83898CCBA70145E95E89AB66 = {
 			isa = XCBuildConfiguration;
@@ -1564,7 +1564,7 @@
 				ENABLE_USER_SCRIPT_SANDBOXING = "NO";
 			};
 			name = "PrecalcRelease";
-			baseConfigurationReference = BF41536EEB53083E42CD36AD;
+			baseConfigurationReference = 368A4204CF13421F1EE40DF8;
 		};
 		14E322621CD510E6170AEAB4 = {
 			isa = XCBuildConfiguration;
@@ -1598,7 +1598,7 @@
 				ENABLE_USER_SCRIPT_SANDBOXING = "NO";
 			};
 			name = "CombinedDebug";
-			baseConfigurationReference = BF41536EEB53083E42CD36AD;
+			baseConfigurationReference = 368A4204CF13421F1EE40DF8;
 		};
 		860774D6969DDA7253268CF7 = {
 			isa = XCBuildConfiguration;
@@ -1632,7 +1632,7 @@
 				ENABLE_USER_SCRIPT_SANDBOXING = "NO";
 			};
 			name = "CombinedRelease";
-			baseConfigurationReference = BF41536EEB53083E42CD36AD;
+			baseConfigurationReference = 368A4204CF13421F1EE40DF8;
 		};
 		451A8C1D0865C3401E783F31 = {
 			isa = XCBuildConfiguration;
@@ -1666,7 +1666,7 @@
 				ENABLE_USER_SCRIPT_SANDBOXING = "NO";
 			};
 			name = "OptimizedDebug";
-			baseConfigurationReference = BF41536EEB53083E42CD36AD;
+			baseConfigurationReference = 368A4204CF13421F1EE40DF8;
 		};
 		F9F11714C899B8F968565072 = {
 			isa = XCBuildConfiguration;
@@ -1700,7 +1700,7 @@
 				ENABLE_USER_SCRIPT_SANDBOXING = "NO";
 			};
 			name = "OptimizedRelease";
-			baseConfigurationReference = BF41536EEB53083E42CD36AD;
+			baseConfigurationReference = 368A4204CF13421F1EE40DF8;
 		};
 		9438044C2E3DA8B7D373989E = {
 			isa = XCConfigurationList;
@@ -1775,7 +1775,7 @@
 		DC76E9F0C0006E8F919E0C51 = {
 			isa = PBXGroup;
 			children = (
-				BF41536EEB53083E42CD36AD,
+				368A4204CF13421F1EE40DF8,
 				7F16D782FD0A5292176BB0E7,
 				4887C33F0B1A13203CE851B9,
 				FDACB4BF9115C16D64FAF769,
@@ -1829,7 +1829,7 @@
 				ENABLE_USER_SCRIPT_SANDBOXING = "NO";
 			};
 			name = "ReferenceDebug";
-			baseConfigurationReference = BF41536EEB53083E42CD36AD;
+			baseConfigurationReference = 368A4204CF13421F1EE40DF8;
 		};
 		3C20640522016FE97BC2BF69 = {
 			isa = XCBuildConfiguration;
@@ -1861,7 +1861,7 @@
 				ENABLE_USER_SCRIPT_SANDBOXING = "NO";
 			};
 			name = "ReferenceRelease";
-			baseConfigurationReference = BF41536EEB53083E42CD36AD;
+			baseConfigurationReference = 368A4204CF13421F1EE40DF8;
 		};
 		9524E7180FEF415D6584021A = {
 			isa = XCBuildConfiguration;
@@ -1893,7 +1893,7 @@
 				ENABLE_USER_SCRIPT_SANDBOXING = "NO";
 			};
 			name = "PrecalcDebug";
-			baseConfigurationReference = BF41536EEB53083E42CD36AD;
+			baseConfigurationReference = 368A4204CF13421F1EE40DF8;
 		};
 		ABAFB191D280FA6885D984EA = {
 			isa = XCBuildConfiguration;
@@ -1925,7 +1925,7 @@
 				ENABLE_USER_SCRIPT_SANDBOXING = "NO";
 			};
 			name = "PrecalcRelease";
-			baseConfigurationReference = BF41536EEB53083E42CD36AD;
+			baseConfigurationReference = 368A4204CF13421F1EE40DF8;
 		};
 		643987E4E7D008F2A96095A8 = {
 			isa = XCBuildConfiguration;
@@ -1957,7 +1957,7 @@
 				ENABLE_USER_SCRIPT_SANDBOXING = "NO";
 			};
 			name = "CombinedDebug";
-			baseConfigurationReference = BF41536EEB53083E42CD36AD;
+			baseConfigurationReference = 368A4204CF13421F1EE40DF8;
 		};
 		19B3FA42F430ED49E2597A07 = {
 			isa = XCBuildConfiguration;
@@ -1989,7 +1989,7 @@
 				ENABLE_USER_SCRIPT_SANDBOXING = "NO";
 			};
 			name = "CombinedRelease";
-			baseConfigurationReference = BF41536EEB53083E42CD36AD;
+			baseConfigurationReference = 368A4204CF13421F1EE40DF8;
 		};
 		5EA0499BDF97E650955C1AE5 = {
 			isa = XCBuildConfiguration;
@@ -2021,7 +2021,7 @@
 				ENABLE_USER_SCRIPT_SANDBOXING = "NO";
 			};
 			name = "OptimizedDebug";
-			baseConfigurationReference = BF41536EEB53083E42CD36AD;
+			baseConfigurationReference = 368A4204CF13421F1EE40DF8;
 		};
 		099FE1BB3D0AA66C0DD57C65 = {
 			isa = XCBuildConfiguration;
@@ -2053,7 +2053,7 @@
 				ENABLE_USER_SCRIPT_SANDBOXING = "NO";
 			};
 			name = "OptimizedRelease";
-			baseConfigurationReference = BF41536EEB53083E42CD36AD;
+			baseConfigurationReference = 368A4204CF13421F1EE40DF8;
 		};
 		F8C70E4123C9AE82C42562CC = {
 			isa = XCConfigurationList;

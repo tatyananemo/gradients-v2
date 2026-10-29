@@ -1,0 +1,244 @@
+{
+  "sourceCommit": "2f123671b49d6dd139a3dc3cb7b72caa7f6d772a",
+  "countMethod": "Physical Swift/Metal source lines including blank/comment lines; .inc once; Demo/tests/scripts/config/generated excluded. Python overlays contain additional algorithm code excluded by this rule.",
+  "sourceFiles": [
+    {
+      "path": "GradientsKit-V4/Sources/GradientsKit/Core/GradientResetPresentation.swift",
+      "language": "Swift",
+      "lines": 25,
+      "sha256": "a93f864e8bb774cddc9e0104a8f648be989f3e030ce8da2192ddf458a3536013"
+    },
+    {
+      "path": "GradientsKit-V4/Sources/GradientsKit/Core/GradientSession.swift",
+      "language": "Swift",
+      "lines": 279,
+      "sha256": "60a818106f760da919804cfa1bcd60f8065bee18ab6be50f2036d1da9557d6b3"
+    },
+    {
+      "path": "GradientsKit-V4/Sources/GradientsKit/GradientGPU.swift",
+      "language": "Swift",
+      "lines": 42,
+      "sha256": "5df1642a41dcef9727eefceb0bec1d7de1dd75a058454f5a81d9aa624a23018d"
+    },
+    {
+      "path": "GradientsKit-V4/Sources/GradientsKit/GradientMaskRenderer.swift",
+      "language": "Swift",
+      "lines": 171,
+      "sha256": "a54c1f0d73ade16314ab485ee696ff42337b4684df34233d3f8eaadbe529ae48"
+    },
+    {
+      "path": "GradientsKit-V4/Sources/GradientsKit/GradientPercentageLabel.swift",
+      "language": "Swift",
+      "lines": 82,
+      "sha256": "9dd110d5a1fa49e228d0d3f95b98f2727cd4c8e70b87f3179dd989349f27a2b3"
+    },
+    {
+      "path": "GradientsKit-V4/Sources/GradientsKit/GradientPerformanceMetrics.swift",
+      "language": "Swift",
+      "lines": 86,
+      "sha256": "2055f92a811c170fbf6b187a73f40c2aaf85f22a83bb73184ae5b0f47a157d8c"
+    },
+    {
+      "path": "GradientsKit-V4/Sources/GradientsKit/GradientRenderSafety.swift",
+      "language": "Swift",
+      "lines": 38,
+      "sha256": "03c96593ccfa76411ffe475af376c8cc7a7f2f70a3fc38dbfd5768eebd3d7618"
+    },
+    {
+      "path": "GradientsKit-V4/Sources/GradientsKit/GradientTheme.swift",
+      "language": "Swift",
+      "lines": 18,
+      "sha256": "9662b349cdddd70dc46a309e7f6af00b03dbf25092c6ace27dde152775ae70d6"
+    },
+    {
+      "path": "GradientsKit-V4/Sources/GradientsKit/GradientViewController.swift",
+      "language": "Swift",
+      "lines": 535,
+      "sha256": "86b7f989295e3f8de2999b4117ef86a46947ebb8ddb39223814d214201c4f8cf"
+    },
+    {
+      "path": "GradientsKit-V4/Sources/GradientsKit/SessionCaptionProbe.swift",
+      "language": "Swift",
+      "lines": 99,
+      "sha256": "783cb98de2dd291caefcf689f5693adacc80ff1559cf995d053dfac416f5d566"
+    },
+    {
+      "path": "Development/DeviceComparison/GradientPrecalculationBuffers.swift",
+      "language": "Swift",
+      "lines": 58,
+      "sha256": "834b6fcbb1eb1f565f05c029ea8957ec12564b7b8a8d9a568804b4e1f92a1ae4"
+    },
+    {
+      "path": "GradientsKit-V4/ShaderSources/ApprovedBlue.metal.source",
+      "language": "Metal",
+      "lines": 938,
+      "sha256": "9ececda3e03ac388c0028b170f964deb478aabba78a86349778165f30e8b3d5b"
+    },
+    {
+      "path": "GradientsKit-V4/ShaderSources/ContactFields.metal.source",
+      "language": "Metal",
+      "lines": 149,
+      "sha256": "9f81b950586caf31d068d722d30c229b7105b1e053a6a4a240d14b599bd11647"
+    },
+    {
+      "path": "GradientsKit-V4/ShaderSources/V2EntryPoints.metal.source",
+      "language": "Metal",
+      "lines": 91,
+      "sha256": "5675fc1191aafefad6142f003ace1ef0fc523ea445db71cc339421831c662f5e"
+    },
+    {
+      "path": "GradientsKit-V4/ShaderSources/YellowDarkContact.metal.source",
+      "language": "Metal",
+      "lines": 135,
+      "sha256": "1de40f5c35d78e40f58acdd5a46e7db29dd977d70cc20cbe2431bfba94e99dd9"
+    },
+    {
+      "path": "GradientsKit-V4/ShaderSources/YellowDarkMAIN.metal.source",
+      "language": "Metal",
+      "lines": 115,
+      "sha256": "1469ee8cac2e4dd0e155176cd707784e7244ce88b50780810b78329aae8ad12e"
+    },
+    {
+      "path": "GradientsKit-V4/ShaderSources/YellowLightContact.metal.source",
+      "language": "Metal",
+      "lines": 198,
+      "sha256": "d4e5c7748c582fe017d63eda1bfcc72cba1bc29b8b5495f690c9dab8426d771a"
+    },
+    {
+      "path": "GradientsKit-V4/ShaderSources/YellowLightMAIN.metal.source",
+      "language": "Metal",
+      "lines": 190,
+      "sha256": "71a01236aafe953d541772e9beff25b4e6b22f3aff6057c9865d1597dfad1849"
+    },
+    {
+      "path": "GradientsKit-V4/ShaderSources/YellowShared.metal.source",
+      "language": "Metal",
+      "lines": 55,
+      "sha256": "5a01757a7575a56e65e46d94c3a87cbbd3ad5bf633528c4a68a890f2aa472896"
+    },
+    {
+      "path": "GradientsKit-V4/ShaderSources/Shared/BlueGeometryTail.inc",
+      "language": "Metal",
+      "lines": 228,
+      "sha256": "abf2453a006349ff2c18d581d29e7d83fc64368dad1c6e89a8e4ddd1ca1ac97d"
+    },
+    {
+      "path": "GradientsKit-V4/ShaderSources/Shared/InteractionHistory.inc",
+      "language": "Metal",
+      "lines": 63,
+      "sha256": "c8cacc4671b790cc40aa342758928552eadcad3d78f09bb6e118b79003f0470f"
+    },
+    {
+      "path": "GradientsKit-V4/ShaderSources/Shared/PhysicalFields.inc",
+      "language": "Metal",
+      "lines": 1622,
+      "sha256": "c1f77bec637e582df5fa9b04840e93dcf2945c5cd0987f284d60734f5ed2d8e2"
+    },
+    {
+      "path": "GradientsKit-V4/ShaderSources/Shared/YellowDarkPose.inc",
+      "language": "Metal",
+      "lines": 14,
+      "sha256": "5b2bc4713d4868c0762f468b1283d6bf2e016756568cc891cbcc25335e5ea795"
+    },
+    {
+      "path": "GradientsKit-V4/ShaderSources/Shared/YellowInteraction.inc",
+      "language": "Metal",
+      "lines": 72,
+      "sha256": "292e37d509e2cbda2f5b289467050607e59cb3cfe52eb689db38adf1ab02c93c"
+    },
+    {
+      "path": "GradientsKit-V4/ShaderSources/Shared/YellowLightSubstrate.inc",
+      "language": "Metal",
+      "lines": 33,
+      "sha256": "cea35faf8a381d23c77b33167d25edd9015988efc225b7e7bf3a4c941be1837e"
+    },
+    {
+      "path": "GradientsKit-V4/ShaderSources/Shared/YellowWaveProfile.inc",
+      "language": "Metal",
+      "lines": 13,
+      "sha256": "8ba66ae254a98ba277a70e2295c3fb100357a39489abb804238d1ba1b1e9c715"
+    },
+    {
+      "path": "GradientsKit-V4/Sources/GradientsKit/Shaders/GradientAdapters.metal",
+      "language": "Metal",
+      "lines": 42,
+      "sha256": "0bbda4e5c19b6e4201d496496d92ddc9a80615d559dd00ea65bc14efc94c3291"
+    }
+  ],
+  "totals": {
+    "Swift": {
+      "files": 11,
+      "lines": 1433
+    },
+    "Metal": {
+      "files": 16,
+      "lines": 3958
+    }
+  },
+  "unchangedAlgorithmInputs": {
+    "Development/DeviceComparison/GradientPrecalculationBuffers.swift": "834b6fcbb1eb1f565f05c029ea8957ec12564b7b8a8d9a568804b4e1f92a1ae4",
+    "Development/DeviceComparison/PhysicalRunMonitor.swift": "01307a6cd83047127956a7a49d86997c8b7f551a5330ae67e0e2ce937730c099",
+    "Development/DeviceComparison/idle_zero_source.py": "f2ed4a9b9cdd3567b14f8a688469398f26d323fa3984495a61244574f7f2386a",
+    "Development/DeviceComparison/mask_window_source.py": "df1c83853d680a438209b8fc2947ffb23816121af6c072200882408bfef7d5d4",
+    "Development/DeviceComparison/precalculation_source.py": "bcb8963988c1ba43a185d9a82705be3cbd9af4585a2033b2e612f4b3365c35e6",
+    "Development/DeviceComparison/prepare_demo.py": "7b50cca60a2d71ed378e0721e10f70379652f918a634cfd0b6c21bbc64353bae",
+    "Development/DeviceComparison/prepare_sources.py": "5d34829ca01d35e632f4bbd750b3936238c503ec7083bb78f25e698ea830c8f4",
+    "Development/DeviceComparison/shared_background_source.py": "ff2377be6cc0869ebf54a9849c503372a6c02fc849028603267928a17a75d9a2",
+    "Development/DeviceComparison/swipe_optimization_source.py": "ecf3776ae70b71b7c05de4b01011930e10a093d692719b1ee4388d9fd5c9d0f5",
+    "Development/UIKitDemo/AppDelegate.swift": "2f8252243efe559e6a7646bfe5e65bfd67232f98d1548de1a64bc3ad1fb8c7d9",
+    "GradientsKit-V4/Configuration/YellowColors.json": "8517a628c3445bdfec950372b98f132967cc064e98af02bc74f6cf1ded764341",
+    "GradientsKit-V4/Scripts/compose_metal.py": "ecd131a45c92c9beb2637afa2f0d058a1a99a8c043b6325029e8ad22b61eb560",
+    "GradientsKit-V4/Scripts/compose_uikit_metal.py": "2a8cb4cd1733e87b7af65aaccc93d87b293f4e71d3975987db2de030f1c0c001",
+    "GradientsKit-V4/Scripts/create_sdk_project.py": "dba1a25e5981aeea93d747a68aeebacb97a76481359e29cabd782e7ac3da69c6",
+    "GradientsKit-V4/Scripts/source_colors.py": "35c764408dfbfb54619cb611ecc6413141c44b04603945221563636c00055aa2",
+    "GradientsKit-V4/Scripts/xcode_project.py": "61d9a44877b4210ff88a1a388b0338b3e52a163a1f507f0059fbd0955f2fee4e",
+    "GradientsKit-V4/ShaderSources/ApprovedBlue.metal.source": "9ececda3e03ac388c0028b170f964deb478aabba78a86349778165f30e8b3d5b",
+    "GradientsKit-V4/ShaderSources/ContactFields.metal.source": "9f81b950586caf31d068d722d30c229b7105b1e053a6a4a240d14b599bd11647",
+    "GradientsKit-V4/ShaderSources/Shared/BlueGeometryTail.inc": "abf2453a006349ff2c18d581d29e7d83fc64368dad1c6e89a8e4ddd1ca1ac97d",
+    "GradientsKit-V4/ShaderSources/Shared/InteractionHistory.inc": "c8cacc4671b790cc40aa342758928552eadcad3d78f09bb6e118b79003f0470f",
+    "GradientsKit-V4/ShaderSources/Shared/PhysicalFields.inc": "c1f77bec637e582df5fa9b04840e93dcf2945c5cd0987f284d60734f5ed2d8e2",
+    "GradientsKit-V4/ShaderSources/Shared/YellowDarkPose.inc": "5b2bc4713d4868c0762f468b1283d6bf2e016756568cc891cbcc25335e5ea795",
+    "GradientsKit-V4/ShaderSources/Shared/YellowInteraction.inc": "292e37d509e2cbda2f5b289467050607e59cb3cfe52eb689db38adf1ab02c93c",
+    "GradientsKit-V4/ShaderSources/Shared/YellowLightSubstrate.inc": "cea35faf8a381d23c77b33167d25edd9015988efc225b7e7bf3a4c941be1837e",
+    "GradientsKit-V4/ShaderSources/Shared/YellowWaveProfile.inc": "8ba66ae254a98ba277a70e2295c3fb100357a39489abb804238d1ba1b1e9c715",
+    "GradientsKit-V4/ShaderSources/V2EntryPoints.metal.source": "5675fc1191aafefad6142f003ace1ef0fc523ea445db71cc339421831c662f5e",
+    "GradientsKit-V4/ShaderSources/YellowDarkContact.metal.source": "1de40f5c35d78e40f58acdd5a46e7db29dd977d70cc20cbe2431bfba94e99dd9",
+    "GradientsKit-V4/ShaderSources/YellowDarkMAIN.metal.source": "1469ee8cac2e4dd0e155176cd707784e7244ce88b50780810b78329aae8ad12e",
+    "GradientsKit-V4/ShaderSources/YellowLightContact.metal.source": "d4e5c7748c582fe017d63eda1bfcc72cba1bc29b8b5495f690c9dab8426d771a",
+    "GradientsKit-V4/ShaderSources/YellowLightMAIN.metal.source": "71a01236aafe953d541772e9beff25b4e6b22f3aff6057c9865d1597dfad1849",
+    "GradientsKit-V4/ShaderSources/YellowShared.metal.source": "5a01757a7575a56e65e46d94c3a87cbbd3ad5bf633528c4a68a890f2aa472896",
+    "GradientsKit-V4/Sources/GradientsKit/Core/GradientResetPresentation.swift": "a93f864e8bb774cddc9e0104a8f648be989f3e030ce8da2192ddf458a3536013",
+    "GradientsKit-V4/Sources/GradientsKit/Core/GradientSession.swift": "60a818106f760da919804cfa1bcd60f8065bee18ab6be50f2036d1da9557d6b3",
+    "GradientsKit-V4/Sources/GradientsKit/GradientGPU.swift": "5df1642a41dcef9727eefceb0bec1d7de1dd75a058454f5a81d9aa624a23018d",
+    "GradientsKit-V4/Sources/GradientsKit/GradientMaskRenderer.swift": "a54c1f0d73ade16314ab485ee696ff42337b4684df34233d3f8eaadbe529ae48",
+    "GradientsKit-V4/Sources/GradientsKit/GradientPercentageLabel.swift": "9dd110d5a1fa49e228d0d3f95b98f2727cd4c8e70b87f3179dd989349f27a2b3",
+    "GradientsKit-V4/Sources/GradientsKit/GradientPerformanceMetrics.swift": "2055f92a811c170fbf6b187a73f40c2aaf85f22a83bb73184ae5b0f47a157d8c",
+    "GradientsKit-V4/Sources/GradientsKit/GradientRenderSafety.swift": "03c96593ccfa76411ffe475af376c8cc7a7f2f70a3fc38dbfd5768eebd3d7618",
+    "GradientsKit-V4/Sources/GradientsKit/GradientTheme.swift": "9662b349cdddd70dc46a309e7f6af00b03dbf25092c6ace27dde152775ae70d6",
+    "GradientsKit-V4/Sources/GradientsKit/GradientViewController.swift": "86b7f989295e3f8de2999b4117ef86a46947ebb8ddb39223814d214201c4f8cf",
+    "GradientsKit-V4/Sources/GradientsKit/SessionCaptionProbe.swift": "783cb98de2dd291caefcf689f5693adacc80ff1559cf995d053dfac416f5d566",
+    "GradientsKit-V4/Sources/GradientsKit/Shaders/GradientAdapters.metal": "0bbda4e5c19b6e4201d496496d92ddc9a80615d559dd00ea65bc14efc94c3291"
+  },
+  "expectedGeneratedManifest": {
+    "mode": "precalc",
+    "mask_domain": true,
+    "shared_background": true,
+    "idle_zero_work": true,
+    "swipe_optimization": true,
+    "mask_roi": true,
+    "files": {
+      "GradientsUIKit.metal": "44e3c3e4e2bacb53eac00dea216cc3d9f70e6013a746abe7f1bc0a12851385d5",
+      "GradientYellowColors.swift": "ebefc1c8428a9cc37616df20fdab3bd5e6b69a4f18afd06e05f9a0123ad3d9a5",
+      "GradientGPU.swift": "96e5cbf61faaad87b982fe1667142916c14cc23e4d690b625944fa1fcca6f92b",
+      "GradientViewController.swift": "c801684a38d5a21ccef75ce6dfba07fae99b0f02952cdef5b3a94bdb7de366d5",
+      "GradientMaskRenderer.swift": "08eee9f68e87297bcc09c187213017e7ee2d4a8f3b016db7f46e63117c6faad3",
+      "GradientPrecalculationBuffers.swift": "bc75f12bc0859a113a0c493a4986223551fca501560c0a514514fb7dabe1e037"
+    }
+  },
+  "releaseMetallib": {
+    "bytes": 491804,
+    "limitBytes": 500000,
+    "sha256": "5b3bd187c9f3ad66a51764185c073cb23b417d37b3a83ebfbea439827b5dd37c",
+    "toolchain": "Xcode 26.3 (17C529); arm64 iphoneos"
+  }
+}

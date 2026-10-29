@@ -8,8 +8,7 @@ sys.path.insert(0,str(SDK/'Scripts'))
 import xcode_project as xp
 from xcode_project import obj,file,build,phase,raw,ident,reference
 project=HERE/'V4DeviceComparison.xcodeproj'
-signing=file('LocalSigning.xcconfig','text.xcconfig')
-if not (HERE/'LocalSigning.xcconfig').exists():(HERE/'LocalSigning.xcconfig').write_text('// Optional local DEVELOPMENT_TEAM; never committed.\n')
+signing=file('Signing.xcconfig','text.xcconfig')
 
 def configs(name,extra):
     refs=[]

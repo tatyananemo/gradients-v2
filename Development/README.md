@@ -1,9 +1,14 @@
-# Development
+# Development и действующий optimized SDK
 
-Эта папка нужна только разработчикам и проверкам. SDK находится единственным экземпляром в соседней `../GradientsKit-V4`.
+В этой финальной передаче `DeviceComparison` — **обязательная часть сборки SDK `2f12367`**,
+а не папка, которую можно удалить после запуска Demo. Историческое название сохранено ради
+воспроизводимости. См. корневой README и Documentation/TECHNICAL.md.
 
-- `UIKitDemo/GradientsUIKitV4.xcodeproj`: обычное UIKit-приложение, схема GradientsUIKitV4, компонентные и UI-тесты.
-- `Validation/`: численные эталоны и воспроизводимые проверки. Исторические Git objects нужны только этим проверкам.
-- `Scripts/create_demo_project.py`: создаёт Demo-проект с cross-project dependency на SDK; SDK-проект создаётся его собственным генератором.
+- `DeviceComparison`: актуальный project/overlays/cache, схема V4 Optimized; остальные схемы — прежние контрольные варианты.
+- `UIKitDemo/AppDelegate.swift`: общий Demo, без собственной копии рендера. Tests/UITests сохранены.
+- `UIKitDemo/*.xcodeproj`: историческая базовая V4, не финальный optimized путь.
+- `Validation`: неизменяемые численные эталоны, исторические доказательства и инструменты повторения.
+  Их наличие не означает, что старые runner scripts проверяют актуальный Optimized путь автоматически.
+  Многие проверки исходной истории требуют полного clone; обычная Release-сборка Git не читает.
 
-Обе папки остаются в одном Git-репозитории. При передаче SDK Development копировать не требуется.
+Не включаются локальная подпись, device data, traces, binaries/DerivedData, логи или новые эксперименты.

@@ -1,3 +1,6 @@
+> Финальная оптимизированная V4: см. [корневой README](../../README.md) и схему V4 Optimized
+> в соседнем DeviceComparison. Ниже — инструкция сохранённого базового Demo, не финальной сборки.
+
 # GradientsKit V4 UIKit Demo
 
 Open `GradientsUIKitV4.xcodeproj`, select scheme **GradientsUIKitV4**, and Run on an iPhone Simulator. Display name: **GradientsKit V4**. Bundle ID: `com.local.gradients.v4.uikit`. First launch defaults to Yellow Dark; existing settings switch only Light/Dark.

@@ -1,0 +1,71 @@
+{
+  "codeCommit": "2f12367",
+  "baselineCommit": "0efba7a",
+  "device": "physical iPhone 14 / A15",
+  "scenario": "6s auto-swipe after 3s warmup; start percentage, natural progress growth; same brightness 0.35, low-power off; 45s stopped cooldown; no Instruments",
+  "baselineDark63FPS": 43.126433525467334,
+  "runs": [
+    {
+      "runID": "2f12367-swipe-dark-63",
+      "FPS": 45.158649124901565,
+      "p95MS": 33.35141667048447,
+      "p99MS": 33.3731249847915,
+      "commandBufferMeanMS": 25.54310631164887,
+      "maskPreparationMS": 7.2507337619540255,
+      "drawableAcquisitionMS": 10.365512102426317,
+      "thermalStates": [
+        0
+      ],
+      "MetalErrors": {}
+    },
+    {
+      "runID": "2f12367-swipe-dark-80",
+      "FPS": 45.45568828003254,
+      "p95MS": 33.392333338269964,
+      "p99MS": 33.39795832289383,
+      "commandBufferMeanMS": 25.570726733468643,
+      "maskPreparationMS": 7.193536497652531,
+      "drawableAcquisitionMS": 10.618928680323867,
+      "thermalStates": [
+        0
+      ],
+      "MetalErrors": {}
+    },
+    {
+      "runID": "2f12367-swipe-dark-63-repeat",
+      "FPS": 45.48954182792254,
+      "p95MS": 33.352250000461936,
+      "p99MS": 33.3872499759309,
+      "commandBufferMeanMS": 25.30660386119517,
+      "maskPreparationMS": 7.243384883197765,
+      "drawableAcquisitionMS": 10.514389142524927,
+      "thermalStates": [
+        0
+      ],
+      "MetalErrors": {}
+    },
+    {
+      "runID": "2f12367-swipe-light-63",
+      "FPS": 57.94997415605778,
+      "p95MS": 16.708041657693684,
+      "p99MS": 33.3800416556187,
+      "commandBufferMeanMS": 21.87591343405576,
+      "maskPreparationMS": 0.0022004313142060293,
+      "drawableAcquisitionMS": 13.780529214983844,
+      "thermalStates": [
+        0
+      ],
+      "MetalErrors": {}
+    }
+  ],
+  "allProcessesStopped": true,
+  "longThermalRetest": false,
+  "temperatureMeasured": false,
+  "MacValidation": {
+    "RGBA8FramesExact": 724,
+    "rawMasksExact": 168,
+    "CPUContractsPassed": 12,
+    "DebugRelease": "passed"
+  },
+  "SDKMainUnchanged": true
+}
