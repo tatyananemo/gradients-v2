@@ -47,3 +47,20 @@ Deployment target — iOS 17+, проект предназначен для фи
 Подробные логи текущей подготовки: `/private/tmp/v4-device-build-20261028/`. Это не подтверждение плавности, температуры или 60 FPS на iPhone. На первом разрешённом запуске остаётся проверить создание precompiled pipeline на A15, реальный UIKit, frame pacing, thermal и память.
 
 Генерация проекта: `python3 -B Development/DeviceComparison/create_project.py`. Код SDK не копируется в поддерживаемые исходники эксперимента; изменённые Swift/Metal-файлы создаются только сборкой. `.app`, DerivedData, подпись и результаты тестов в Git не включаются.
+
+## Combined device candidate
+
+`V4 Combined` / `CombinedDebug` / `CombinedRelease` collects the existing source
+color configuration (54863da), verified lazy Dark/8×8 changes (9368500 ancestry),
+reviewed axis/frame precalculation with proper pipeline specialization, and the
+finite mask-domain trial (8094673). No rejected local-mask or extra-idle-cache
+trial participates. Bundle ID `com.local.gradients.v4.compare.combined` is distinct
+from production, V4, Reference and Precalc. Reference/Precalc settings stay unchanged.
+`V4_MASK_DOMAIN=1` is the default only for Combined; source colors remain in
+`GradientsKit-V4/Configuration/YellowColors.json`, consumed at build time.
+Combined's compiler-input manifest, Release metallib and public interface match
+the previously checked Precalc + finite-domain build. Existing differential bounds
+remain: final BGRA8 ≤1/255; raw masks are not exact. No new performance claim is made.
+Generic-iOS Debug and signed Release and seven CPU preparation contracts pass.
+No app is installed/launched as part of preparation; a physical-device comparison
+and a 60-FPS/thermal claim still require explicit authorization and measurement.

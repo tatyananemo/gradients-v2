@@ -34,6 +34,20 @@ class PreparationTests(unittest.TestCase):
         self.assertNotEqual(a['GradientMaskRenderer.swift'],b['GradientMaskRenderer.swift'])
         with self.assertRaises(ValueError):outputs('reference',mask_domain=True)
 
+    def test_combined_configuration_and_ancestry(self):
+        project=(HERE/'V4DeviceComparison.xcodeproj/project.pbxproj').read_text()
+        self.assertIn('com.local.gradients.v4.compare.combined',project)
+        self.assertIn('CombinedRelease',project)
+        scheme=(HERE/'V4DeviceComparison.xcodeproj/xcshareddata/xcschemes/V4 Combined.xcscheme').read_text()
+        self.assertIn('buildConfiguration="CombinedRelease"',scheme)
+        self.assertIn('selectedDebuggerIdentifier=""',scheme)
+        for commit in ['54863da','9368500','8094673']:
+            subprocess.run(['git','merge-base','--is-ancestor',commit,'HEAD'],cwd=ROOT,check=True)
+        a=outputs('precalc',True)
+        self.assertNotIn(b'v4CachedIdleWave',a['GradientsUIKit.metal'])
+        self.assertNotIn(b'LocalMaskRenderer',a['GradientMaskRenderer.swift'])
+        self.assertIn(b'prototypePrepareAxes',a['GradientsUIKit.metal'])
+
     def test_pipeline_modes_and_allocation_publication(self):
         b=outputs('precalc');g=b['GradientGPU.swift'].decode();v=b['GradientViewController.swift'].decode()
         for phrase in ['function("prototypePrepareAxes",mode:3)','function("prototypeComputeBackground",mode:3)','function("v2CaptionProbe",mode:0)','pipeline("prototypeComposite",.bgra8Unorm,mode:0)']:
