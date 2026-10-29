@@ -98,8 +98,28 @@ class PreparationTests(unittest.TestCase):
             expected=subprocess.check_output(['git','show','9368500:'+relative],cwd=ROOT)
             self.assertEqual(path.read_bytes(),expected,relative)
 
+    def test_swipe_overlay_keeps_colors_masks_api_and_existing_variants(self):
+        a,b=outputs('precalc',True,True,True),outputs('precalc',True,True,True,True)
+        self.assertEqual({n for n in a if a[n]!=b[n]}, {'GradientsUIKit.metal','GradientViewController.swift','GradientPrecalculationBuffers.swift'})
+        public=lambda s:[l.strip() for l in s.decode().splitlines() if re.search(r'\bpublic\b',l)]
+        self.assertEqual(public(a['GradientViewController.swift']),public(b['GradientViewController.swift']))
+        self.assertNotIn(b'gpu.distortion,',b['GradientViewController.swift'])
+        self.assertIn(b'1:0,strength)',b['GradientViewController.swift'])
+        self.assertIn(b'if(v4CacheFrame && count>=6)',b['GradientsUIKit.metal'])
+        self.assertIn(b'if(extent.w>=6u && id<columns*rows)',b['GradientsUIKit.metal'])
+        self.assertEqual(b['GradientsUIKit.metal'].count(b'[[function_constant('),1)
+        with self.assertRaises(ValueError):outputs('precalc',swipe_optimization=True)
+
+    def test_swipe_resource_logic_with_mocks_debug_release(self):
+        self.check_resource_logic(True)
+
     def test_resource_logic_with_mocks_debug_release(self):
+        self.check_resource_logic(False)
+
+    def check_resource_logic(self,swipe_enabled):
         source=(HERE/'GradientPrecalculationBuffers.swift').read_text().replace('import Metal','')
+        if swipe_enabled:
+            source=outputs('precalc',True,True,True,True)['GradientPrecalculationBuffers.swift'].decode().replace('import Metal','')
         mocks=r'''
 import Foundation
 struct MTLResourceOptions:OptionSet {let rawValue:Int;static let storageModePrivate=Self(rawValue:1);static let hazardTrackingModeTracked=Self(rawValue:2)}
@@ -168,6 +188,8 @@ let weak=WeakBuffer(resources!.slots[0]);resources=nil;precondition(weak.value !
 commands.removeAll();precondition(weak.value==nil)
 print("Precalculation CPU logic: layout, failure, slots, extent, encoding, resize retention passed")
 '''
+        if swipe_enabled:
+            checks=checks.replace('==128968','==223096').replace('==43752','==54352').replace('e.groups==40','e.groups==184')
         with tempfile.TemporaryDirectory() as folder:
             folder=Path(folder);(folder/'main.swift').write_text(mocks+source+checks)
             for mode,flag in [('Debug','-Onone'),('Release','-O')]:
