@@ -154,6 +154,7 @@
 				"$(SRCROOT)/../../GradientsKit-V4/Sources/GradientsKit/Shaders/GradientAdapters.metal",
 				"$(SRCROOT)/prepare_sources.py",
 				"$(SRCROOT)/precalculation_source.py",
+				"$(SRCROOT)/shared_background_source.py",
 				"$(SRCROOT)/GradientPrecalculationBuffers.swift",
 			);
 			outputPaths = (
@@ -168,7 +169,7 @@
 			name = "Prepare isolated comparison sources";
 			runOnlyForDeploymentPostprocessing = "0";
 			shellPath = "/bin/sh";
-			shellScript = "if [ \"$V4_MASK_DOMAIN\" = \"1\" ]; then\n/usr/bin/python3 -I -B \"$SRCROOT/prepare_sources.py\" --mode \"$V4_COMPARISON_MODE\" --mask-domain --output \"$DERIVED_FILE_DIR\"\nelse\n/usr/bin/python3 -I -B \"$SRCROOT/prepare_sources.py\" --mode \"$V4_COMPARISON_MODE\" --output \"$DERIVED_FILE_DIR\"\nfi\n";
+			shellScript = "set -- --mode \"$V4_COMPARISON_MODE\" --output \"$DERIVED_FILE_DIR\"\nif [ \"$V4_MASK_DOMAIN\" = \"1\" ]; then set -- \"$@\" --mask-domain; fi\nif [ \"$V4_SHARED_BACKGROUND\" = \"1\" ]; then set -- \"$@\" --shared-background; fi\n/usr/bin/python3 -I -B \"$SRCROOT/prepare_sources.py\" \"$@\"\n";
 		};
 		6CA2D723A4E3753F8C0202DB = {
 			isa = XCBuildConfiguration;
@@ -200,6 +201,7 @@
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG ";
 				V4_COMPARISON_MODE = "reference";
 				V4_MASK_DOMAIN = "0";
+				V4_SHARED_BACKGROUND = "0";
 				ENABLE_USER_SCRIPT_SANDBOXING = "NO";
 			};
 			name = "ReferenceDebug";
@@ -235,6 +237,7 @@
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "";
 				V4_COMPARISON_MODE = "reference";
 				V4_MASK_DOMAIN = "0";
+				V4_SHARED_BACKGROUND = "0";
 				ENABLE_USER_SCRIPT_SANDBOXING = "NO";
 			};
 			name = "ReferenceRelease";
@@ -270,6 +273,7 @@
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG PRECALC_COMPARISON";
 				V4_COMPARISON_MODE = "precalc";
 				V4_MASK_DOMAIN = "0";
+				V4_SHARED_BACKGROUND = "0";
 				ENABLE_USER_SCRIPT_SANDBOXING = "NO";
 			};
 			name = "PrecalcDebug";
@@ -305,6 +309,7 @@
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "PRECALC_COMPARISON";
 				V4_COMPARISON_MODE = "precalc";
 				V4_MASK_DOMAIN = "0";
+				V4_SHARED_BACKGROUND = "0";
 				ENABLE_USER_SCRIPT_SANDBOXING = "NO";
 			};
 			name = "PrecalcRelease";
@@ -340,6 +345,7 @@
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG PRECALC_COMPARISON";
 				V4_COMPARISON_MODE = "precalc";
 				V4_MASK_DOMAIN = "1";
+				V4_SHARED_BACKGROUND = "1";
 				ENABLE_USER_SCRIPT_SANDBOXING = "NO";
 			};
 			name = "CombinedDebug";
@@ -375,6 +381,7 @@
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "PRECALC_COMPARISON";
 				V4_COMPARISON_MODE = "precalc";
 				V4_MASK_DOMAIN = "1";
+				V4_SHARED_BACKGROUND = "1";
 				ENABLE_USER_SCRIPT_SANDBOXING = "NO";
 			};
 			name = "CombinedRelease";
@@ -581,6 +588,7 @@
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG ";
 				V4_COMPARISON_MODE = "reference";
 				V4_MASK_DOMAIN = "0";
+				V4_SHARED_BACKGROUND = "0";
 				ENABLE_USER_SCRIPT_SANDBOXING = "NO";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.local.gradients.v4.compare.reference";
 				INFOPLIST_KEY_CFBundleDisplayName = "V4 Reference";
@@ -616,6 +624,7 @@
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "";
 				V4_COMPARISON_MODE = "reference";
 				V4_MASK_DOMAIN = "0";
+				V4_SHARED_BACKGROUND = "0";
 				ENABLE_USER_SCRIPT_SANDBOXING = "NO";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.local.gradients.v4.compare.reference";
 				INFOPLIST_KEY_CFBundleDisplayName = "V4 Reference";
@@ -651,6 +660,7 @@
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG PRECALC_COMPARISON";
 				V4_COMPARISON_MODE = "precalc";
 				V4_MASK_DOMAIN = "0";
+				V4_SHARED_BACKGROUND = "0";
 				ENABLE_USER_SCRIPT_SANDBOXING = "NO";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.local.gradients.v4.compare.precalc";
 				INFOPLIST_KEY_CFBundleDisplayName = "V4 Precalc";
@@ -686,6 +696,7 @@
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "PRECALC_COMPARISON";
 				V4_COMPARISON_MODE = "precalc";
 				V4_MASK_DOMAIN = "0";
+				V4_SHARED_BACKGROUND = "0";
 				ENABLE_USER_SCRIPT_SANDBOXING = "NO";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.local.gradients.v4.compare.precalc";
 				INFOPLIST_KEY_CFBundleDisplayName = "V4 Precalc";
@@ -721,6 +732,7 @@
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG PRECALC_COMPARISON";
 				V4_COMPARISON_MODE = "precalc";
 				V4_MASK_DOMAIN = "1";
+				V4_SHARED_BACKGROUND = "1";
 				ENABLE_USER_SCRIPT_SANDBOXING = "NO";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.local.gradients.v4.compare.combined";
 				INFOPLIST_KEY_CFBundleDisplayName = "V4 Combined";
@@ -756,6 +768,7 @@
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "PRECALC_COMPARISON";
 				V4_COMPARISON_MODE = "precalc";
 				V4_MASK_DOMAIN = "1";
+				V4_SHARED_BACKGROUND = "1";
 				ENABLE_USER_SCRIPT_SANDBOXING = "NO";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.local.gradients.v4.compare.combined";
 				INFOPLIST_KEY_CFBundleDisplayName = "V4 Combined";
@@ -886,6 +899,7 @@
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG ";
 				V4_COMPARISON_MODE = "reference";
 				V4_MASK_DOMAIN = "0";
+				V4_SHARED_BACKGROUND = "0";
 				ENABLE_USER_SCRIPT_SANDBOXING = "NO";
 			};
 			name = "ReferenceDebug";
@@ -917,6 +931,7 @@
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "";
 				V4_COMPARISON_MODE = "reference";
 				V4_MASK_DOMAIN = "0";
+				V4_SHARED_BACKGROUND = "0";
 				ENABLE_USER_SCRIPT_SANDBOXING = "NO";
 			};
 			name = "ReferenceRelease";
@@ -948,6 +963,7 @@
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG PRECALC_COMPARISON";
 				V4_COMPARISON_MODE = "precalc";
 				V4_MASK_DOMAIN = "0";
+				V4_SHARED_BACKGROUND = "0";
 				ENABLE_USER_SCRIPT_SANDBOXING = "NO";
 			};
 			name = "PrecalcDebug";
@@ -979,6 +995,7 @@
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "PRECALC_COMPARISON";
 				V4_COMPARISON_MODE = "precalc";
 				V4_MASK_DOMAIN = "0";
+				V4_SHARED_BACKGROUND = "0";
 				ENABLE_USER_SCRIPT_SANDBOXING = "NO";
 			};
 			name = "PrecalcRelease";
@@ -1010,6 +1027,7 @@
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG PRECALC_COMPARISON";
 				V4_COMPARISON_MODE = "precalc";
 				V4_MASK_DOMAIN = "1";
+				V4_SHARED_BACKGROUND = "1";
 				ENABLE_USER_SCRIPT_SANDBOXING = "NO";
 			};
 			name = "CombinedDebug";
@@ -1041,6 +1059,7 @@
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "PRECALC_COMPARISON";
 				V4_COMPARISON_MODE = "precalc";
 				V4_MASK_DOMAIN = "1";
+				V4_SHARED_BACKGROUND = "1";
 				ENABLE_USER_SCRIPT_SANDBOXING = "NO";
 			};
 			name = "CombinedRelease";
@@ -1147,6 +1166,7 @@
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG ";
 				V4_COMPARISON_MODE = "reference";
 				V4_MASK_DOMAIN = "0";
+				V4_SHARED_BACKGROUND = "0";
 				ENABLE_USER_SCRIPT_SANDBOXING = "NO";
 			};
 			name = "ReferenceDebug";
@@ -1177,6 +1197,7 @@
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "";
 				V4_COMPARISON_MODE = "reference";
 				V4_MASK_DOMAIN = "0";
+				V4_SHARED_BACKGROUND = "0";
 				ENABLE_USER_SCRIPT_SANDBOXING = "NO";
 			};
 			name = "ReferenceRelease";
@@ -1207,6 +1228,7 @@
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG PRECALC_COMPARISON";
 				V4_COMPARISON_MODE = "precalc";
 				V4_MASK_DOMAIN = "0";
+				V4_SHARED_BACKGROUND = "0";
 				ENABLE_USER_SCRIPT_SANDBOXING = "NO";
 			};
 			name = "PrecalcDebug";
@@ -1237,6 +1259,7 @@
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "PRECALC_COMPARISON";
 				V4_COMPARISON_MODE = "precalc";
 				V4_MASK_DOMAIN = "0";
+				V4_SHARED_BACKGROUND = "0";
 				ENABLE_USER_SCRIPT_SANDBOXING = "NO";
 			};
 			name = "PrecalcRelease";
@@ -1267,6 +1290,7 @@
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG PRECALC_COMPARISON";
 				V4_COMPARISON_MODE = "precalc";
 				V4_MASK_DOMAIN = "1";
+				V4_SHARED_BACKGROUND = "1";
 				ENABLE_USER_SCRIPT_SANDBOXING = "NO";
 			};
 			name = "CombinedDebug";
@@ -1297,6 +1321,7 @@
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "PRECALC_COMPARISON";
 				V4_COMPARISON_MODE = "precalc";
 				V4_MASK_DOMAIN = "1";
+				V4_SHARED_BACKGROUND = "1";
 				ENABLE_USER_SCRIPT_SANDBOXING = "NO";
 			};
 			name = "CombinedRelease";
@@ -1420,6 +1445,7 @@
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG ";
 				V4_COMPARISON_MODE = "reference";
 				V4_MASK_DOMAIN = "0";
+				V4_SHARED_BACKGROUND = "0";
 				ENABLE_USER_SCRIPT_SANDBOXING = "NO";
 			};
 			name = "ReferenceDebug";
@@ -1448,6 +1474,7 @@
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "";
 				V4_COMPARISON_MODE = "reference";
 				V4_MASK_DOMAIN = "0";
+				V4_SHARED_BACKGROUND = "0";
 				ENABLE_USER_SCRIPT_SANDBOXING = "NO";
 			};
 			name = "ReferenceRelease";
@@ -1476,6 +1503,7 @@
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG PRECALC_COMPARISON";
 				V4_COMPARISON_MODE = "precalc";
 				V4_MASK_DOMAIN = "0";
+				V4_SHARED_BACKGROUND = "0";
 				ENABLE_USER_SCRIPT_SANDBOXING = "NO";
 			};
 			name = "PrecalcDebug";
@@ -1504,6 +1532,7 @@
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "PRECALC_COMPARISON";
 				V4_COMPARISON_MODE = "precalc";
 				V4_MASK_DOMAIN = "0";
+				V4_SHARED_BACKGROUND = "0";
 				ENABLE_USER_SCRIPT_SANDBOXING = "NO";
 			};
 			name = "PrecalcRelease";
@@ -1532,6 +1561,7 @@
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG PRECALC_COMPARISON";
 				V4_COMPARISON_MODE = "precalc";
 				V4_MASK_DOMAIN = "1";
+				V4_SHARED_BACKGROUND = "1";
 				ENABLE_USER_SCRIPT_SANDBOXING = "NO";
 			};
 			name = "CombinedDebug";
@@ -1560,6 +1590,7 @@
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "PRECALC_COMPARISON";
 				V4_COMPARISON_MODE = "precalc";
 				V4_MASK_DOMAIN = "1";
+				V4_SHARED_BACKGROUND = "1";
 				ENABLE_USER_SCRIPT_SANDBOXING = "NO";
 			};
 			name = "CombinedRelease";

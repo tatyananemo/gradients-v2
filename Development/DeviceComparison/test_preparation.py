@@ -48,6 +48,17 @@ class PreparationTests(unittest.TestCase):
         self.assertNotIn(b'LocalMaskRenderer',a['GradientMaskRenderer.swift'])
         self.assertIn(b'prototypePrepareAxes',a['GradientsUIKit.metal'])
 
+    def test_shared_background_keeps_resources_colors_and_fallbacks(self):
+        a,b=outputs('precalc',True),outputs('precalc',True,True)
+        for name in a:
+            if name!='GradientsUIKit.metal':self.assertEqual(a[name],b[name])
+        shader=b['GradientsUIKit.metal'].decode()
+        self.assertIn('v4BlueAndPhysical(',shader)
+        self.assertIn('if(progress<=0.70)',shader)
+        self.assertNotIn('v4CachedIdleWave',shader)
+        self.assertEqual(shader.count('[[function_constant(101)]]'),1)
+        with self.assertRaises(ValueError):outputs('reference',shared_background=True)
+
     def test_pipeline_modes_and_allocation_publication(self):
         b=outputs('precalc');g=b['GradientGPU.swift'].decode();v=b['GradientViewController.swift'].decode()
         for phrase in ['function("prototypePrepareAxes",mode:3)','function("prototypeComputeBackground",mode:3)','function("v2CaptionProbe",mode:0)','pipeline("prototypeComposite",.bgra8Unorm,mode:0)']:
