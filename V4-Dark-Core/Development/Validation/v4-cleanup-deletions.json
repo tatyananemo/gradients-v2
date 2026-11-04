@@ -1,0 +1,35 @@
+{
+  "base_commit": "dc7b9da4820491bc089ccfcebef3b9d0e47914d0",
+  "files": {
+    "ShaderSources/ApprovedBlue.metal.source": [
+      {
+        "start_line": 281,
+        "end_line": 311,
+        "reason": "Forward declaration used only by deleted Blue Light functions.",
+        "sha256": "b7b0ce63a61995e4b13efe7c2530fe01b056e94a283bc7c5e607bb2842d7e490"
+      },
+      {
+        "start_line": 438,
+        "end_line": 599,
+        "reason": "qaCurrentAcceptedDarkBlue definition: Blue Light-only; public V4 and Yellow Dark reference never take themeStrength=0/colorIndex=0.",
+        "sha256": "47aa025d9e344ada9d1327931e718fc70aa38614cc69bc57add83aa16cf3a3f9"
+      },
+      {
+        "start_line": 799,
+        "end_line": 802,
+        "reason": "Dispatch branch selected only by bit-exact +0 themeStrength and +0 gradientColorIndex. Public Yellow uses colorIndex=3; Yellow Dark luminance reference passes themeStrength=1.",
+        "sha256": "3ea28a921c1d3dbaaa0b66acaf5a5a0471fe2b4c63309651d1c97cab7da355ba"
+      },
+      {
+        "start_line": 1148,
+        "end_line": 1317,
+        "reason": "qaContactDarkReference definition: Blue Light-only; public V4 and Yellow Dark reference never take themeStrength=0/colorIndex=0. Includes its two preceding empty separator lines, now at EOF.",
+        "sha256": "26264eb43b1c2557488f5a405556dabf48fb7add9c6d64e091920a49f9c727dc"
+      }
+    ]
+  },
+  "validation_policy": "The 216 historical outputs retain the original ApprovedBlue Git blob only in validation; current V4 Yellow outputs must independently match the unchanged Yellow oracle.",
+  "removed_function_definition_lines": 330,
+  "removed_declaration_and_dispatch_lines": 35,
+  "orphaned_empty_separator_lines": 2
+}

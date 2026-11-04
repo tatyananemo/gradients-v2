@@ -1,0 +1,116 @@
+> Для текущего d62ae67 используйте [README внешнего комплекта](../README.md) и схему V4 Dark Core. Инструкции/названия схем ниже — историческая база канонических входов, не отдельный оптимизированный SDK.
+
+# Канонические входы SDK внутри V4-Dark-Core
+
+Текущий optimized кандидат — `1b3c287`. Эта вложенная папка содержит общие исходники,
+цвета и базовый framework project. **Она отдельно не воспроизводит optimized SDK**:
+нужны соседние `Development/DeviceComparison` overlays/cache и их проект.
+Передавайте всю внешнюю папку `V4-Dark-Core`, не старую V4 из корня репозитория.
+
+## Сборка и подключение актуальной версии
+
+Из корня `V4-Dark-Core` откройте `Development/DeviceComparison/V4DeviceComparison.xcodeproj`,
+схема **V4 Optimized**, SDK и Demo в **OptimizedRelease** / **OptimizedDebug**.
+Для host добавьте этот project и target GradientsKit в workspace/dependencies, framework
+в Embed & Sign; конфигурация зависимости также OptimizedRelease/OptimizedDebug.
+Базовый `GradientsKit.xcodeproj` оставлен для исторического пути и не является этой поставкой.
+Команды unsigned build и требования Xcode/Metal/Python — в [README](../README.md).
+Файл colors остаётся `Configuration/YellowColors.json`, не публичным/runtime API.
+
+## Внутренние цвета Yellow — один файл, затем пересборка
+
+Редактируйте только `Configuration/YellowColors.json`: секции `dark` и `light` независимы. Это настройки исходников SDK, не публичный API. Приложение не читает JSON и не меняет pipeline во время работы. Например, замените только `dark.contactCore` на `["1.0", "220.0 / 255.0", "45.0 / 255.0"]`, затем пересоберите SDK. Light останется прежней. Для проверки другого оттенка Light меняйте соответствующее поле в `light`.
+
+Компоненты — строки с исходными decimal-выражениями sRGB в 0...1, например `"221.0 / 255.0"`. Не округляйте их до HEX/коротких десятичных дробей. Генератор проверяет поля и диапазоны, передаёт выражения компилятору Metal/Swift в исходной точности; JSON не попадает в bundle. Исходные цветовые выражения сохранены; compiler input всей optimized сборки фиксируется
+по `1b3c287` во внешнем Documentation/source-manifest.json, а не по старому `615dfe0`. Цвета масок становятся внутренними `static let` CGFloat, tint подписи создаётся один раз.
+
+Назначения полей:
+
+- `mainDeep/Mid/Hot/Accent` — цветовые опоры MAIN и связанной передачи света; это разные роли, не общий RGB-фильтр.
+- `contactArc/Core` — свободная оранжевая дуга и жёлтый контакт. Dark `contactHueBright/Shade` — ранее скрытые опоры оттенка `(1,.82,0)` и `(1,.72,0)`; `contactDiffuseSource/Peak` — сохранённые цветовые опоры общего readout. Не все эти роли участвуют в каждом состоянии.
+- Light `primarySource/Peak`, `haloWarm/White`, `transmissionRed` — существующие спектральные опоры Light. Коэффициенты смешивания и яркости не являются параметрами.
+- `trailDeep/Mid/Hot/Accent/White` — собственные цвета следа свайпа. Они независимы от одноимённых MAIN-опор.
+- `counterTint` — существующий белый цвет мягкой защиты в Yellow readout, с прежней геометрией/альфой.
+- Dark `maskTint/Base` — RGB источников трёх CG/CI-масок; Light `captionTint` — RGB нижней UI-подложки. Blur, прозрачность и активация не меняются.
+
+Формулы HSV/OKLab, gamma, luminance weights, диапазоны, матрицы, опорные Blue-цвета, чёрный canvas и чёрная Metal-подложка не редактируются. Последняя задана исходным умножением RGB на оставшуюся альфу, без отдельного RGB-параметра: её перекраска потребовала бы изменения формулы и сюда не включена. Цвета текста/кнопок не являются палитрой градиента.
+
+Общие цветовые helpers при необходимости получают отдельную привязку констант для каждой темы с прежними сигнатурами и арифметикой. Геометрия остаётся общей. При дефолтах такие дополнительные привязки не создаются. Новый оттенок закономерно меняет результат существующих нелинейных цветовых формул: после редактирования проверяйте визуал, не меняйте эталоны под него. Сгенерированные файлы в DerivedData не редактируйте.
+
+## Подключение к UIKit-приложению
+
+Добавьте `../Development/DeviceComparison/V4DeviceComparison.xcodeproj` в workspace приложения
+и используйте OptimizedRelease/OptimizedDebug (относительно этой папки). В target приложения добавьте `GradientsKit.framework` в **Frameworks, Libraries, and Embedded Content → Embed & Sign**, а SDK — в зависимости сборки. Настройте подпись и Team приложения и framework для реального устройства. Все пути SDK относительные.
+
+```swift
+import UIKit
+import GradientsKit
+
+let gradient = try GradientViewController(theme: .yellowDark)
+parent.addChild(gradient)
+gradient.view.frame = parent.view.bounds
+gradient.view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+parent.view.addSubview(gradient.view)
+gradient.didMove(toParent: parent)
+
+gradient.theme = .yellowLight
+gradient.onSettings = { /* настройки принадлежат приложению */ }
+gradient.onFrame = { frame in /* frame.progress */ }
+gradient.reset(animated: true)
+```
+
+Создавайте и используйте контроллер на main actor. Компонент владеет свайпами, прогрессом и display link; не отправляйте те же жесты в session второй раз. `pauseRendering()` / `resumeRendering()` доступны для политики перекрытий приложения; автоматическая обработка видимости и app/scene lifecycle сохранена. Вручную приостановленный компонент сам не возобновляется. `GradientSession` требует последовательного владения; время внешних событий — `Date.timeIntervalSinceReferenceDate`. Сохраняйте слабые ссылки в callbacks, если иначе образуется цикл удержания.
+
+## Границы готовности
+
+- Это исходный Xcode framework; Package.swift и готовый XCFramework не поставляются. Simulator и device требуют разных сборок.
+- UIKit, Metal/MetalKit, Core Image, Core Graphics, IOSurface, Foundation — системные зависимости. Внешних пакетов нет.
+- Типографика, отступы, маски и анимации фиксированы утверждённым дизайном; автоматической адаптации Dynamic Type / Reduce Motion нет. Safe area и навигация принадлежат host-приложению.
+- Общая геометрия в Blue-названных файлах нужна Yellow: не удалять эти файлы.
+- Ошибки начальной Metal-инициализации передаются через `throws`. Временный отказ ресурсов приостанавливает рендер: один вызов `resumeRendering()` разрешает одну повторную попытку, без автоматического цикла. Фатальная GPU-ошибка сохраняется и не сбрасывается этим методом.
+- До публикации приложения разработчики должны проверить privacy manifest / required-reason API (`systemUptime`), лицензионные условия распространения, подпись и работу на реальном iPhone. Privacy manifest в этой поставке ещё не добавлен; Simulator не подтверждает производительность устройства.
+- Полный GPU + Thread Sanitizer в Simulator остаётся непроверенным сценарием. Эталоны и тесты находятся отдельно в Development и требуют истории исходного репозитория.
+
+## Состав канонической подпапки
+
+Ниже только её входы. Полный optimized комплект включает также соседние Development,
+Tools и Documentation; передаётся вся V4-Dark-Core. Вложенного .gitignore в этой подпапке нет:
+
+```text
+Configuration/YellowColors.json
+GradientsKit.xcodeproj/project.pbxproj
+GradientsKit.xcodeproj/xcshareddata/xcschemes/GradientsKit.xcscheme
+README.md
+Scripts/compose_metal.py
+Scripts/compose_uikit_metal.py
+Scripts/create_sdk_project.py
+Scripts/source_colors.py
+Scripts/xcode_project.py
+ShaderSources/ApprovedBlue.metal.source
+ShaderSources/CompositionInputs.xcfilelist
+ShaderSources/ContactFields.metal.source
+ShaderSources/Shared/BlueGeometryTail.inc
+ShaderSources/Shared/InteractionHistory.inc
+ShaderSources/Shared/PhysicalFields.inc
+ShaderSources/Shared/YellowDarkPose.inc
+ShaderSources/Shared/YellowInteraction.inc
+ShaderSources/Shared/YellowLightSubstrate.inc
+ShaderSources/Shared/YellowWaveProfile.inc
+ShaderSources/V2EntryPoints.metal.source
+ShaderSources/YellowDarkContact.metal.source
+ShaderSources/YellowDarkMAIN.metal.source
+ShaderSources/YellowLightContact.metal.source
+ShaderSources/YellowLightMAIN.metal.source
+ShaderSources/YellowShared.metal.source
+Sources/GradientsKit/Core/GradientResetPresentation.swift
+Sources/GradientsKit/Core/GradientSession.swift
+Sources/GradientsKit/GradientGPU.swift
+Sources/GradientsKit/GradientMaskRenderer.swift
+Sources/GradientsKit/GradientPercentageLabel.swift
+Sources/GradientsKit/GradientPerformanceMetrics.swift
+Sources/GradientsKit/GradientRenderSafety.swift
+Sources/GradientsKit/GradientTheme.swift
+Sources/GradientsKit/GradientViewController.swift
+Sources/GradientsKit/SessionCaptionProbe.swift
+Sources/GradientsKit/Shaders/GradientAdapters.metal
+```

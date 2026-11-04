@@ -1,0 +1,148 @@
+{
+  "base_commit": "0de593019c2361b85148c4521bd51e8e8b58e7dd",
+  "deletions": {
+    "ShaderSources/ContactFields.metal.source": [
+      {
+        "start_line": 33,
+        "end_line": 109,
+        "sha256": "8367568f699f70e4f470d5833b5e3cf4c5bf77b54491031e149d1685648fd2ad",
+        "reason": "Pure declarations/stores not read by the returned fields (compiler AST backward def/use); adjacent obsolete comments only"
+      },
+      {
+        "start_line": 146,
+        "end_line": 148,
+        "sha256": "8d657f3152d3d14f60dee07dd19ec92201af7ae2e30e619a37e2c49e238e3ab5",
+        "reason": "Pure declarations/stores not read by the returned fields (compiler AST backward def/use); adjacent obsolete comments only"
+      },
+      {
+        "start_line": 152,
+        "end_line": 226,
+        "sha256": "1996a4c27be7d701ba35d00da90d9f3f028e16a93510f91c0d2e4786397eeb0c",
+        "reason": "Pure declarations/stores not read by the returned fields (compiler AST backward def/use); adjacent obsolete comments only"
+      },
+      {
+        "start_line": 238,
+        "end_line": 240,
+        "sha256": "24224addb360e8e30c74fc34d8479af830362ff458daf59893a966d74894ec81",
+        "reason": "Pure declarations/stores not read by the returned fields (compiler AST backward def/use); adjacent obsolete comments only"
+      },
+      {
+        "start_line": 251,
+        "end_line": 254,
+        "sha256": "2968af72a752c2a733ac146cfa9c9aaf31b96f5dbb1006242d9bde7b9190f9b7",
+        "reason": "Pure declarations/stores not read by the returned fields (compiler AST backward def/use); adjacent obsolete comments only"
+      }
+    ],
+    "ShaderSources/ApprovedBlue.metal.source": [
+      {
+        "start_line": 622,
+        "end_line": 623,
+        "sha256": "d2bfb24b235961883b99795f6637374002511a142e1fc5e7232dcc1ab2b1b8df",
+        "reason": "Unused pure leaf qaMirrorWarp (compiler diagnostic / transitive unused input)"
+      },
+      {
+        "start_line": 628,
+        "end_line": 630,
+        "sha256": "865b08d363295789a1f513a3e1e8df019af9c4fea7178c42e38c498b3bd4c2f3",
+        "reason": "Unused pure leaf qaMirrorVoidD (compiler diagnostic / transitive unused input)"
+      },
+      {
+        "start_line": 644,
+        "end_line": 646,
+        "sha256": "7f0c1db937f1339b7d2062063f63c0e98426cab5e89edb983f4d973ba628d4cf",
+        "reason": "Unused pure leaf qaMirrorCounter (compiler diagnostic / transitive unused input)"
+      },
+      {
+        "start_line": 647,
+        "end_line": 647,
+        "sha256": "284a1efec1af72de47faae00ccb76673a340df10abc7d454a877b7c0624d5164",
+        "reason": "Unused pure leaf qaMirrorLobe (compiler diagnostic / transitive unused input)"
+      },
+      {
+        "start_line": 648,
+        "end_line": 648,
+        "sha256": "78ed4713121e55ae70ea757d64be27290dbdac37bfde2b9c57081deb282ef475",
+        "reason": "Unused pure leaf qaCounter (compiler diagnostic / transitive unused input)"
+      },
+      {
+        "start_line": 649,
+        "end_line": 649,
+        "sha256": "0a37d50b5cd30f36aaab5c882962ff567726e69151b8dbf7ee3ac88e92e31e0a",
+        "reason": "Unused pure leaf qaBlueDensity (compiler diagnostic / transitive unused input)"
+      },
+      {
+        "start_line": 650,
+        "end_line": 650,
+        "sha256": "2da0930c992ca9c165116c16902d41113abb641598647d1aff6cb3941023b996",
+        "reason": "Unused pure leaf qaEndpoint (compiler diagnostic / transitive unused input)"
+      }
+    ],
+    "ShaderSources/YellowDarkMAIN.metal.source": [
+      {
+        "start_line": 28,
+        "end_line": 28,
+        "sha256": "1f9cc289144990ec1a2e94b19eccddff3b2684d536b35579331f4fa87c4b4935",
+        "reason": "Unused primaryShare and its now-unused namespace import (compiler diagnostic)"
+      },
+      {
+        "start_line": 111,
+        "end_line": 111,
+        "sha256": "7a4a0ee3e1c05e326fdcea51714bdec9a73b30708eb007c45743a2ecdb42e11f",
+        "reason": "Unused primaryShare and its now-unused namespace import (compiler diagnostic)"
+      }
+    ],
+    "ShaderSources/YellowDarkContact.metal.source": [
+      {
+        "start_line": 28,
+        "end_line": 28,
+        "sha256": "1f9cc289144990ec1a2e94b19eccddff3b2684d536b35579331f4fa87c4b4935",
+        "reason": "Unused primaryShare and its now-unused namespace import (compiler diagnostic)"
+      },
+      {
+        "start_line": 102,
+        "end_line": 102,
+        "sha256": "7a4a0ee3e1c05e326fdcea51714bdec9a73b30708eb007c45743a2ecdb42e11f",
+        "reason": "Unused primaryShare and its now-unused namespace import (compiler diagnostic)"
+      }
+    ]
+  },
+  "literal_blocks": [
+    {
+      "path": "ShaderSources/Shared/YellowDarkPose.inc",
+      "sha256": "5b2bc4713d4868c0762f468b1283d6bf2e016756568cc891cbcc25335e5ea795",
+      "occurrences": {
+        "ShaderSources/YellowDarkMAIN.metal.source": 1,
+        "ShaderSources/YellowDarkContact.metal.source": 1
+      },
+      "reason": "Byte-identical literal source sharing, no new scope/parameters or operation changes"
+    },
+    {
+      "path": "ShaderSources/Shared/YellowInteraction.inc",
+      "sha256": "292e37d509e2cbda2f5b289467050607e59cb3cfe52eb689db38adf1ab02c93c",
+      "occurrences": {
+        "ShaderSources/YellowDarkMAIN.metal.source": 1,
+        "ShaderSources/YellowDarkContact.metal.source": 1,
+        "ShaderSources/YellowLightMAIN.metal.source": 1,
+        "ShaderSources/YellowLightContact.metal.source": 1
+      },
+      "reason": "Byte-identical literal source sharing, no new scope/parameters or operation changes"
+    },
+    {
+      "path": "ShaderSources/Shared/YellowLightSubstrate.inc",
+      "sha256": "cea35faf8a381d23c77b33167d25edd9015988efc225b7e7bf3a4c941be1837e",
+      "occurrences": {
+        "ShaderSources/YellowDarkMAIN.metal.source": 1,
+        "ShaderSources/YellowDarkContact.metal.source": 1
+      },
+      "reason": "Byte-identical literal source sharing, no new scope/parameters or operation changes"
+    },
+    {
+      "path": "ShaderSources/Shared/YellowWaveProfile.inc",
+      "sha256": "8ba66ae254a98ba277a70e2295c3fb100357a39489abb804238d1ba1b1e9c715",
+      "occurrences": {
+        "ShaderSources/YellowShared.metal.source": 2
+      },
+      "reason": "Byte-identical literal source sharing, no new scope/parameters or operation changes"
+    }
+  ]
+}

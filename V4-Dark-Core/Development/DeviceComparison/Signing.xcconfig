@@ -1,0 +1,3 @@
+// Shared, credential-free signing configuration. CLI unsigned builds need no Team.
+// Set DEVELOPMENT_TEAM in your ignored LocalSigning.xcconfig for a physical device.
+#include? "LocalSigning.xcconfig"

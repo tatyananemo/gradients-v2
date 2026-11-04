@@ -1,0 +1,15 @@
+{
+  "sourceCommit": "d62ae67cc2c585cace757476be695259bbf628fc",
+  "compilerInputsMatchVerifiedD62ae67": true,
+  "standaloneReleaseBuild": {
+    "configuration": "OptimizedRelease",
+    "shaderBytes": 344604,
+    "shaderSHA256": "f445d41cd8ab26d318fa37b213df020a3f6af1d4b4f3199df06a7b8877f60d99",
+    "embeddedIdentical": true,
+    "deviceOrSimulatorLaunched": false
+  },
+  "independentCopyOutsideCheckout": true,
+  "oldFoldersModified": false,
+  "deviceTestsPerformedForPackaging": false,
+  "personalSigningMaterialIncluded": false
+}

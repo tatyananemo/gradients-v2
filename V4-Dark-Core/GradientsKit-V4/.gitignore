@@ -1,0 +1,24 @@
+# Xcode/build output and local data
+.DS_Store
+xcuserdata/
+*.xcuserstate
+DerivedData/
+build/
+Build/
+.build/
+.swiftpm/
+*.app/
+*.xcarchive/
+*.dSYM/
+*.xcresult/
+*.metallib
+*.air
+*.log
+__pycache__/
+*.pyc
+.env
+.env.*
+*.p12
+*.p8
+*.mobileprovision
+*.keychain*

@@ -1,0 +1,89 @@
+{
+  "device": "iPhone 14",
+  "os": "iOS 26.7",
+  "source": "d62ae67cc2c585cace757476be695259bbf628fc",
+  "runs": {
+    "Light mixed": {
+      "sourceCommit": "d62ae67",
+      "warmupSeconds": 3,
+      "measuredSeconds": 6,
+      "progressWindows": [
+        {
+          "start": 0.63,
+          "end": 1
+        }
+      ],
+      "presentationFPS": 59.920763553029374,
+      "presentationIntervalMS": {
+        "count": 359,
+        "max": 16.703416666132398,
+        "mean": 16.688705895995607,
+        "p95": 16.69695833697915,
+        "p99": 16.702083332347684
+      },
+      "intervalsOver25MS": 0,
+      "thermalStates": [
+        0
+      ],
+      "screenBrightness": 0.35,
+      "lowPowerMode": false,
+      "measurementBasis": "MTLDrawable.presentedTime; RAM-only test-Demo monitor; no Instruments",
+      "appStoppedAfterTest": true
+    },
+    "Dark upper": {
+      "sourceCommit": "d62ae67",
+      "warmupSeconds": 3,
+      "measuredSeconds": 6,
+      "progressWindows": [
+        {
+          "start": 0.63,
+          "end": 1
+        }
+      ],
+      "presentationFPS": 59.945533054521995,
+      "presentationIntervalMS": {
+        "count": 359,
+        "max": 16.70166666735895,
+        "mean": 16.681810120705315,
+        "p95": 16.697583327186294,
+        "p99": 16.69945833418751
+      },
+      "intervalsOver25MS": 0,
+      "thermalStates": [
+        0
+      ],
+      "screenBrightness": 0.35,
+      "lowPowerMode": false,
+      "measurementBasis": "MTLDrawable.presentedTime; RAM-only test-Demo monitor; no Instruments",
+      "appStoppedAfterTest": true
+    },
+    "Dark orange": {
+      "sourceCommit": "d62ae67",
+      "warmupSeconds": 3,
+      "measuredSeconds": 6,
+      "progressWindows": [
+        {
+          "start": 0.63,
+          "end": 1
+        }
+      ],
+      "presentationFPS": 59.91976343098279,
+      "presentationIntervalMS": {
+        "count": 359,
+        "max": 16.71008333505597,
+        "mean": 16.68898444754087,
+        "p95": 16.698791660019197,
+        "p99": 16.702041670214385
+      },
+      "intervalsOver25MS": 0,
+      "thermalStates": [
+        0
+      ],
+      "screenBrightness": 0.35,
+      "lowPowerMode": false,
+      "measurementBasis": "MTLDrawable.presentedTime; RAM-only test-Demo monitor; no Instruments",
+      "appStoppedAfterTest": true
+    }
+  },
+  "limits": "Short controls, not long-run thermal qualification. No physical temperature measurement. SDK compiler inputs identical; diagnostic monitor not part of production SDK."
+}

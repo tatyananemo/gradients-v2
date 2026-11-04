@@ -1,0 +1,76 @@
+{
+  "base": "3b72d08",
+  "sourceReference": "c72a140",
+  "MacFinalFrames": {
+    "dark": {
+      "frames": 247,
+      "maxDelta8": 1,
+      "maxPixelPercent": 0.0006751191585314809,
+      "maxTemporalErrorChange8": 1
+    },
+    "light": {
+      "frames": 247,
+      "maxDelta8": 0,
+      "maxPixelPercent": 0,
+      "maxTemporalErrorChange8": 0
+    }
+  },
+  "MacBenchmark": {
+    "dark-idle": {
+      "0": {
+        "fullFrameMS": 5.930325231020106,
+        "maskMS": 2.688589699118893,
+        "commandBufferMS": 2.944747106438525
+      },
+      "1": {
+        "fullFrameMS": 5.956939814596909,
+        "maskMS": 2.660439814462734,
+        "commandBufferMS": 2.974145254433501
+      },
+      "frameGainPercent": -0.4487879254511773
+    },
+    "dark-swipe": {
+      "0": {
+        "fullFrameMS": 7.016284722239005,
+        "maskMS": 3.095321759246872,
+        "commandBufferMS": 3.6089305555530395
+      },
+      "1": {
+        "fullFrameMS": 6.239318286942661,
+        "maskMS": 3.164914352055348,
+        "commandBufferMS": 2.757332176265158
+      },
+      "frameGainPercent": 11.07375863515987
+    },
+    "light-idle": {
+      "0": {
+        "fullFrameMS": 1.9624652777565643,
+        "maskMS": 0.0001898145253815326,
+        "commandBufferMS": 1.682905092669292
+      },
+      "1": {
+        "fullFrameMS": 1.9727980326630739,
+        "maskMS": 0.0001770834690735986,
+        "commandBufferMS": 1.6803449072237224
+      },
+      "frameGainPercent": -0.5265191197839414
+    },
+    "light-swipe": {
+      "0": {
+        "fullFrameMS": 3.075193287259026,
+        "maskMS": 0.00018981487907391661,
+        "commandBufferMS": 2.745820601477236
+      },
+      "1": {
+        "fullFrameMS": 2.9990925927955283,
+        "maskMS": 0.0001793983351995444,
+        "commandBufferMS": 2.714322916896587
+      },
+      "frameGainPercent": 2.4746637806083216
+    }
+  },
+  "ReleaseMetallibBytes": 492236,
+  "publicSwiftInterfaceUnchanged": true,
+  "physicalStatus": "completed; Dark near60, Light no-regression not confirmed; candidate unmerged",
+  "limits": "Mac offscreen completion is not iPhone FPS; function constant 102 specializes only Dark background; default Light/probe/compositor paths retained"
+}

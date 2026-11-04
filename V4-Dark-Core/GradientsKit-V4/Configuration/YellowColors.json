@@ -1,0 +1,43 @@
+{
+  "_instructions": "Edit RGB component expression strings here, then rebuild. Values are encoded sRGB in 0...1; only decimal literals or decimal-literal division. Never change shader formulas or Blue reference constants. See README for role coverage and protected neutral/math operands.",
+  "dark": {
+    "mainDeep": ["1.0", "0.4", "0.0"],
+    "mainMid": ["1.0", "0.55", "0.0"],
+    "mainHot": ["1.0", "0.7", "0.0"],
+    "mainAccent": ["1.0", "221.0 / 255.0", "45.0 / 255.0"],
+    "contactArc": ["1.0", "140.0 / 255.0", "0.0"],
+    "contactCore": ["1.0", "221.0 / 255.0", "45.0 / 255.0"],
+    "contactHueBright": ["1.0", "0.82", "0.0"],
+    "contactHueShade": ["1.0", "0.72", "0.0"],
+    "contactDiffuseSource": ["1.0", "0.48", "0.14"],
+    "contactDiffusePeak": ["1.0", "1.0", "0.24"],
+    "trailDeep": ["1.0", "0.4", "0.0"],
+    "trailMid": ["1.0", "0.55", "0.0"],
+    "trailHot": ["1.0", "0.7", "0.0"],
+    "trailAccent": ["1.0", "221.0 / 255.0", "45.0 / 255.0"],
+    "trailWhite": ["1.0", "1.0", "1.0"],
+    "counterTint": ["1.0", "1.0", "1.0"],
+    "maskTint": ["0.105", "0.060", "0.008"],
+    "maskBase": ["0.0", "0.0", "0.0"]
+  },
+  "light": {
+    "mainDeep": ["1.0", "0.4", "0.0"],
+    "mainMid": ["1.0", "0.55", "0.0"],
+    "mainHot": ["1.0", "0.7", "0.0"],
+    "mainAccent": ["1.0", "221.0 / 255.0", "45.0 / 255.0"],
+    "contactArc": ["1.0", "140.0 / 255.0", "0.0"],
+    "contactCore": ["1.0", "221.0 / 255.0", "45.0 / 255.0"],
+    "primarySource": ["1.0", "221.0 / 255.0", "0.0"],
+    "primaryPeak": ["1.0", "1.0", "0.0"],
+    "haloWarm": ["1.0", "0.7", "0.0"],
+    "haloWhite": ["1.0", "1.0", "1.0"],
+    "trailDeep": ["1.0", "0.4", "0.0"],
+    "trailMid": ["1.0", "0.55", "0.0"],
+    "trailHot": ["1.0", "0.7", "0.0"],
+    "trailAccent": ["1.0", "221.0 / 255.0", "45.0 / 255.0"],
+    "trailWhite": ["1.0", "1.0", "1.0"],
+    "counterTint": ["1.0", "1.0", "1.0"],
+    "transmissionRed": "1.0",
+    "captionTint": ["1.0", "1.0", "0.3"]
+  }
+}

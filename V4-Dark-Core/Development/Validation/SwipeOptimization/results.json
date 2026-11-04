@@ -1,0 +1,101 @@
+{
+  "base": "6c80005",
+  "device": "Mac M3 Pro, native offscreen; not iPhone FPS",
+  "method": "paired alternating variants, warmup excluded; actual GradientSession swipe/release replay; masks + prep + background + optional distortion + compositor + completion included in fullFrameWallMS; no sum of overlapping CPU/GPU times",
+  "measurements": {
+    "swipe-dark": {
+      "baseline": {
+        "count": 40,
+        "fullFrameWallMS": 10.1485,
+        "gpuMS": 6.4208,
+        "fullFrameCPUms": 7.9961,
+        "maskWallMS": 3.0479
+      },
+      "optimized": {
+        "count": 40,
+        "fullFrameWallMS": 9.3858,
+        "gpuMS": 5.6655,
+        "fullFrameCPUms": 7.7685,
+        "maskWallMS": 3.1386
+      },
+      "fullFrameReductionPercent": 7.52
+    },
+    "swipe-light": {
+      "baseline": {
+        "count": 40,
+        "fullFrameWallMS": 4.595,
+        "gpuMS": 4.1104,
+        "fullFrameCPUms": 0.2181,
+        "maskWallMS": 0.0005
+      },
+      "optimized": {
+        "count": 40,
+        "fullFrameWallMS": 3.7904,
+        "gpuMS": 3.3602,
+        "fullFrameCPUms": 0.1645,
+        "maskWallMS": 0.0006
+      },
+      "fullFrameReductionPercent": 17.51
+    },
+    "idle-dark": {
+      "baseline": {
+        "count": 192,
+        "fullFrameWallMS": 9.0653,
+        "gpuMS": 4.8482,
+        "fullFrameCPUms": 8.6606,
+        "maskWallMS": 3.3534
+      },
+      "optimized": {
+        "count": 192,
+        "fullFrameWallMS": 8.9324,
+        "gpuMS": 4.7136,
+        "fullFrameCPUms": 8.6527,
+        "maskWallMS": 3.4353
+      },
+      "fullFrameReductionPercent": 1.47
+    },
+    "idle-light": {
+      "baseline": {
+        "count": 96,
+        "fullFrameWallMS": 2.211,
+        "gpuMS": 1.8398,
+        "fullFrameCPUms": 0.1296,
+        "maskWallMS": 0.0002
+      },
+      "optimized": {
+        "count": 96,
+        "fullFrameWallMS": 2.2021,
+        "gpuMS": 1.8265,
+        "fullFrameCPUms": 0.1255,
+        "maskWallMS": 0.0002
+      },
+      "fullFrameReductionPercent": 0.4
+    }
+  },
+  "renderedFrames": 694,
+  "maxFinalRGBA8Difference": 0,
+  "APIValidation": "20 smoke frames, no errors",
+  "builds": [
+    "generic iOS OptimizedDebug passed",
+    "generic iOS OptimizedRelease passed"
+  ],
+  "CPUContractTests": 11,
+  "preserved": [
+    "SDK input files and public API",
+    "Yellow color configuration",
+    "MAIN/CONTACT/SUBSTRATE FIX formulas",
+    "IOSurface pool and 3 in-flight slots",
+    "GPU/mask oracles and tolerances"
+  ],
+  "changes": [
+    "conservative 16x16 history tile bitsets in existing preparation pass; original segment math and summation order",
+    "distortion sampled directly in compositor with original half intermediate precision; one fullscreen encoder removed"
+  ],
+  "cacheExtraBytesPer3SlotsAt1170x2532": 282384,
+  "discarded": {
+    "segmentInvariantPrecompute": "max 1/255 difference; no stronger performance than exact tile path",
+    "readabilityAlphaReuse": "~1% full frame, within noise; extra complexity rejected"
+  },
+  "remaining": "Sustained Dark idle thermal issue is not fixed; idle change within measurement noise. No new iPhone/Simulator runs. A15 performance and visual verification still required.",
+  "rawArtifacts": "/private/tmp/v4-swipe-tiles-20261029"
+}

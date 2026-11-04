@@ -1,0 +1,16 @@
+$(SRCROOT)/Scripts/compose_metal.py
+$(SRCROOT)/ShaderSources/ApprovedBlue.metal.source
+$(SRCROOT)/ShaderSources/ContactFields.metal.source
+$(SRCROOT)/ShaderSources/YellowShared.metal.source
+$(SRCROOT)/ShaderSources/YellowDarkMAIN.metal.source
+$(SRCROOT)/ShaderSources/YellowLightMAIN.metal.source
+$(SRCROOT)/ShaderSources/YellowDarkContact.metal.source
+$(SRCROOT)/ShaderSources/YellowLightContact.metal.source
+$(SRCROOT)/ShaderSources/V2EntryPoints.metal.source
+$(SRCROOT)/ShaderSources/Shared/InteractionHistory.inc
+$(SRCROOT)/ShaderSources/Shared/PhysicalFields.inc
+$(SRCROOT)/ShaderSources/Shared/BlueGeometryTail.inc
+$(SRCROOT)/ShaderSources/Shared/YellowDarkPose.inc
+$(SRCROOT)/ShaderSources/Shared/YellowInteraction.inc
+$(SRCROOT)/ShaderSources/Shared/YellowLightSubstrate.inc
+$(SRCROOT)/ShaderSources/Shared/YellowWaveProfile.inc

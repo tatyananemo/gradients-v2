@@ -1,0 +1,65 @@
+{
+  "base_commit": "12e1b51",
+  "yellow_helpers": [
+    {
+      "name": "yellowReviewDarkPalette",
+      "owner": "ShaderSources/YellowDarkMAIN.metal.source",
+      "modules": [
+        "ShaderSources/YellowDarkContact.metal.source",
+        "ShaderSources/YellowDarkMAIN.metal.source"
+      ]
+    },
+    {
+      "name": "yellowReviewTransmission",
+      "owner": "ShaderSources/YellowDarkMAIN.metal.source",
+      "modules": [
+        "ShaderSources/YellowDarkContact.metal.source",
+        "ShaderSources/YellowDarkMAIN.metal.source",
+        "ShaderSources/YellowLightMAIN.metal.source"
+      ]
+    },
+    {
+      "name": "yellowReviewPrimaryShare",
+      "owner": "ShaderSources/YellowDarkMAIN.metal.source",
+      "modules": [
+        "ShaderSources/YellowDarkContact.metal.source",
+        "ShaderSources/YellowDarkMAIN.metal.source",
+        "ShaderSources/YellowLightMAIN.metal.source"
+      ]
+    },
+    {
+      "name": "yellowReviewWaveShares",
+      "owner": "ShaderSources/YellowDarkMAIN.metal.source",
+      "modules": [
+        "ShaderSources/YellowDarkContact.metal.source",
+        "ShaderSources/YellowDarkMAIN.metal.source",
+        "ShaderSources/YellowLightMAIN.metal.source"
+      ]
+    },
+    {
+      "name": "yellowReviewLightSource",
+      "owner": "ShaderSources/YellowDarkMAIN.metal.source",
+      "modules": [
+        "ShaderSources/YellowDarkContact.metal.source",
+        "ShaderSources/YellowDarkMAIN.metal.source"
+      ]
+    },
+    {
+      "name": "yellowReviewLightPeak",
+      "owner": "ShaderSources/YellowDarkMAIN.metal.source",
+      "modules": [
+        "ShaderSources/YellowDarkContact.metal.source",
+        "ShaderSources/YellowDarkMAIN.metal.source"
+      ]
+    },
+    {
+      "name": "yellowReviewHSV",
+      "owner": "ShaderSources/YellowDarkMAIN.metal.source",
+      "modules": [
+        "ShaderSources/YellowDarkContact.metal.source",
+        "ShaderSources/YellowDarkMAIN.metal.source"
+      ]
+    }
+  ],
+  "blue_prefix": null
+}
