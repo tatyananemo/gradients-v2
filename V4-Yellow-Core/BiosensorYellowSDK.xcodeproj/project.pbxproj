@@ -1,0 +1,466 @@
+// !$*UTF8*$!
+{
+	archiveVersion = "1";
+	classes = {
+	};
+	objectVersion = "60";
+	objects = {
+		96AC57CCE0D8E1CAF692A970 = {
+			isa = PBXFileReference;
+			path = "GradientsKit.framework";
+			lastKnownFileType = wrapper.framework;
+			sourceTree = "BUILT_PRODUCTS_DIR";
+		};
+		18F0E7EDCB0B06D182CE40C6 = {
+			isa = PBXFileReference;
+			path = "GradientsKit-V4/Sources/GradientsKit/Core/GradientResetPresentation.swift";
+			lastKnownFileType = sourcecode.swift;
+			sourceTree = "<group>";
+		};
+		20F13F236B30C6DD185C7EDD = {
+			isa = PBXFileReference;
+			path = "GradientsKit-V4/Sources/GradientsKit/Core/GradientSession.swift";
+			lastKnownFileType = sourcecode.swift;
+			sourceTree = "<group>";
+		};
+		767F910F69DA0196A8491E07 = {
+			isa = PBXFileReference;
+			path = "GradientsKit-V4/Sources/GradientsKit/GradientPercentageLabel.swift";
+			lastKnownFileType = sourcecode.swift;
+			sourceTree = "<group>";
+		};
+		65F3C3BEDBAA217C520C6C15 = {
+			isa = PBXFileReference;
+			path = "GradientsKit-V4/Sources/GradientsKit/GradientPerformanceMetrics.swift";
+			lastKnownFileType = sourcecode.swift;
+			sourceTree = "<group>";
+		};
+		3FD22C3A23A2D319E7FFBD89 = {
+			isa = PBXFileReference;
+			path = "GradientsKit-V4/Sources/GradientsKit/GradientRenderSafety.swift";
+			lastKnownFileType = sourcecode.swift;
+			sourceTree = "<group>";
+		};
+		9969C1EB7140362DDFCF8D0D = {
+			isa = PBXFileReference;
+			path = "GradientsKit-V4/Sources/GradientsKit/GradientTheme.swift";
+			lastKnownFileType = sourcecode.swift;
+			sourceTree = "<group>";
+		};
+		CBF93EB7D80029B0262EDB11 = {
+			isa = PBXFileReference;
+			path = "GradientsKit-V4/Sources/GradientsKit/SessionCaptionProbe.swift";
+			lastKnownFileType = sourcecode.swift;
+			sourceTree = "<group>";
+		};
+		7B82CD6C4BE38AB416FD8B04 = {
+			isa = PBXFileReference;
+			path = "GradientGPU.swift";
+			lastKnownFileType = sourcecode.swift;
+			sourceTree = "DERIVED_FILE_DIR";
+		};
+		360E9CA4BD7336B558536F6E = {
+			isa = PBXFileReference;
+			path = "GradientViewController.swift";
+			lastKnownFileType = sourcecode.swift;
+			sourceTree = "DERIVED_FILE_DIR";
+		};
+		F0309F3E6A482E0B5863EC82 = {
+			isa = PBXFileReference;
+			path = "GradientMaskRenderer.swift";
+			lastKnownFileType = sourcecode.swift;
+			sourceTree = "DERIVED_FILE_DIR";
+		};
+		F50F7B5AFFBF69C958E1A1CC = {
+			isa = PBXFileReference;
+			path = "GradientPrecalculationBuffers.swift";
+			lastKnownFileType = sourcecode.swift;
+			sourceTree = "DERIVED_FILE_DIR";
+		};
+		F38E2CADA1B01630CE7F6437 = {
+			isa = PBXFileReference;
+			path = "GradientYellowColors.swift";
+			lastKnownFileType = sourcecode.swift;
+			sourceTree = "DERIVED_FILE_DIR";
+		};
+		0A8AF3B2CBB0F9288F1AE8A3 = {
+			isa = PBXFileReference;
+			path = "GradientsUIKit.metal";
+			lastKnownFileType = sourcecode.metal;
+			sourceTree = "DERIVED_FILE_DIR";
+		};
+		537BAC49FB381519E179BE6B = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = "2147483647";
+			files = (
+			);
+			inputPaths = (
+				"$(SRCROOT)/Development/DeviceComparison/GradientPrecalculationBuffers.swift",
+				"$(SRCROOT)/Development/DeviceComparison/dark_route_source.py",
+				"$(SRCROOT)/Development/DeviceComparison/idle_zero_source.py",
+				"$(SRCROOT)/Development/DeviceComparison/light_route_source.py",
+				"$(SRCROOT)/Development/DeviceComparison/mask_window_source.py",
+				"$(SRCROOT)/Development/DeviceComparison/precalculation_source.py",
+				"$(SRCROOT)/Development/DeviceComparison/prepare_sources.py",
+				"$(SRCROOT)/Development/DeviceComparison/shared_background_source.py",
+				"$(SRCROOT)/Development/DeviceComparison/swipe_optimization_source.py",
+				"$(SRCROOT)/Development/DeviceComparison/yellow_touch_source.py",
+				"$(SRCROOT)/GradientsKit-V4/Configuration/YellowColors.json",
+				"$(SRCROOT)/GradientsKit-V4/Scripts/compose_metal.py",
+				"$(SRCROOT)/GradientsKit-V4/Scripts/compose_uikit_metal.py",
+				"$(SRCROOT)/GradientsKit-V4/Scripts/source_colors.py",
+				"$(SRCROOT)/GradientsKit-V4/ShaderSources/ApprovedBlue.metal.source",
+				"$(SRCROOT)/GradientsKit-V4/ShaderSources/ContactFields.metal.source",
+				"$(SRCROOT)/GradientsKit-V4/ShaderSources/Shared/BlueGeometryTail.inc",
+				"$(SRCROOT)/GradientsKit-V4/ShaderSources/Shared/InteractionHistory.inc",
+				"$(SRCROOT)/GradientsKit-V4/ShaderSources/Shared/PhysicalFields.inc",
+				"$(SRCROOT)/GradientsKit-V4/ShaderSources/Shared/YellowDarkPose.inc",
+				"$(SRCROOT)/GradientsKit-V4/ShaderSources/Shared/YellowDarkTouchColor.inc",
+				"$(SRCROOT)/GradientsKit-V4/ShaderSources/Shared/YellowInteraction.inc",
+				"$(SRCROOT)/GradientsKit-V4/ShaderSources/Shared/YellowLightSubstrate.inc",
+				"$(SRCROOT)/GradientsKit-V4/ShaderSources/Shared/YellowWaveProfile.inc",
+				"$(SRCROOT)/GradientsKit-V4/ShaderSources/V2EntryPoints.metal.source",
+				"$(SRCROOT)/GradientsKit-V4/ShaderSources/YellowDarkContact.metal.source",
+				"$(SRCROOT)/GradientsKit-V4/ShaderSources/YellowDarkMAIN.metal.source",
+				"$(SRCROOT)/GradientsKit-V4/ShaderSources/YellowLightContact.metal.source",
+				"$(SRCROOT)/GradientsKit-V4/ShaderSources/YellowLightMAIN.metal.source",
+				"$(SRCROOT)/GradientsKit-V4/ShaderSources/YellowShared.metal.source",
+				"$(SRCROOT)/GradientsKit-V4/Sources/GradientsKit/Core/GradientResetPresentation.swift",
+				"$(SRCROOT)/GradientsKit-V4/Sources/GradientsKit/Core/GradientSession.swift",
+				"$(SRCROOT)/GradientsKit-V4/Sources/GradientsKit/GradientGPU.swift",
+				"$(SRCROOT)/GradientsKit-V4/Sources/GradientsKit/GradientMaskRenderer.swift",
+				"$(SRCROOT)/GradientsKit-V4/Sources/GradientsKit/GradientPercentageLabel.swift",
+				"$(SRCROOT)/GradientsKit-V4/Sources/GradientsKit/GradientPerformanceMetrics.swift",
+				"$(SRCROOT)/GradientsKit-V4/Sources/GradientsKit/GradientRenderSafety.swift",
+				"$(SRCROOT)/GradientsKit-V4/Sources/GradientsKit/GradientTheme.swift",
+				"$(SRCROOT)/GradientsKit-V4/Sources/GradientsKit/GradientViewController.swift",
+				"$(SRCROOT)/GradientsKit-V4/Sources/GradientsKit/SessionCaptionProbe.swift",
+				"$(SRCROOT)/GradientsKit-V4/Sources/GradientsKit/Shaders/GradientAdapters.metal",
+				"$(SRCROOT)/Tools/build_release.py",
+				"$(SRCROOT)/Tools/generate_sdk.py",
+				"$(SRCROOT)/Tools/verify_sources.py",
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/GradientGPU.swift",
+				"$(DERIVED_FILE_DIR)/GradientViewController.swift",
+				"$(DERIVED_FILE_DIR)/GradientMaskRenderer.swift",
+				"$(DERIVED_FILE_DIR)/GradientPrecalculationBuffers.swift",
+				"$(DERIVED_FILE_DIR)/GradientYellowColors.swift",
+				"$(DERIVED_FILE_DIR)/GradientsUIKit.metal",
+				"$(DERIVED_FILE_DIR)/SourceManifest.json",
+			);
+			name = "Generate approved Biosensor Yellow sources";
+			runOnlyForDeploymentPostprocessing = "0";
+			shellPath = "/bin/sh";
+			shellScript = "/usr/bin/python3 -I -B \"$SRCROOT/Tools/generate_sdk.py\" --output \"$DERIVED_FILE_DIR\"\n";
+		};
+		9925A0BE93F148CD70907995 = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				MARKETING_VERSION = "4.0";
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				DEVELOPMENT_TEAM = "";
+				SUPPORTED_PLATFORMS = "iphoneos";
+				CLANG_ENABLE_MODULES = "YES";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.local.gradients.v4.compare.yellow.kit";
+				CURRENT_PROJECT_VERSION = "1";
+				MTL_FAST_MATH = "YES";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG PRECALC_COMPARISON";
+				SUPPORTS_MACCATALYST = "NO";
+				DEBUG_INFORMATION_FORMAT = "dwarf";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				CODE_SIGN_STYLE = "Automatic";
+				CODE_SIGNING_ALLOWED = "NO";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				LD_DYLIB_INSTALL_NAME = "@rpath/$(EXECUTABLE_PATH)";
+				ENABLE_TESTABILITY = "YES";
+				CLANG_ENABLE_OBJC_ARC = "YES";
+				SDKROOT = "iphoneos";
+				SWIFT_VERSION = "5.0";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				IPHONEOS_DEPLOYMENT_TARGET = "17.0";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				SKIP_INSTALL = "NO";
+				BUILD_LIBRARY_FOR_DISTRIBUTION = "YES";
+				DEFINES_MODULE = "YES";
+				GENERATE_INFOPLIST_FILE = "YES";
+				ENABLE_USER_SCRIPT_SANDBOXING = "NO";
+			};
+			name = "Debug";
+		};
+		0AB9711700EFD8E3455538D4 = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				MARKETING_VERSION = "4.0";
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				DEVELOPMENT_TEAM = "";
+				SUPPORTED_PLATFORMS = "iphoneos";
+				CLANG_ENABLE_MODULES = "YES";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.local.gradients.v4.compare.yellow.kit";
+				CURRENT_PROJECT_VERSION = "1";
+				MTL_FAST_MATH = "YES";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "PRECALC_COMPARISON";
+				SUPPORTS_MACCATALYST = "NO";
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				CODE_SIGN_STYLE = "Automatic";
+				CODE_SIGNING_ALLOWED = "NO";
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				LD_DYLIB_INSTALL_NAME = "@rpath/$(EXECUTABLE_PATH)";
+				ENABLE_TESTABILITY = "NO";
+				CLANG_ENABLE_OBJC_ARC = "YES";
+				SDKROOT = "iphoneos";
+				SWIFT_VERSION = "5.0";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				IPHONEOS_DEPLOYMENT_TARGET = "17.0";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				SKIP_INSTALL = "NO";
+				BUILD_LIBRARY_FOR_DISTRIBUTION = "YES";
+				DEFINES_MODULE = "YES";
+				GENERATE_INFOPLIST_FILE = "YES";
+				ENABLE_USER_SCRIPT_SANDBOXING = "NO";
+			};
+			name = "Release";
+		};
+		0AC0AB9714AA8CB827043575 = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9925A0BE93F148CD70907995,
+				0AB9711700EFD8E3455538D4,
+			);
+			defaultConfigurationIsVisible = "0";
+			defaultConfigurationName = "Release";
+		};
+		DC3CC1DE637E6A758EEBD013 = {
+			isa = PBXBuildFile;
+			fileRef = 18F0E7EDCB0B06D182CE40C6;
+		};
+		546114E26FF071C4B348529A = {
+			isa = PBXBuildFile;
+			fileRef = 20F13F236B30C6DD185C7EDD;
+		};
+		17C81DE598139C2581FD73FB = {
+			isa = PBXBuildFile;
+			fileRef = 767F910F69DA0196A8491E07;
+		};
+		DDA37B3FDDE03CA871F4FF92 = {
+			isa = PBXBuildFile;
+			fileRef = 65F3C3BEDBAA217C520C6C15;
+		};
+		640FC0450D8064A27E86C2A8 = {
+			isa = PBXBuildFile;
+			fileRef = 3FD22C3A23A2D319E7FFBD89;
+		};
+		F72BAE19045E5B51405F6E38 = {
+			isa = PBXBuildFile;
+			fileRef = 9969C1EB7140362DDFCF8D0D;
+		};
+		13860D078B86AA003452CA17 = {
+			isa = PBXBuildFile;
+			fileRef = CBF93EB7D80029B0262EDB11;
+		};
+		3E19185D1F6BC46C1CB22234 = {
+			isa = PBXBuildFile;
+			fileRef = 7B82CD6C4BE38AB416FD8B04;
+		};
+		6CF567DA0844946E679F89ED = {
+			isa = PBXBuildFile;
+			fileRef = 360E9CA4BD7336B558536F6E;
+		};
+		10700EB3401A8D16E51C6EF8 = {
+			isa = PBXBuildFile;
+			fileRef = F0309F3E6A482E0B5863EC82;
+		};
+		446D2439182E33D67EFC36E5 = {
+			isa = PBXBuildFile;
+			fileRef = F50F7B5AFFBF69C958E1A1CC;
+		};
+		347767A7CD289863F844954D = {
+			isa = PBXBuildFile;
+			fileRef = F38E2CADA1B01630CE7F6437;
+		};
+		B897ECB0BFEFD8AC31F5A904 = {
+			isa = PBXBuildFile;
+			fileRef = 0A8AF3B2CBB0F9288F1AE8A3;
+		};
+		49A1BEAB1F1C299BFCFE8254 = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = "2147483647";
+			files = (
+				DC3CC1DE637E6A758EEBD013,
+				546114E26FF071C4B348529A,
+				17C81DE598139C2581FD73FB,
+				DDA37B3FDDE03CA871F4FF92,
+				640FC0450D8064A27E86C2A8,
+				F72BAE19045E5B51405F6E38,
+				13860D078B86AA003452CA17,
+				3E19185D1F6BC46C1CB22234,
+				6CF567DA0844946E679F89ED,
+				10700EB3401A8D16E51C6EF8,
+				446D2439182E33D67EFC36E5,
+				347767A7CD289863F844954D,
+				B897ECB0BFEFD8AC31F5A904,
+			);
+			runOnlyForDeploymentPostprocessing = "0";
+		};
+		97F26DF81492291F8905DAFC = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = "2147483647";
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = "0";
+		};
+		B30BDCC723D11C07B4697AD1 = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = "2147483647";
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = "0";
+		};
+		5A374DCD2E5EB762B527AF3A = {
+			isa = PBXNativeTarget;
+			name = "GradientsKit";
+			productName = "GradientsKit";
+			productReference = 96AC57CCE0D8E1CAF692A970;
+			productType = "com.apple.product-type.framework";
+			buildConfigurationList = 0AC0AB9714AA8CB827043575;
+			buildPhases = (
+				537BAC49FB381519E179BE6B,
+				49A1BEAB1F1C299BFCFE8254,
+				97F26DF81492291F8905DAFC,
+				B30BDCC723D11C07B4697AD1,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+		};
+		FBDC4F23F93125BBEEAE800C = {
+			isa = PBXGroup;
+			name = "Products";
+			children = (
+				96AC57CCE0D8E1CAF692A970,
+			);
+			sourceTree = "<group>";
+		};
+		DC76E9F0C0006E8F919E0C51 = {
+			isa = PBXGroup;
+			children = (
+				18F0E7EDCB0B06D182CE40C6,
+				20F13F236B30C6DD185C7EDD,
+				767F910F69DA0196A8491E07,
+				65F3C3BEDBAA217C520C6C15,
+				3FD22C3A23A2D319E7FFBD89,
+				9969C1EB7140362DDFCF8D0D,
+				CBF93EB7D80029B0262EDB11,
+				7B82CD6C4BE38AB416FD8B04,
+				360E9CA4BD7336B558536F6E,
+				F0309F3E6A482E0B5863EC82,
+				F50F7B5AFFBF69C958E1A1CC,
+				F38E2CADA1B01630CE7F6437,
+				0A8AF3B2CBB0F9288F1AE8A3,
+				FBDC4F23F93125BBEEAE800C,
+			);
+			sourceTree = "<group>";
+		};
+		89E1FD6268CC0F221A2BE178 = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				MARKETING_VERSION = "4.0";
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				DEVELOPMENT_TEAM = "";
+				SUPPORTED_PLATFORMS = "iphoneos";
+				CLANG_ENABLE_MODULES = "YES";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.local.gradients.v4.compare.yellow.kit";
+				CURRENT_PROJECT_VERSION = "1";
+				MTL_FAST_MATH = "YES";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG PRECALC_COMPARISON";
+				SUPPORTS_MACCATALYST = "NO";
+				DEBUG_INFORMATION_FORMAT = "dwarf";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				CODE_SIGN_STYLE = "Automatic";
+				CODE_SIGNING_ALLOWED = "NO";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				LD_DYLIB_INSTALL_NAME = "@rpath/$(EXECUTABLE_PATH)";
+				ENABLE_TESTABILITY = "YES";
+				CLANG_ENABLE_OBJC_ARC = "YES";
+				SDKROOT = "iphoneos";
+				SWIFT_VERSION = "5.0";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				IPHONEOS_DEPLOYMENT_TARGET = "17.0";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				SKIP_INSTALL = "NO";
+				BUILD_LIBRARY_FOR_DISTRIBUTION = "YES";
+				DEFINES_MODULE = "YES";
+				GENERATE_INFOPLIST_FILE = "YES";
+				ENABLE_USER_SCRIPT_SANDBOXING = "NO";
+			};
+			name = "Debug";
+		};
+		E6DE6C99132752C914FEF632 = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				MARKETING_VERSION = "4.0";
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				DEVELOPMENT_TEAM = "";
+				SUPPORTED_PLATFORMS = "iphoneos";
+				CLANG_ENABLE_MODULES = "YES";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.local.gradients.v4.compare.yellow.kit";
+				CURRENT_PROJECT_VERSION = "1";
+				MTL_FAST_MATH = "YES";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "PRECALC_COMPARISON";
+				SUPPORTS_MACCATALYST = "NO";
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				CODE_SIGN_STYLE = "Automatic";
+				CODE_SIGNING_ALLOWED = "NO";
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				LD_DYLIB_INSTALL_NAME = "@rpath/$(EXECUTABLE_PATH)";
+				ENABLE_TESTABILITY = "NO";
+				CLANG_ENABLE_OBJC_ARC = "YES";
+				SDKROOT = "iphoneos";
+				SWIFT_VERSION = "5.0";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				IPHONEOS_DEPLOYMENT_TARGET = "17.0";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				SKIP_INSTALL = "NO";
+				BUILD_LIBRARY_FOR_DISTRIBUTION = "YES";
+				DEFINES_MODULE = "YES";
+				GENERATE_INFOPLIST_FILE = "YES";
+				ENABLE_USER_SCRIPT_SANDBOXING = "NO";
+			};
+			name = "Release";
+		};
+		F8C70E4123C9AE82C42562CC = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				89E1FD6268CC0F221A2BE178,
+				E6DE6C99132752C914FEF632,
+			);
+			defaultConfigurationIsVisible = "0";
+			defaultConfigurationName = "Release";
+		};
+		98F54143AB4E86B28C3AFEE0 = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = "1";
+				LastUpgradeCheck = "2630";
+			};
+			buildConfigurationList = F8C70E4123C9AE82C42562CC;
+			compatibilityVersion = "Xcode 15.0";
+			developmentRegion = "en";
+			knownRegions = (
+				"en",
+				"Base",
+			);
+			mainGroup = DC76E9F0C0006E8F919E0C51;
+			productRefGroup = FBDC4F23F93125BBEEAE800C;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				5A374DCD2E5EB762B527AF3A,
+			);
+		};
+	};
+	rootObject = 98F54143AB4E86B28C3AFEE0;
+}
